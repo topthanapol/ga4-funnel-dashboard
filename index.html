@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GA4 User Journey & Funnel Analysis</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+:root {
+  --bg-dark: #0f172a;
+  --bg-panel: #1e293b;
+  --bg-card: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --accent-orange: #f59e0b;
+  --accent-red: #ef4444;
+  --accent-purple: #8b5cf6;
+  --accent-cyan: #06b6d4;
+  --border: #334155;
+  --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.container { max-width: 1440px; margin: 0 auto; padding: 24px; }
+header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 24px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; }
+header p { color: var(--text-secondary); font-size: 0.95rem; }
+.meta-info {
+  display: flex; gap: 16px; justify-content: center; margin-top: 12px; flex-wrap: wrap;
+}
+.meta-tag {
+  background: var(--bg-card); padding: 4px 12px; border-radius: 20px;
+  font-size: 0.8rem; color: var(--text-secondary);
+}
+
+/* KPI Cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.kpi-card:hover { transform: translateY(-2px); border-color: var(--accent-blue); }
+.kpi-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.kpi-value { font-size: 1.8rem; font-weight: 700; }
+.kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+.kpi-card:nth-child(1) .kpi-value { color: var(--accent-blue); }
+.kpi-card:nth-child(2) .kpi-value { color: var(--accent-green); }
+.kpi-card:nth-child(3) .kpi-value { color: var(--accent-orange); }
+.kpi-card:nth-child(4) .kpi-value { color: var(--accent-purple); }
+.kpi-card:nth-child(5) .kpi-value { color: var(--accent-cyan); }
+.kpi-card:nth-child(6) .kpi-value { color: var(--accent-red); }
+
+/* Chart panels */
+.panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.panel-full { grid-column: 1 / -1; }
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.panel-title {
+  font-size: 1.05rem; font-weight: 600; margin-bottom: 16px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.chart-container { width: 100%; height: 420px; }
+.chart-container-tall { width: 100%; height: 500px; }
+
+/* Journey Table */
+.journey-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.journey-table th {
+  text-align: left; padding: 10px 12px; color: var(--text-secondary);
+  border-bottom: 2px solid var(--border); font-weight: 600; font-size: 0.75rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.journey-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.journey-table tr:hover { background: rgba(59,130,246,0.05); }
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 0.72rem; margin: 2px; font-weight: 500; white-space: nowrap;
+}
+.badge-view { background: #1e3a5f; color: #60a5fa; }
+.badge-cart { background: #1a3c34; color: #34d399; }
+.badge-checkout { background: #3b2f1a; color: #fbbf24; }
+.badge-payment { background: #2d1f4e; color: #a78bfa; }
+.badge-purchase { background: #3b1a1a; color: #f87171; }
+.rank-num { font-weight: 700; color: var(--text-muted); font-size: 0.9rem; }
+.user-count { font-weight: 600; color: var(--accent-blue); }
+.journey-scroll { max-height: 560px; overflow-y: auto; }
+
+/* Loading */
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  height: 300px; color: var(--text-muted); flex-direction: column; gap: 12px;
+}
+.spinner {
+  width: 36px; height: 36px; border: 3px solid var(--border);
+  border-top-color: var(--accent-blue); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+  .panel-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .container { padding: 12px; }
+  header h1 { font-size: 1.3rem; }
+}
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>User Journey & Funnel Analysis</h1>
+    <p>GA4 Traffic Events — Online Lottery Platform</p>
+    <div class="meta-info" id="metaInfo"></div>
+  </header>
+
+  <div class="kpi-grid" id="kpiGrid">
+    <div class="loading" style="grid-column:1/-1"><div class="spinner"></div>Loading data...</div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel">
+      <div class="panel-title">Conversion Funnel</div>
+      <div class="chart-container" id="funnelChart"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">User Flow (Sankey)</div>
+      <div class="chart-container" id="sankeyChart"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Funnel by Traffic Source</div>
+      <div class="chart-container" id="sourceChart"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Daily Trend</div>
+      <div class="chart-container" id="trendChart"></div>
+    </div>
+    <div class="panel panel-full">
+      <div class="panel-title">Top 20 User Journeys</div>
+      <div class="journey-scroll" id="journeyTable"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLORS = {
+  blue: '#3b82f6', green: '#10b981', orange: '#f59e0b',
+  red: '#ef4444', purple: '#8b5cf6', cyan: '#06b6d4',
+  pink: '#ec4899', lime: '#84cc16'
+};
+const FUNNEL_COLORS = ['#3b82f6','#06b6d4','#10b981','#f59e0b','#8b5cf6','#ef4444','#ec4899'];
+const SOURCE_COLORS = ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#06b6d4','#ec4899'];
+
+function fmt(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+  return n.toLocaleString();
+}
+
+function getBadgeClass(step) {
+  const s = step.toLowerCase();
+  if (s.includes('view')) return 'badge-view';
+  if (s.includes('cart')) return 'badge-cart';
+  if (s.includes('checkout')) return 'badge-checkout';
+  if (s.includes('payment')) return 'badge-payment';
+  if (s.includes('purchase')) return 'badge-purchase';
+  return 'badge-view';
+}
+
+function renderMeta(meta) {
+  document.getElementById('metaInfo').innerHTML = `
+    <span class="meta-tag">${fmt(meta.total_events)} events</span>
+    <span class="meta-tag">${fmt(meta.total_users)} users</span>
+    <span class="meta-tag">${meta.date_from} → ${meta.date_to}</span>
+    <span class="meta-tag">${meta.num_days} days</span>
+  `;
+}
+
+function renderKPIs(kpi) {
+  const cards = [
+    { label: 'Total Users', value: fmt(kpi.total_users), sub: 'unique visitors' },
+    { label: 'Conversion Rate', value: kpi.conversion_rate + '%', sub: 'users → purchase' },
+    { label: 'Purchases', value: fmt(kpi.purchases), sub: 'unique buyers' },
+    { label: 'Avg Events/User', value: kpi.avg_events_per_user, sub: 'engagement depth' },
+    { label: 'Avg Time to Purchase', value: kpi.avg_hours_to_purchase + 'h', sub: 'first touch → buy' },
+    { label: 'Repeat Purchase', value: kpi.repeat_purchase_pct + '%', sub: 'bought >1 time' },
+  ];
+  document.getElementById('kpiGrid').innerHTML = cards.map(c => `
+    <div class="kpi-card">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.value}</div>
+      <div class="kpi-sub">${c.sub}</div>
+    </div>
+  `).join('');
+}
+
+function renderFunnel(data) {
+  const chart = echarts.init(document.getElementById('funnelChart'), null, {renderer:'canvas'});
+  const maxVal = data[0].users;
+  const seriesData = data.map((d, i) => ({
+    name: d.step,
+    value: d.pct_of_total,
+    users: d.users,
+    itemStyle: { color: FUNNEL_COLORS[i] || FUNNEL_COLORS[0] }
+  }));
+
+  chart.setOption({
+    tooltip: {
+      trigger: 'item',
+      formatter: p => `<b>${p.name}</b><br/>Users: ${fmt(p.data.users)}<br/>% of Total: ${p.data.value}%`
+    },
+    series: [{
+      type: 'funnel',
+      left: '15%', right: '15%', top: 10, bottom: 10,
+      width: '70%',
+      minSize: '15%',
+      maxSize: '100%',
+      sort: 'descending',
+      gap: 4,
+      label: {
+        show: true,
+        position: 'inside',
+        formatter: p => `${p.name}\n${fmt(p.data.users)} (${p.data.value}%)`,
+        fontSize: 12,
+        color: '#fff',
+        lineHeight: 18
+      },
+      emphasis: { label: { fontSize: 14 } },
+      data: seriesData
+    }]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderSankey(data) {
+  const chart = echarts.init(document.getElementById('sankeyChart'), null, {renderer:'canvas'});
+  chart.setOption({
+    tooltip: { trigger: 'item', triggerOn: 'mousemove' },
+    series: [{
+      type: 'sankey',
+      layout: 'none',
+      left: 10, right: 80, top: 10, bottom: 20,
+      nodeWidth: 20,
+      nodeGap: 14,
+      orient: 'horizontal',
+      draggable: true,
+      label: { color: '#e2e8f0', fontSize: 11 },
+      lineStyle: { color: 'gradient', opacity: 0.3 },
+      emphasis: { lineStyle: { opacity: 0.6 } },
+      data: data.nodes.map(n => ({
+        ...n,
+        itemStyle: {
+          color: FUNNEL_COLORS[parseInt(n.name.charAt(1)) - 1] || COLORS.blue
+        }
+      })),
+      links: data.links
+    }]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderSourceChart(data) {
+  const chart = echarts.init(document.getElementById('sourceChart'), null, {renderer:'canvas'});
+  const steps = ['View Items','Add to Cart','Begin Checkout','Purchase'];
+  const sources = data.map(d => d.source);
+
+  chart.setOption({
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    legend: { data: steps, top: 0, textStyle: { color: '#94a3b8', fontSize: 11 } },
+    grid: { left: 50, right: 20, bottom: 40, top: 40 },
+    xAxis: {
+      type: 'category', data: sources,
+      axisLabel: { color: '#94a3b8', fontSize: 11 },
+      axisLine: { lineStyle: { color: '#334155' } }
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: { color: '#94a3b8', formatter: v => fmt(v) },
+      splitLine: { lineStyle: { color: '#1e293b' } }
+    },
+    series: steps.map((step, i) => ({
+      name: step, type: 'bar',
+      data: data.map(d => d[step] || 0),
+      itemStyle: { color: SOURCE_COLORS[i], borderRadius: [2,2,0,0] },
+      barGap: '10%'
+    }))
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderTrend(data) {
+  const chart = echarts.init(document.getElementById('trendChart'), null, {renderer:'canvas'});
+  const dates = data.map(d => d.date);
+
+  chart.setOption({
+    tooltip: { trigger: 'axis' },
+    legend: {
+      data: ['Users', 'Purchases', 'Conv Rate %'],
+      top: 0, textStyle: { color: '#94a3b8', fontSize: 11 }
+    },
+    grid: { left: 55, right: 55, bottom: 40, top: 40 },
+    xAxis: {
+      type: 'category', data: dates,
+      axisLabel: { color: '#94a3b8', fontSize: 10, rotate: 30 },
+      axisLine: { lineStyle: { color: '#334155' } }
+    },
+    yAxis: [
+      {
+        type: 'value', name: 'Users',
+        axisLabel: { color: '#94a3b8', formatter: v => fmt(v) },
+        splitLine: { lineStyle: { color: '#1e293b' } },
+        nameTextStyle: { color: '#94a3b8' }
+      },
+      {
+        type: 'value', name: 'Conv %',
+        axisLabel: { color: '#94a3b8', formatter: v => v + '%' },
+        splitLine: { show: false },
+        nameTextStyle: { color: '#94a3b8' }
+      }
+    ],
+    series: [
+      {
+        name: 'Users', type: 'line', data: data.map(d => d.users),
+        itemStyle: { color: COLORS.blue }, smooth: true, symbol: 'circle', symbolSize: 6,
+        areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[
+          {offset:0,color:'rgba(59,130,246,0.3)'},{offset:1,color:'rgba(59,130,246,0.02)'}
+        ])}
+      },
+      {
+        name: 'Purchases', type: 'line', data: data.map(d => d.purchases),
+        itemStyle: { color: COLORS.green }, smooth: true, symbol: 'circle', symbolSize: 6,
+        areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[
+          {offset:0,color:'rgba(16,185,129,0.3)'},{offset:1,color:'rgba(16,185,129,0.02)'}
+        ])}
+      },
+      {
+        name: 'Conv Rate %', type: 'line', yAxisIndex: 1,
+        data: data.map(d => d.conv_rate),
+        itemStyle: { color: COLORS.orange }, smooth: true,
+        lineStyle: { type: 'dashed', width: 2 }, symbol: 'diamond', symbolSize: 7
+      }
+    ]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderJourneys(data) {
+  let html = `<table class="journey-table">
+    <thead><tr><th>#</th><th>Journey Path</th><th>Steps</th><th>Users</th></tr></thead><tbody>`;
+  data.forEach((j, i) => {
+    const badges = j.path.map(s => `<span class="badge ${getBadgeClass(s)}">${s}</span>`).join(' → ');
+    html += `<tr>
+      <td class="rank-num">${i+1}</td>
+      <td>${badges}</td>
+      <td>${j.steps}</td>
+      <td class="user-count">${fmt(j.users)}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('journeyTable').innerHTML = html;
+}
+
+// Load and render
+async function init() {
+  try {
+    const resp = await fetch('data/ga_funnel_data.json');
+    if (!resp.ok) throw new Error('Failed to load data');
+    const data = await resp.json();
+
+    renderMeta(data.meta);
+    renderKPIs(data.kpi);
+    renderFunnel(data.funnel);
+    renderSankey(data.sankey);
+    renderSourceChart(data.funnel_by_source);
+    renderTrend(data.daily_trend);
+    renderJourneys(data.journeys);
+  } catch (e) {
+    console.error(e);
+    document.getElementById('kpiGrid').innerHTML =
+      `<div class="loading" style="grid-column:1/-1">
+        <p style="color:var(--accent-red)">Error loading data: ${e.message}</p>
+        <p style="font-size:0.85rem;color:var(--text-muted)">
+          Run <code>python3 preprocess_ga_funnel.py</code> first, then serve with
+          <code>python3 -m http.server 8080</code>
+        </p>
+      </div>`;
+  }
+}
+init();
+</script>
+</body>
+</html>
