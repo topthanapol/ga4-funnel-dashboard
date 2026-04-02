@@ -50,7 +50,7 @@ SOURCE_CASE = """
 def main():
     start = time.time()
 
-    print("[0/14] Connecting to Databricks...")
+    print("[0/33] Connecting to Databricks...")
     conn = databricks_sql.connect(
         server_hostname=DATABRICKS_HOST,
         http_path=DATABRICKS_HTTP_PATH,
@@ -65,7 +65,7 @@ def main():
         return pd.DataFrame(rows, columns=cols)
 
     # Create a temp view for reuse
-    print("[1/14] Creating temp view...")
+    print("[1/33] Creating temp view...")
     cursor.execute(f"""
         CREATE OR REPLACE TEMP VIEW events AS
         SELECT *,
@@ -74,10 +74,17 @@ def main():
             SELECT
                 CAST(p_event_date AS DATE) AS event_date,
                 event_ts_th AS event_ts,
+                HOUR(event_ts_th) AS event_hour,
+                DAYOFWEEK(CAST(p_event_date AS DATE)) AS day_of_week,
                 user_id_final AS uid,
                 event_name,
                 traffic_source_source AS source,
-                platform
+                platform,
+                COALESCE(ec_purchase_revenue, 0) AS revenue,
+                ec_transaction_id AS transaction_id,
+                COALESCE(engagement_time_msec, 0) AS engagement_msec,
+                ga_session_number AS session_number,
+                first_item_name
             FROM {DATABRICKS_TABLE}
             WHERE user_id_final LIKE 'U%'
               AND p_event_date >= '{DATE_FROM}'
@@ -85,7 +92,7 @@ def main():
     """)
 
     # --- Query 1: Meta ---
-    print("[2/14] Meta stats...")
+    print("[2/33] Meta stats...")
     meta = query("""
         SELECT
             COUNT(*) AS total_events,
@@ -100,7 +107,7 @@ def main():
     print(f"   Total events: {meta['total_events']:,}, Users: {meta['total_users']:,}")
 
     # --- Query 2: KPI ---
-    print("[3/14] KPI calculations...")
+    print("[3/33] KPI calculations...")
     kpi = query("""
         WITH purchase_events AS (
             SELECT uid, event_ts,
@@ -156,7 +163,7 @@ def main():
     print(f"   Conv rate: {kpi_data['conversion_rate']}%, Purchasers: {kpi_data['purchases']:,}")
 
     # --- Query 3: Funnel ---
-    print("[4/14] Funnel counts...")
+    print("[4/33] Funnel counts...")
     funnel_parts = []
     for evt in FUNNEL_EVENTS:
         funnel_parts.append(
@@ -186,7 +193,7 @@ def main():
     })
 
     # --- Query 4: Sankey (layered transitions) ---
-    print("[5/14] Sankey transitions...")
+    print("[5/33] Sankey transitions...")
     sankey_sql = """
         WITH funnel_events AS (
             SELECT uid, event_name, event_ts,
@@ -245,7 +252,7 @@ def main():
         })
 
     # --- Query 5: Top User Journeys ---
-    print("[6/14] Top user journeys...")
+    print("[6/33] Top user journeys...")
     journeys_sql = """
         WITH funnel_events AS (
             SELECT uid, event_name, event_ts,
@@ -309,7 +316,7 @@ def main():
         })
 
     # --- Query 6: Funnel by Source ---
-    print("[7/14] Funnel by source...")
+    print("[7/33] Funnel by source...")
     source_parts = []
     for evt in FUNNEL_EVENTS:
         source_parts.append(
@@ -333,7 +340,7 @@ def main():
         source_data.append(entry)
 
     # --- Query 7: Daily Trend ---
-    print("[8/14] Daily trend...")
+    print("[8/33] Daily trend...")
     daily_sql = """
         SELECT
             event_date,
@@ -372,7 +379,7 @@ def main():
         })
 
     # --- Query 9: Platform Distribution ---
-    print("[9/14] Platform distribution...")
+    print("[9/33] Platform distribution...")
     platform_sql = """
         SELECT
             COALESCE(NULLIF(platform, ''), 'Unknown') AS platform,
@@ -392,7 +399,7 @@ def main():
         })
 
     # --- Query 10: Purchase Frequency Distribution ---
-    print("[10/14] Purchase frequency distribution...")
+    print("[10/33] Purchase frequency distribution...")
     pf_sql = """
         WITH purchase_counts AS (
             SELECT uid, COUNT(*) AS purchase_count
@@ -414,7 +421,7 @@ def main():
         })
 
     # --- Query 11: KPI per source ---
-    print("[11/14] KPI per source...")
+    print("[11/33] KPI per source...")
     kpi_per_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group
@@ -488,7 +495,7 @@ def main():
     kpi_source_raw = query(kpi_per_source_sql)
 
     # --- Query 12: Daily trend per source ---
-    print("[12/14] Daily trend per source...")
+    print("[12/33] Daily trend per source...")
     daily_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group
@@ -513,7 +520,7 @@ def main():
     daily_source_raw = query(daily_source_sql)
 
     # --- Query 13: Purchase frequency per source ---
-    print("[13/14] Purchase frequency per source...")
+    print("[13/33] Purchase frequency per source...")
     pf_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group
@@ -537,8 +544,595 @@ def main():
     """
     pf_source_raw = query(pf_source_sql)
 
+    # --- Query 14: Revenue Trend ---
+    print("[14/33] Revenue trend...")
+    rev_trend_sql = """
+        SELECT
+            event_date,
+            SUM(CASE WHEN event_name = 'purchase' AND transaction_id IS NOT NULL THEN revenue ELSE 0 END) AS daily_revenue,
+            COUNT(DISTINCT CASE WHEN event_name = 'purchase' AND transaction_id IS NOT NULL THEN transaction_id END) AS daily_orders,
+            ROUND(
+                SUM(CASE WHEN event_name = 'purchase' AND transaction_id IS NOT NULL THEN revenue ELSE 0 END) /
+                NULLIF(COUNT(DISTINCT CASE WHEN event_name = 'purchase' AND transaction_id IS NOT NULL THEN transaction_id END), 0),
+            0) AS aov
+        FROM events
+        GROUP BY event_date
+        ORDER BY event_date
+    """
+    rev_trend_raw = query(rev_trend_sql)
+    revenue_trend = []
+    for _, row in rev_trend_raw.iterrows():
+        revenue_trend.append({
+            "date": str(row["event_date"])[:10],
+            "revenue": float(row["daily_revenue"]),
+            "orders": int(row["daily_orders"]),
+            "aov": float(row["aov"]) if row["aov"] else 0,
+        })
+
+    # --- Query 15: Hourly Heatmap ---
+    print("[15/33] Hourly heatmap...")
+    heatmap_sql = """
+        SELECT
+            day_of_week, event_hour,
+            COUNT(DISTINCT uid) AS users,
+            COUNT(DISTINCT CASE WHEN event_name = 'purchase' THEN transaction_id END) AS orders,
+            SUM(CASE WHEN event_name = 'purchase' THEN revenue ELSE 0 END) AS revenue
+        FROM events
+        GROUP BY day_of_week, event_hour
+        ORDER BY day_of_week, event_hour
+    """
+    heatmap_raw = query(heatmap_sql)
+    hourly_heatmap = []
+    for _, row in heatmap_raw.iterrows():
+        hourly_heatmap.append({
+            "day": int(row["day_of_week"]),
+            "hour": int(row["event_hour"]),
+            "users": int(row["users"]),
+            "orders": int(row["orders"]),
+            "revenue": float(row["revenue"]),
+        })
+
+    # --- Query 16: AOV Distribution ---
+    print("[16/33] AOV distribution...")
+    aov_sql = """
+        WITH orders AS (
+            SELECT transaction_id, SUM(revenue) AS order_value
+            FROM events
+            WHERE event_name = 'purchase' AND transaction_id IS NOT NULL
+            GROUP BY transaction_id
+        )
+        SELECT
+            CASE
+                WHEN order_value < 100 THEN '0-99'
+                WHEN order_value < 500 THEN '100-499'
+                WHEN order_value < 1000 THEN '500-999'
+                WHEN order_value < 2000 THEN '1K-1.9K'
+                WHEN order_value < 5000 THEN '2K-4.9K'
+                ELSE '5K+'
+            END AS bucket,
+            COUNT(*) AS order_count,
+            ROUND(AVG(order_value), 0) AS avg_value
+        FROM orders
+        GROUP BY
+            CASE
+                WHEN order_value < 100 THEN '0-99'
+                WHEN order_value < 500 THEN '100-499'
+                WHEN order_value < 1000 THEN '500-999'
+                WHEN order_value < 2000 THEN '1K-1.9K'
+                WHEN order_value < 5000 THEN '2K-4.9K'
+                ELSE '5K+'
+            END
+        ORDER BY MIN(order_value)
+    """
+    aov_raw = query(aov_sql)
+    aov_distribution = []
+    for _, row in aov_raw.iterrows():
+        aov_distribution.append({
+            "bucket": row["bucket"],
+            "orders": int(row["order_count"]),
+            "avg_value": float(row["avg_value"]) if row["avg_value"] else 0,
+        })
+
+    # --- Query 17: New vs Returning ---
+    print("[17/33] New vs returning...")
+    nvr_sql = """
+        WITH user_type AS (
+            SELECT uid,
+                CASE WHEN MIN(session_number) = 1 THEN 'New' ELSE 'Returning' END AS user_type
+            FROM events
+            WHERE session_number IS NOT NULL AND session_number > 0
+            GROUP BY uid
+        )
+        SELECT
+            ut.user_type,
+            COUNT(DISTINCT ut.uid) AS users,
+            SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) AS revenue,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END) AS purchasers
+        FROM user_type ut
+        JOIN events e ON e.uid = ut.uid
+        GROUP BY ut.user_type
+    """
+    nvr_raw = query(nvr_sql)
+    new_vs_returning = []
+    for _, row in nvr_raw.iterrows():
+        users = int(row["users"])
+        purchasers = int(row["purchasers"])
+        new_vs_returning.append({
+            "type": row["user_type"],
+            "users": users,
+            "revenue": float(row["revenue"]),
+            "purchasers": purchasers,
+            "cvr": round(100.0 * purchasers / users, 1) if users else 0,
+        })
+
+    # --- Query 18: Revenue by Source (global only) ---
+    print("[18/33] Revenue by source...")
+    rev_source_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        )
+        SELECT
+            us.source_group,
+            SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) AS revenue,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.transaction_id END) AS orders
+        FROM events e
+        JOIN uid_source us ON e.uid = us.uid
+        GROUP BY us.source_group
+        ORDER BY revenue DESC
+    """
+    rev_source_raw = query(rev_source_sql)
+    revenue_by_source = []
+    for _, row in rev_source_raw.iterrows():
+        revenue_by_source.append({
+            "source": row["source_group"],
+            "revenue": float(row["revenue"]),
+            "orders": int(row["orders"]),
+        })
+
+    # --- Query 19: Session Depth vs CVR ---
+    print("[19/33] Session depth CVR...")
+    sess_cvr_sql = """
+        WITH user_max_session AS (
+            SELECT uid, MAX(session_number) AS max_session
+            FROM events
+            WHERE session_number IS NOT NULL AND session_number > 0
+            GROUP BY uid
+        ),
+        user_bucket AS (
+            SELECT uid, max_session,
+                CASE
+                    WHEN max_session = 1 THEN '1'
+                    WHEN max_session = 2 THEN '2'
+                    WHEN max_session <= 5 THEN '3-5'
+                    WHEN max_session <= 10 THEN '6-10'
+                    ELSE '11+'
+                END AS session_bucket
+            FROM user_max_session
+        )
+        SELECT
+            ub.session_bucket,
+            COUNT(DISTINCT ub.uid) AS users,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END) AS purchasers,
+            ROUND(100.0 * COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END)
+                / NULLIF(COUNT(DISTINCT ub.uid), 0), 1) AS cvr
+        FROM user_bucket ub
+        JOIN events e ON e.uid = ub.uid
+        GROUP BY ub.session_bucket
+        ORDER BY MIN(ub.max_session)
+    """
+    sess_cvr_raw = query(sess_cvr_sql)
+    session_depth_cvr = []
+    for _, row in sess_cvr_raw.iterrows():
+        session_depth_cvr.append({
+            "bucket": row["session_bucket"],
+            "users": int(row["users"]),
+            "purchasers": int(row["purchasers"]),
+            "cvr": float(row["cvr"]) if row["cvr"] else 0,
+        })
+
+    # --- Query 20: Engagement Time Distribution ---
+    print("[20/33] Engagement distribution...")
+    engage_sql = """
+        WITH user_engagement AS (
+            SELECT uid,
+                SUM(engagement_msec) / 1000.0 AS total_sec,
+                MAX(CASE WHEN event_name = 'purchase' THEN 1 ELSE 0 END) AS is_purchaser
+            FROM events
+            GROUP BY uid
+        )
+        SELECT
+            CASE
+                WHEN total_sec < 10 THEN '0-10s'
+                WHEN total_sec < 30 THEN '10-30s'
+                WHEN total_sec < 60 THEN '30-60s'
+                WHEN total_sec < 180 THEN '1-3m'
+                WHEN total_sec < 600 THEN '3-10m'
+                ELSE '10m+'
+            END AS bucket,
+            is_purchaser,
+            COUNT(*) AS user_count
+        FROM user_engagement
+        GROUP BY
+            CASE
+                WHEN total_sec < 10 THEN '0-10s'
+                WHEN total_sec < 30 THEN '10-30s'
+                WHEN total_sec < 60 THEN '30-60s'
+                WHEN total_sec < 180 THEN '1-3m'
+                WHEN total_sec < 600 THEN '3-10m'
+                ELSE '10m+'
+            END,
+            is_purchaser
+        ORDER BY
+            CASE
+                WHEN total_sec < 10 THEN 1 WHEN total_sec < 30 THEN 2 WHEN total_sec < 60 THEN 3
+                WHEN total_sec < 180 THEN 4 WHEN total_sec < 600 THEN 5 ELSE 6
+            END,
+            is_purchaser
+    """
+    engage_raw = query(engage_sql)
+    engagement_distribution = []
+    buckets_seen = {}
+    for _, row in engage_raw.iterrows():
+        b = row["bucket"]
+        is_p = int(row["is_purchaser"])
+        uc = int(row["user_count"])
+        if b not in buckets_seen:
+            buckets_seen[b] = {"bucket": b, "purchasers": 0, "non_purchasers": 0}
+        if is_p:
+            buckets_seen[b]["purchasers"] = uc
+        else:
+            buckets_seen[b]["non_purchasers"] = uc
+    bucket_order = ['0-10s', '10-30s', '30-60s', '1-3m', '3-10m', '10m+']
+    for b in bucket_order:
+        if b in buckets_seen:
+            engagement_distribution.append(buckets_seen[b])
+
+    # --- Query 21: Hourly Revenue ---
+    print("[21/33] Hourly revenue...")
+    hourly_rev_sql = """
+        SELECT event_hour,
+            SUM(CASE WHEN event_name = 'purchase' THEN revenue ELSE 0 END) AS revenue,
+            COUNT(DISTINCT CASE WHEN event_name = 'purchase' THEN transaction_id END) AS orders
+        FROM events
+        GROUP BY event_hour
+        ORDER BY event_hour
+    """
+    hourly_rev_raw = query(hourly_rev_sql)
+    hourly_revenue = []
+    for _, row in hourly_rev_raw.iterrows():
+        hourly_revenue.append({
+            "hour": int(row["event_hour"]),
+            "revenue": float(row["revenue"]),
+            "orders": int(row["orders"]),
+        })
+
+    # --- Query 22: Day of Week Performance ---
+    print("[22/33] Day of week...")
+    dow_sql = """
+        SELECT day_of_week,
+            COUNT(DISTINCT uid) AS users,
+            COUNT(DISTINCT CASE WHEN event_name = 'purchase' THEN transaction_id END) AS orders,
+            SUM(CASE WHEN event_name = 'purchase' THEN revenue ELSE 0 END) AS revenue,
+            ROUND(100.0 * COUNT(DISTINCT CASE WHEN event_name = 'purchase' THEN uid END)
+                / NULLIF(COUNT(DISTINCT uid), 0), 1) AS cvr
+        FROM events
+        GROUP BY day_of_week
+        ORDER BY day_of_week
+    """
+    dow_raw = query(dow_sql)
+    day_names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    day_of_week_data = []
+    for _, row in dow_raw.iterrows():
+        d = int(row["day_of_week"])
+        day_of_week_data.append({
+            "day": d,
+            "day_name": day_names[d - 1] if 1 <= d <= 7 else str(d),
+            "users": int(row["users"]),
+            "orders": int(row["orders"]),
+            "revenue": float(row["revenue"]),
+            "cvr": float(row["cvr"]) if row["cvr"] else 0,
+        })
+
+    # --- Query 23: Top Items ---
+    print("[23/33] Top items...")
+    items_sql = """
+        SELECT first_item_name AS item_name,
+            SUM(CASE WHEN event_name = 'purchase' THEN revenue ELSE 0 END) AS revenue,
+            COUNT(DISTINCT CASE WHEN event_name = 'purchase' THEN transaction_id END) AS orders,
+            COUNT(DISTINCT CASE WHEN event_name = 'purchase' THEN uid END) AS buyers
+        FROM events
+        WHERE first_item_name IS NOT NULL AND first_item_name != ''
+        GROUP BY first_item_name
+        ORDER BY revenue DESC
+        LIMIT 15
+    """
+    items_raw = query(items_sql)
+    top_items = []
+    for _, row in items_raw.iterrows():
+        top_items.append({
+            "item": row["item_name"],
+            "revenue": float(row["revenue"]),
+            "orders": int(row["orders"]),
+            "buyers": int(row["buyers"]),
+        })
+
+    # --- Per-Source: Revenue Trend ---
+    print("[24/33] Revenue trend per source...")
+    rev_trend_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        )
+        SELECT us.source_group, e.event_date,
+            SUM(CASE WHEN e.event_name = 'purchase' AND e.transaction_id IS NOT NULL THEN e.revenue ELSE 0 END) AS daily_revenue,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' AND e.transaction_id IS NOT NULL THEN e.transaction_id END) AS daily_orders,
+            ROUND(
+                SUM(CASE WHEN e.event_name = 'purchase' AND e.transaction_id IS NOT NULL THEN e.revenue ELSE 0 END) /
+                NULLIF(COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' AND e.transaction_id IS NOT NULL THEN e.transaction_id END), 0),
+            0) AS aov
+        FROM events e
+        JOIN uid_source us ON e.uid = us.uid
+        GROUP BY us.source_group, e.event_date
+        ORDER BY us.source_group, e.event_date
+    """
+    rev_trend_src_raw = query(rev_trend_src_sql)
+
+    # --- Per-Source: Hourly Heatmap ---
+    print("[25/33] Hourly heatmap per source...")
+    heatmap_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        )
+        SELECT us.source_group, e.day_of_week, e.event_hour,
+            COUNT(DISTINCT e.uid) AS users,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.transaction_id END) AS orders,
+            SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) AS revenue
+        FROM events e
+        JOIN uid_source us ON e.uid = us.uid
+        GROUP BY us.source_group, e.day_of_week, e.event_hour
+        ORDER BY us.source_group, e.day_of_week, e.event_hour
+    """
+    heatmap_src_raw = query(heatmap_src_sql)
+
+    # --- Per-Source: AOV Distribution ---
+    print("[26/33] AOV distribution per source...")
+    aov_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        orders AS (
+            SELECT e.transaction_id, us.source_group, SUM(e.revenue) AS order_value
+            FROM events e
+            JOIN uid_source us ON e.uid = us.uid
+            WHERE e.event_name = 'purchase' AND e.transaction_id IS NOT NULL
+            GROUP BY e.transaction_id, us.source_group
+        )
+        SELECT source_group,
+            CASE
+                WHEN order_value < 100 THEN '0-99'
+                WHEN order_value < 500 THEN '100-499'
+                WHEN order_value < 1000 THEN '500-999'
+                WHEN order_value < 2000 THEN '1K-1.9K'
+                WHEN order_value < 5000 THEN '2K-4.9K'
+                ELSE '5K+'
+            END AS bucket,
+            COUNT(*) AS order_count,
+            ROUND(AVG(order_value), 0) AS avg_value
+        FROM orders
+        GROUP BY source_group,
+            CASE
+                WHEN order_value < 100 THEN '0-99'
+                WHEN order_value < 500 THEN '100-499'
+                WHEN order_value < 1000 THEN '500-999'
+                WHEN order_value < 2000 THEN '1K-1.9K'
+                WHEN order_value < 5000 THEN '2K-4.9K'
+                ELSE '5K+'
+            END
+        ORDER BY source_group, MIN(order_value)
+    """
+    aov_src_raw = query(aov_src_sql)
+
+    # --- Per-Source: New vs Returning ---
+    print("[27/33] New vs returning per source...")
+    nvr_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        user_type AS (
+            SELECT uid,
+                CASE WHEN MIN(session_number) = 1 THEN 'New' ELSE 'Returning' END AS user_type
+            FROM events
+            WHERE session_number IS NOT NULL AND session_number > 0
+            GROUP BY uid
+        )
+        SELECT us.source_group, ut.user_type,
+            COUNT(DISTINCT ut.uid) AS users,
+            SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) AS revenue,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END) AS purchasers
+        FROM user_type ut
+        JOIN uid_source us ON ut.uid = us.uid
+        JOIN events e ON e.uid = ut.uid
+        GROUP BY us.source_group, ut.user_type
+    """
+    nvr_src_raw = query(nvr_src_sql)
+
+    # --- Per-Source: Session Depth CVR ---
+    print("[28/33] Session depth CVR per source...")
+    sess_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        user_max_session AS (
+            SELECT uid, MAX(session_number) AS max_session
+            FROM events
+            WHERE session_number IS NOT NULL AND session_number > 0
+            GROUP BY uid
+        ),
+        user_bucket AS (
+            SELECT uid, max_session,
+                CASE
+                    WHEN max_session = 1 THEN '1'
+                    WHEN max_session = 2 THEN '2'
+                    WHEN max_session <= 5 THEN '3-5'
+                    WHEN max_session <= 10 THEN '6-10'
+                    ELSE '11+'
+                END AS session_bucket
+            FROM user_max_session
+        )
+        SELECT us.source_group, ub.session_bucket,
+            COUNT(DISTINCT ub.uid) AS users,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END) AS purchasers,
+            ROUND(100.0 * COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END)
+                / NULLIF(COUNT(DISTINCT ub.uid), 0), 1) AS cvr
+        FROM user_bucket ub
+        JOIN uid_source us ON ub.uid = us.uid
+        JOIN events e ON e.uid = ub.uid
+        GROUP BY us.source_group, ub.session_bucket
+        ORDER BY us.source_group, MIN(ub.max_session)
+    """
+    sess_src_raw = query(sess_src_sql)
+
+    # --- Per-Source: Engagement Distribution ---
+    print("[29/33] Engagement per source...")
+    engage_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        user_engagement AS (
+            SELECT uid,
+                SUM(engagement_msec) / 1000.0 AS total_sec,
+                MAX(CASE WHEN event_name = 'purchase' THEN 1 ELSE 0 END) AS is_purchaser
+            FROM events
+            GROUP BY uid
+        )
+        SELECT us.source_group,
+            CASE
+                WHEN ue.total_sec < 10 THEN '0-10s'
+                WHEN ue.total_sec < 30 THEN '10-30s'
+                WHEN ue.total_sec < 60 THEN '30-60s'
+                WHEN ue.total_sec < 180 THEN '1-3m'
+                WHEN ue.total_sec < 600 THEN '3-10m'
+                ELSE '10m+'
+            END AS bucket,
+            ue.is_purchaser,
+            COUNT(*) AS user_count
+        FROM user_engagement ue
+        JOIN uid_source us ON ue.uid = us.uid
+        GROUP BY us.source_group,
+            CASE
+                WHEN ue.total_sec < 10 THEN '0-10s'
+                WHEN ue.total_sec < 30 THEN '10-30s'
+                WHEN ue.total_sec < 60 THEN '30-60s'
+                WHEN ue.total_sec < 180 THEN '1-3m'
+                WHEN ue.total_sec < 600 THEN '3-10m'
+                ELSE '10m+'
+            END,
+            ue.is_purchaser
+    """
+    engage_src_raw = query(engage_src_sql)
+
+    # --- Per-Source: Hourly Revenue ---
+    print("[30/33] Hourly revenue per source...")
+    hourly_rev_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        )
+        SELECT us.source_group, e.event_hour,
+            SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) AS revenue,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.transaction_id END) AS orders
+        FROM events e
+        JOIN uid_source us ON e.uid = us.uid
+        GROUP BY us.source_group, e.event_hour
+        ORDER BY us.source_group, e.event_hour
+    """
+    hourly_rev_src_raw = query(hourly_rev_src_sql)
+
+    # --- Per-Source: Day of Week ---
+    print("[31/33] Day of week per source...")
+    dow_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        )
+        SELECT us.source_group, e.day_of_week,
+            COUNT(DISTINCT e.uid) AS users,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.transaction_id END) AS orders,
+            SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) AS revenue,
+            ROUND(100.0 * COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END)
+                / NULLIF(COUNT(DISTINCT e.uid), 0), 1) AS cvr
+        FROM events e
+        JOIN uid_source us ON e.uid = us.uid
+        GROUP BY us.source_group, e.day_of_week
+        ORDER BY us.source_group, e.day_of_week
+    """
+    dow_src_raw = query(dow_src_sql)
+
+    # --- Per-Source: Top Items ---
+    print("[32/33] Top items per source...")
+    items_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        item_stats AS (
+            SELECT us.source_group, e.first_item_name AS item_name,
+                SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) AS revenue,
+                COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.transaction_id END) AS orders,
+                COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END) AS buyers,
+                ROW_NUMBER() OVER (
+                    PARTITION BY us.source_group
+                    ORDER BY SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) DESC
+                ) AS rn
+            FROM events e
+            JOIN uid_source us ON e.uid = us.uid
+            WHERE e.first_item_name IS NOT NULL AND e.first_item_name != ''
+            GROUP BY us.source_group, e.first_item_name
+        )
+        SELECT source_group, item_name, revenue, orders, buyers
+        FROM item_stats WHERE rn <= 15
+        ORDER BY source_group, revenue DESC
+    """
+    items_src_raw = query(items_src_sql)
+
     # --- Build by_source structure ---
-    print("[14/14] Building output...")
+    print("[33/33] Building output...")
     by_source = {}
     source_groups = set()
 
@@ -604,12 +1198,129 @@ def main():
                 "users": int(row["user_count"]),
             })
 
+        # Revenue trend per source
+        sg_rev_trend_rows = rev_trend_src_raw[rev_trend_src_raw["source_group"] == sg]
+        sg_rev_trend = []
+        for _, row in sg_rev_trend_rows.iterrows():
+            sg_rev_trend.append({
+                "date": str(row["event_date"])[:10],
+                "revenue": float(row["daily_revenue"]),
+                "orders": int(row["daily_orders"]),
+                "aov": float(row["aov"]) if row["aov"] else 0,
+            })
+
+        # Hourly heatmap per source
+        sg_heatmap_rows = heatmap_src_raw[heatmap_src_raw["source_group"] == sg]
+        sg_heatmap = []
+        for _, row in sg_heatmap_rows.iterrows():
+            sg_heatmap.append({
+                "day": int(row["day_of_week"]),
+                "hour": int(row["event_hour"]),
+                "users": int(row["users"]),
+                "orders": int(row["orders"]),
+                "revenue": float(row["revenue"]),
+            })
+
+        # AOV distribution per source
+        sg_aov_rows = aov_src_raw[aov_src_raw["source_group"] == sg]
+        sg_aov = []
+        for _, row in sg_aov_rows.iterrows():
+            sg_aov.append({
+                "bucket": row["bucket"],
+                "orders": int(row["order_count"]),
+                "avg_value": float(row["avg_value"]) if row["avg_value"] else 0,
+            })
+
+        # New vs returning per source
+        sg_nvr_rows = nvr_src_raw[nvr_src_raw["source_group"] == sg]
+        sg_nvr = []
+        for _, row in sg_nvr_rows.iterrows():
+            users = int(row["users"])
+            purchasers = int(row["purchasers"])
+            sg_nvr.append({
+                "type": row["user_type"],
+                "users": users,
+                "revenue": float(row["revenue"]),
+                "purchasers": purchasers,
+                "cvr": round(100.0 * purchasers / users, 1) if users else 0,
+            })
+
+        # Session depth CVR per source
+        sg_sess_rows = sess_src_raw[sess_src_raw["source_group"] == sg]
+        sg_sess = []
+        for _, row in sg_sess_rows.iterrows():
+            sg_sess.append({
+                "bucket": row["session_bucket"],
+                "users": int(row["users"]),
+                "purchasers": int(row["purchasers"]),
+                "cvr": float(row["cvr"]) if row["cvr"] else 0,
+            })
+
+        # Engagement distribution per source
+        sg_engage_rows = engage_src_raw[engage_src_raw["source_group"] == sg]
+        sg_engage_buckets = {}
+        for _, row in sg_engage_rows.iterrows():
+            b = row["bucket"]
+            is_p = int(row["is_purchaser"])
+            uc = int(row["user_count"])
+            if b not in sg_engage_buckets:
+                sg_engage_buckets[b] = {"bucket": b, "purchasers": 0, "non_purchasers": 0}
+            if is_p:
+                sg_engage_buckets[b]["purchasers"] = uc
+            else:
+                sg_engage_buckets[b]["non_purchasers"] = uc
+        sg_engage = [sg_engage_buckets[b] for b in bucket_order if b in sg_engage_buckets]
+
+        # Hourly revenue per source
+        sg_hourly_rev_rows = hourly_rev_src_raw[hourly_rev_src_raw["source_group"] == sg]
+        sg_hourly_rev = []
+        for _, row in sg_hourly_rev_rows.iterrows():
+            sg_hourly_rev.append({
+                "hour": int(row["event_hour"]),
+                "revenue": float(row["revenue"]),
+                "orders": int(row["orders"]),
+            })
+
+        # Day of week per source
+        sg_dow_rows = dow_src_raw[dow_src_raw["source_group"] == sg]
+        sg_dow = []
+        for _, row in sg_dow_rows.iterrows():
+            d = int(row["day_of_week"])
+            sg_dow.append({
+                "day": d,
+                "day_name": day_names[d - 1] if 1 <= d <= 7 else str(d),
+                "users": int(row["users"]),
+                "orders": int(row["orders"]),
+                "revenue": float(row["revenue"]),
+                "cvr": float(row["cvr"]) if row["cvr"] else 0,
+            })
+
+        # Top items per source
+        sg_items_rows = items_src_raw[items_src_raw["source_group"] == sg]
+        sg_items = []
+        for _, row in sg_items_rows.iterrows():
+            sg_items.append({
+                "item": row["item_name"],
+                "revenue": float(row["revenue"]),
+                "orders": int(row["orders"]),
+                "buyers": int(row["buyers"]),
+            })
+
         by_source[sg] = {
             "kpi": sg_kpi,
             "funnel": sg_funnel,
             "daily_trend": sg_daily,
             "purchase_frequency": sg_pf,
             "funnel_by_source": [s for s in source_data if s["source"] == sg],
+            "revenue_trend": sg_rev_trend,
+            "hourly_heatmap": sg_heatmap,
+            "aov_distribution": sg_aov,
+            "new_vs_returning": sg_nvr,
+            "session_depth_cvr": sg_sess,
+            "engagement_distribution": sg_engage,
+            "hourly_revenue": sg_hourly_rev,
+            "day_of_week": sg_dow,
+            "top_items": sg_items,
         }
 
     # --- Assemble & Write JSON ---
@@ -624,6 +1335,16 @@ def main():
         "event_distribution": event_dist,
         "purchase_frequency": purchase_freq,
         "platform_distribution": platform_data,
+        "revenue_trend": revenue_trend,
+        "hourly_heatmap": hourly_heatmap,
+        "aov_distribution": aov_distribution,
+        "new_vs_returning": new_vs_returning,
+        "revenue_by_source": revenue_by_source,
+        "session_depth_cvr": session_depth_cvr,
+        "engagement_distribution": engagement_distribution,
+        "hourly_revenue": hourly_revenue,
+        "day_of_week": day_of_week_data,
+        "top_items": top_items,
         "by_source": by_source,
     }
 
