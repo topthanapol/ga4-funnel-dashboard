@@ -251,10 +251,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
       <div class="panel-title">User Distribution by Source</div>
       <div class="chart-container" id="sourceDonutChart"></div>
     </div>
-    <div class="panel">
-      <div class="panel-title">Funnel Step Conversion Rates</div>
-      <div class="chart-container" id="funnelRatesChart"></div>
-    </div>
     <div class="panel panel-full">
       <div class="panel-title">Conversion Rate by Source</div>
       <div class="chart-container" id="cvrBySourceChart"></div>
@@ -275,18 +271,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
       <div class="panel-title">New vs Returning Users</div>
       <div class="chart-container" id="newVsReturnChart"></div>
     </div>
-    <div class="panel panel-full">
-      <div class="panel-title">Hourly Activity Heatmap</div>
-      <div class="chart-container-tall" id="hourlyHeatmapChart"></div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">AOV Distribution</div>
-      <div class="chart-container" id="aovDistChart"></div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">Day of Week Performance</div>
-      <div class="chart-container" id="dayOfWeekChart"></div>
-    </div>
     <div class="panel">
       <div class="panel-title">Session Depth vs Conversion</div>
       <div class="chart-container" id="sessionCvrChart"></div>
@@ -294,14 +278,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
     <div class="panel">
       <div class="panel-title">Engagement Time Distribution</div>
       <div class="chart-container" id="engagementChart"></div>
-    </div>
-    <div class="panel panel-full">
-      <div class="panel-title">Hourly Revenue Pattern</div>
-      <div class="chart-container" id="hourlyRevenueChart"></div>
-    </div>
-    <div class="panel panel-full">
-      <div class="panel-title">Top Items by Revenue</div>
-      <div class="chart-container" id="topItemsChart"></div>
     </div>
   </div>
 
@@ -750,69 +726,6 @@ function renderSourceDonut(data) {
   window.addEventListener('resize', () => chart.resize());
 }
 
-function renderFunnelRates(funnelData) {
-  const chart = initChart('funnelRatesChart');
-  if (!funnelData || funnelData.length < 5) return;
-
-  // Calculate step-to-step conversion rates
-  const steps = funnelData.filter(d => d.event !== 'all');
-  const rates = [];
-  const rateLabels = [];
-  const rateColors = [];
-  const colorMap = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6'];
-
-  for (let i = 1; i < steps.length; i++) {
-    const prev = steps[i-1].users;
-    const curr = steps[i].users;
-    const rate = prev > 0 ? +(curr / prev * 100).toFixed(1) : 0;
-    rates.push(rate);
-    rateLabels.push(steps[i-1].step + ' → ' + steps[i].step);
-    rateColors.push(colorMap[i] || colorMap[0]);
-  }
-
-  chart.setOption({
-    tooltip: {
-      trigger: 'axis',
-      formatter: params => {
-        const p = params[0];
-        const idx = p.dataIndex;
-        return `<b>${rateLabels[idx]}</b><br/>Conversion: ${p.value}%<br/>${fmt(steps[idx].users)} → ${fmt(steps[idx+1].users)}`;
-      }
-    },
-    grid: { left: 20, right: 30, bottom: 80, top: 20 },
-    xAxis: {
-      type: 'category', data: rateLabels,
-      axisLabel: { color: '#94a3b8', fontSize: 10, rotate: 25, interval: 0 },
-      axisLine: { lineStyle: { color: '#334155' } }
-    },
-    yAxis: {
-      type: 'value', max: 100,
-      axisLabel: { color: '#94a3b8', formatter: v => v + '%' },
-      splitLine: { lineStyle: { color: '#1e293b' } }
-    },
-    series: [{
-      type: 'bar',
-      data: rates.map((v, i) => ({
-        value: v,
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: rateColors[i] },
-            { offset: 1, color: rateColors[i] + '88' }
-          ]),
-          borderRadius: [6, 6, 0, 0]
-        }
-      })),
-      barMaxWidth: 60,
-      label: {
-        show: true, position: 'top',
-        formatter: p => p.value + '%',
-        color: '#e2e8f0', fontSize: 13, fontWeight: 'bold'
-      }
-    }]
-  });
-  window.addEventListener('resize', () => chart.resize());
-}
-
 function renderCvrBySource(sourceData) {
   const chart = initChart('cvrBySourceChart');
   if (!sourceData || sourceData.length === 0) return;
@@ -936,70 +849,6 @@ function renderRevenueTrend(data) {
   window.addEventListener('resize', () => chart.resize());
 }
 
-function renderHourlyHeatmap(data) {
-  const chart = initChart('hourlyHeatmapChart');
-  if (!data || data.length === 0) return;
-  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const hours = Array.from({length:24}, (_,i) => i+'h');
-  const heatData = data.map(d => [d.hour, d.day - 1, d.users]);
-  const maxVal = Math.max(...data.map(d => d.users));
-  chart.setOption({
-    tooltip: {
-      position: 'top',
-      formatter: p => {
-        const d = data.find(x => x.hour === p.data[0] && x.day - 1 === p.data[1]);
-        return `<b>${dayNames[p.data[1]]} ${p.data[0]}:00</b><br/>Users: ${fmt(p.data[2])}<br/>Orders: ${d?d.orders:0}<br/>Revenue: ${d?fmt(d.revenue):0}`;
-      }
-    },
-    grid: { left: 60, right: 80, bottom: 40, top: 10 },
-    xAxis: {
-      type: 'category', data: hours,
-      axisLabel: { color: '#94a3b8', fontSize: 10 },
-      axisLine: { lineStyle: { color: '#334155' } },
-      splitArea: { show: true, areaStyle: { color: ['rgba(255,255,255,0.02)','rgba(0,0,0,0)'] } }
-    },
-    yAxis: {
-      type: 'category', data: dayNames,
-      axisLabel: { color: '#94a3b8', fontSize: 11 },
-      axisLine: { lineStyle: { color: '#334155' } },
-      splitArea: { show: true, areaStyle: { color: ['rgba(255,255,255,0.02)','rgba(0,0,0,0)'] } }
-    },
-    visualMap: {
-      min: 0, max: maxVal || 1, calculable: true, orient: 'vertical', right: 0, top: 'center',
-      inRange: { color: ['#1e293b','#164e63','#0e7490','#06b6d4','#22d3ee','#67e8f9'] },
-      textStyle: { color: '#94a3b8' }
-    },
-    series: [{ type: 'heatmap', data: heatData, label: { show: false },
-      emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.5)' } }
-    }]
-  });
-  window.addEventListener('resize', () => chart.resize());
-}
-
-function renderAovDist(data) {
-  const chart = initChart('aovDistChart');
-  if (!data || data.length === 0) return;
-  chart.setOption({
-    tooltip: {
-      trigger: 'axis',
-      formatter: p => { const d = data[p[0].dataIndex]; return `<b>${d.bucket}</b><br/>Orders: ${fmt(d.orders)}<br/>Avg: ${fmt(d.avg_value)}`; }
-    },
-    grid: { left: 60, right: 20, bottom: 40, top: 20 },
-    xAxis: {
-      type: 'category', data: data.map(d => d.bucket),
-      axisLabel: { color: '#94a3b8', fontSize: 11 }, axisLine: { lineStyle: { color: '#334155' } },
-      name: 'Order Value', nameLocation: 'center', nameGap: 30, nameTextStyle: { color: '#94a3b8' }
-    },
-    yAxis: { type: 'value', axisLabel: { color: '#94a3b8', formatter: v => fmt(v) }, splitLine: { lineStyle: { color: '#1e293b' } }, name: 'Orders', nameTextStyle: { color: '#94a3b8' } },
-    series: [{
-      type: 'bar', barMaxWidth: 50,
-      data: data.map(d => ({ value: d.orders, itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#8b5cf6'},{offset:1,color:'#6d28d9'}]), borderRadius: [4,4,0,0] } })),
-      label: { show: true, position: 'top', formatter: p => fmt(p.value), color: '#94a3b8', fontSize: 11 }
-    }]
-  });
-  window.addEventListener('resize', () => chart.resize());
-}
-
 function renderNewVsReturn(data) {
   const chart = initChart('newVsReturnChart');
   if (!data || data.length === 0) return;
@@ -1081,70 +930,6 @@ function renderEngagement(data) {
   window.addEventListener('resize', () => chart.resize());
 }
 
-function renderHourlyRevenue(data) {
-  const chart = initChart('hourlyRevenueChart');
-  if (!data || data.length === 0) return;
-  chart.setOption({
-    tooltip: { trigger: 'axis', formatter: p => `<b>${p[0].name}</b><br/>Revenue: ${fmt(p[0].value)}<br/>Orders: ${data[p[0].dataIndex].orders}` },
-    grid: { left: 70, right: 20, bottom: 40, top: 20 },
-    xAxis: { type: 'category', data: data.map(d => d.hour+'h'), axisLabel: { color: '#94a3b8', fontSize: 10 }, axisLine: { lineStyle: { color: '#334155' } } },
-    yAxis: { type: 'value', name: 'Revenue', axisLabel: { color: '#94a3b8', formatter: v => fmt(v) }, splitLine: { lineStyle: { color: '#1e293b' } }, nameTextStyle: { color: '#94a3b8' } },
-    series: [{
-      type: 'bar', barMaxWidth: 30,
-      data: data.map((d,i) => ({
-        value: d.revenue,
-        itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[
-          {offset:0, color: i<6||i>20 ? '#1e40af' : (i<12 ? '#f59e0b' : '#ef4444')},
-          {offset:1, color: i<6||i>20 ? '#1e3a5f' : (i<12 ? '#92400e' : '#7f1d1d')}
-        ]), borderRadius: [4,4,0,0] }
-      }))
-    }]
-  });
-  window.addEventListener('resize', () => chart.resize());
-}
-
-function renderDayOfWeek(data) {
-  const chart = initChart('dayOfWeekChart');
-  if (!data || data.length === 0) return;
-  chart.setOption({
-    tooltip: { trigger: 'axis' },
-    legend: { data: ['Orders','Revenue','CVR %'], top: 0, textStyle: { color: '#94a3b8', fontSize: 11 } },
-    grid: { left: 60, right: 60, bottom: 40, top: 40 },
-    xAxis: { type: 'category', data: data.map(d => d.day_name), axisLabel: { color: '#94a3b8', fontSize: 11 }, axisLine: { lineStyle: { color: '#334155' } } },
-    yAxis: [
-      { type: 'value', name: 'Count / Revenue', axisLabel: { color: '#94a3b8', formatter: v => fmt(v) }, splitLine: { lineStyle: { color: '#1e293b' } }, nameTextStyle: { color: '#94a3b8' } },
-      { type: 'value', name: 'CVR %', axisLabel: { color: '#94a3b8', formatter: v => v+'%' }, splitLine: { show: false }, nameTextStyle: { color: '#94a3b8' } }
-    ],
-    series: [
-      { name: 'Orders', type: 'bar', data: data.map(d => d.orders), itemStyle: { color: COLORS.blue, borderRadius: [4,4,0,0] }, barMaxWidth: 40 },
-      { name: 'Revenue', type: 'bar', data: data.map(d => d.revenue), itemStyle: { color: COLORS.green, borderRadius: [4,4,0,0] }, barMaxWidth: 40 },
-      { name: 'CVR %', type: 'line', yAxisIndex: 1, data: data.map(d => d.cvr), itemStyle: { color: COLORS.orange }, lineStyle: { width: 3 }, symbol: 'circle', symbolSize: 8,
-        label: { show: true, formatter: '{c}%', color: '#f59e0b', fontSize: 11, position: 'top' } }
-    ]
-  });
-  window.addEventListener('resize', () => chart.resize());
-}
-
-function renderTopItems(data) {
-  const chart = initChart('topItemsChart');
-  if (!data || data.length === 0) return;
-  const sorted = [...data].sort((a,b) => a.revenue - b.revenue);
-  chart.setOption({
-    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' },
-      formatter: p => { const d = sorted[p[0].dataIndex]; return `<b>${d.item}</b><br/>Revenue: ${fmt(d.revenue)}<br/>Orders: ${d.orders}<br/>Buyers: ${d.buyers}`; } },
-    grid: { left: 200, right: 60, bottom: 20, top: 10 },
-    xAxis: { type: 'value', axisLabel: { color: '#94a3b8', formatter: v => fmt(v) }, splitLine: { lineStyle: { color: '#1e293b' } } },
-    yAxis: { type: 'category', data: sorted.map(d => d.item && d.item.length > 25 ? d.item.substring(0,25)+'...' : d.item),
-      axisLabel: { color: '#94a3b8', fontSize: 10 }, axisLine: { lineStyle: { color: '#334155' } } },
-    series: [{
-      type: 'bar', barMaxWidth: 20,
-      data: sorted.map(d => ({ value: d.revenue, itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#ec4899'},{offset:1,color:'#f472b6'}]), borderRadius: [0,4,4,0] } })),
-      label: { show: true, position: 'right', formatter: p => fmt(p.value), color: '#94a3b8', fontSize: 10 }
-    }]
-  });
-  window.addEventListener('resize', () => chart.resize());
-}
-
 function renderAll(data) {
   renderKPIs(data.kpi);
   renderFunnel(data.funnel);
@@ -1153,20 +938,14 @@ function renderAll(data) {
   renderPurchaseFreq(data.purchase_frequency);
   renderTrend(data.daily_trend);
   renderSourceDonut(data.funnel_by_source);
-  renderFunnelRates(data.funnel);
   renderCvrBySource(data.funnel_by_source);
   if (data.journeys) renderJourneys(data.journeys);
   // New charts
   if (data.revenue_trend) renderRevenueTrend(data.revenue_trend);
-  if (data.hourly_heatmap) renderHourlyHeatmap(data.hourly_heatmap);
-  if (data.aov_distribution) renderAovDist(data.aov_distribution);
   if (data.new_vs_returning) renderNewVsReturn(data.new_vs_returning);
   if (data.revenue_by_source) renderRevenueBySource(data.revenue_by_source);
   if (data.session_depth_cvr) renderSessionCvr(data.session_depth_cvr);
   if (data.engagement_distribution) renderEngagement(data.engagement_distribution);
-  if (data.hourly_revenue) renderHourlyRevenue(data.hourly_revenue);
-  if (data.day_of_week) renderDayOfWeek(data.day_of_week);
-  if (data.top_items) renderTopItems(data.top_items);
 }
 
 // Load and render
@@ -1196,15 +975,10 @@ async function init() {
           daily_trend: srcData.daily_trend,
           journeys: fullData.journeys,
           revenue_trend: srcData.revenue_trend,
-          hourly_heatmap: srcData.hourly_heatmap,
-          aov_distribution: srcData.aov_distribution,
           new_vs_returning: srcData.new_vs_returning,
           revenue_by_source: fullData.revenue_by_source,
           session_depth_cvr: srcData.session_depth_cvr,
           engagement_distribution: srcData.engagement_distribution,
-          hourly_revenue: srcData.hourly_revenue,
-          day_of_week: srcData.day_of_week,
-          top_items: srcData.top_items,
         });
       }
     });
