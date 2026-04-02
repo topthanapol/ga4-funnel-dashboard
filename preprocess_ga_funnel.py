@@ -768,8 +768,8 @@ def main():
             is_purchaser
         ORDER BY
             CASE
-                WHEN total_sec < 10 THEN 1 WHEN total_sec < 30 THEN 2 WHEN total_sec < 60 THEN 3
-                WHEN total_sec < 180 THEN 4 WHEN total_sec < 600 THEN 5 ELSE 6
+                WHEN bucket = '0-10s' THEN 1 WHEN bucket = '10-30s' THEN 2 WHEN bucket = '30-60s' THEN 3
+                WHEN bucket = '1-3m' THEN 4 WHEN bucket = '3-10m' THEN 5 ELSE 6
             END,
             is_purchaser
     """
