@@ -52,7 +52,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 /* KPI Cards */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -74,6 +74,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 .kpi-card:nth-child(4) .kpi-value { color: var(--accent-purple); }
 .kpi-card:nth-child(5) .kpi-value { color: var(--accent-cyan); }
 .kpi-card:nth-child(6) .kpi-value { color: var(--accent-red); }
+.kpi-card:nth-child(7) .kpi-value { color: #f472b6; }
 
 /* Chart panels */
 .panel-grid {
@@ -132,7 +133,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+  .kpi-grid { grid-template-columns: repeat(4, 1fr); }
   .panel-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
@@ -222,8 +223,9 @@ function renderKPIs(kpi) {
     { label: 'Conversion Rate', value: kpi.conversion_rate + '%', sub: 'users → purchase' },
     { label: 'Purchases', value: fmt(kpi.purchases), sub: 'unique buyers' },
     { label: 'Avg Events/User', value: kpi.avg_events_per_user, sub: 'engagement depth' },
-    { label: 'Avg Time to Purchase', value: kpi.avg_hours_to_purchase + 'h', sub: 'first touch → buy' },
+    { label: 'Time to 1st Purchase', value: kpi.avg_hours_to_first_purchase + 'h', sub: 'first touch → 1st buy' },
     { label: 'Repeat Purchase', value: kpi.repeat_purchase_pct + '%', sub: 'bought >1 time' },
+    { label: 'Days to Repeat', value: kpi.avg_days_to_repeat + 'd', sub: '1st buy → 2nd buy' },
   ];
   document.getElementById('kpiGrid').innerHTML = cards.map(c => `
     <div class="kpi-card">

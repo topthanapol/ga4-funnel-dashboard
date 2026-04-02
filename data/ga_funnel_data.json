@@ -11,7 +11,8 @@
     "conversion_rate": 41.7,
     "purchases": 167422,
     "avg_events_per_user": 49.6,
-    "avg_hours_to_purchase": 6.1,
+    "avg_hours_to_first_purchase": 3.9,
+    "avg_days_to_repeat": 0.5,
     "repeat_purchase_pct": 13.7
   },
   "funnel": [

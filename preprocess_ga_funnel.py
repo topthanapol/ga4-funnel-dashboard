@@ -52,12 +52,13 @@ def main():
         SELECT
             p_event_date::DATE AS event_date,
             event_ts_th::TIMESTAMP AS event_ts,
-            COALESCE(user_id_final::VARCHAR, user_pseudo_id::VARCHAR) AS uid,
+            user_id_final::VARCHAR AS uid,
             event_name,
             source,
             platform
-        FROM read_csv_auto('{CSV_PATH}', header=true, ignore_errors=true)
+        FROM read_csv_auto('{CSV_PATH}', header=true, ignore_errors=true, all_varchar=true)
         WHERE event_name != 'event_name'
+          AND user_id_final LIKE 'U%'
     """)
 
     # --- Query 1: Meta ---
@@ -78,12 +79,19 @@ def main():
     # --- Query 2: KPI ---
     print("[3/8] KPI calculations...")
     kpi = con.execute("""
-        WITH purchasers AS (
-            SELECT uid, MIN(event_ts) AS first_event, MAX(event_ts) AS purchase_ts,
-                   COUNT(*) AS purchase_count
+        WITH purchase_events AS (
+            SELECT uid, event_ts,
+                ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS purchase_seq
             FROM events
             WHERE event_name = 'purchase'
-            GROUP BY uid
+        ),
+        first_purchase AS (
+            SELECT uid, event_ts AS first_purchase_ts
+            FROM purchase_events WHERE purchase_seq = 1
+        ),
+        second_purchase AS (
+            SELECT uid, event_ts AS second_purchase_ts
+            FROM purchase_events WHERE purchase_seq = 2
         ),
         user_first AS (
             SELECT uid, MIN(event_ts) AS first_touch
@@ -94,16 +102,23 @@ def main():
             SELECT uid, COUNT(*) AS event_count
             FROM events
             GROUP BY uid
+        ),
+        purchaser_counts AS (
+            SELECT uid, COUNT(*) AS purchase_count
+            FROM events WHERE event_name = 'purchase'
+            GROUP BY uid
         )
         SELECT
             (SELECT COUNT(DISTINCT uid) FROM events WHERE event_name = 'purchase') AS purchasers,
             (SELECT COUNT(DISTINCT uid) FROM events) AS total_users,
             (SELECT ROUND(AVG(event_count), 1) FROM user_events) AS avg_events_per_user,
-            (SELECT ROUND(AVG(EXTRACT(EPOCH FROM (p.purchase_ts - uf.first_touch)) / 3600.0), 1)
-             FROM purchasers p JOIN user_first uf ON p.uid = uf.uid
-             WHERE uf.first_touch < p.purchase_ts) AS avg_hours_to_purchase,
+            (SELECT ROUND(AVG(EXTRACT(EPOCH FROM (fp.first_purchase_ts - uf.first_touch)) / 3600.0), 1)
+             FROM first_purchase fp JOIN user_first uf ON fp.uid = uf.uid
+             WHERE uf.first_touch < fp.first_purchase_ts) AS avg_hours_to_first_purchase,
+            (SELECT ROUND(AVG(EXTRACT(EPOCH FROM (sp.second_purchase_ts - fp.first_purchase_ts)) / 86400.0), 1)
+             FROM first_purchase fp JOIN second_purchase sp ON fp.uid = sp.uid) AS avg_days_to_repeat,
             (SELECT ROUND(100.0 * COUNT(CASE WHEN purchase_count > 1 THEN 1 END) / NULLIF(COUNT(*), 0), 1)
-             FROM purchasers) AS repeat_purchase_pct
+             FROM purchaser_counts) AS repeat_purchase_pct
     """).fetchdf().to_dict(orient="records")[0]
 
     kpi_data = {
@@ -111,7 +126,8 @@ def main():
         "conversion_rate": round(100.0 * int(kpi["purchasers"]) / int(meta["total_users"]), 1),
         "purchases": int(kpi["purchasers"]),
         "avg_events_per_user": float(kpi["avg_events_per_user"]),
-        "avg_hours_to_purchase": float(kpi["avg_hours_to_purchase"]) if kpi["avg_hours_to_purchase"] else 0,
+        "avg_hours_to_first_purchase": float(kpi["avg_hours_to_first_purchase"]) if kpi["avg_hours_to_first_purchase"] else 0,
+        "avg_days_to_repeat": float(kpi["avg_days_to_repeat"]) if kpi["avg_days_to_repeat"] else 0,
         "repeat_purchase_pct": float(kpi["repeat_purchase_pct"]) if kpi["repeat_purchase_pct"] else 0,
     }
     print(f"   Conv rate: {kpi_data['conversion_rate']}%, Purchasers: {kpi_data['purchases']:,}")
