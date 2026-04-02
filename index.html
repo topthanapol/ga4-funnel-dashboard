@@ -110,19 +110,62 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 .chart-container { width: 100%; height: 420px; }
 .chart-container-tall { width: 100%; height: 500px; }
 
+/* Journey section */
+.journey-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-bottom: 24px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.journey-section .section-left {
+  padding: 20px;
+  border-right: 1px solid var(--border);
+}
+.journey-section .section-right {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.journey-section .panel-title-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.journey-section .panel-title-bar .panel-title { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.journey-filter-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(59,130,246,0.15); color: var(--accent-blue);
+  padding: 4px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 500;
+}
+.journey-filter-tag .clear-btn {
+  cursor: pointer; background: none; border: none; color: var(--accent-blue);
+  font-size: 1rem; line-height: 1; padding: 0 2px; opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.journey-filter-tag .clear-btn:hover { opacity: 1; }
+
 /* Journey Table */
 .journey-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .journey-table th {
   text-align: left; padding: 10px 12px; color: var(--text-secondary);
   border-bottom: 2px solid var(--border); font-weight: 600; font-size: 0.75rem;
   text-transform: uppercase; letter-spacing: 0.05em;
+  position: sticky; top: 0; background: var(--bg-panel); z-index: 1;
 }
 .journey-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.journey-table tr { transition: opacity 0.2s, background 0.2s; }
 .journey-table tr:hover { background: rgba(59,130,246,0.05); }
+.journey-table tr.dimmed { opacity: 0.25; }
+.journey-table tr.highlighted { background: rgba(59,130,246,0.08); }
 .badge {
   display: inline-block; padding: 2px 8px; border-radius: 4px;
   font-size: 0.72rem; margin: 2px; font-weight: 500; white-space: nowrap;
+  transition: box-shadow 0.2s;
 }
+.badge.badge-glow { box-shadow: 0 0 8px rgba(59,130,246,0.5); }
 .badge-view { background: #1e3a5f; color: #60a5fa; }
 .badge-cart { background: #1a3c34; color: #34d399; }
 .badge-checkout { background: #3b2f1a; color: #fbbf24; }
@@ -130,7 +173,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 .badge-purchase { background: #3b1a1a; color: #f87171; }
 .rank-num { font-weight: 700; color: var(--text-muted); font-size: 0.9rem; }
 .user-count { font-weight: 600; color: var(--accent-blue); }
-.journey-scroll { max-height: 560px; overflow-y: auto; }
+.journey-scroll { flex: 1; max-height: 500px; overflow-y: auto; }
 
 /* Loading */
 .loading {
@@ -145,6 +188,10 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .journey-section { grid-template-columns: 1fr; }
+  .journey-section .section-left { border-right: none; border-bottom: 1px solid var(--border); }
+}
 @media (max-width: 1024px) {
   .kpi-grid { grid-template-columns: repeat(4, 1fr); }
   .panel-grid { grid-template-columns: 1fr; }
@@ -189,10 +236,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
       <div class="chart-container" id="funnelChart"></div>
     </div>
     <div class="panel">
-      <div class="panel-title">User Flow (Sankey)</div>
-      <div class="chart-container" id="sankeyChart"></div>
-    </div>
-    <div class="panel">
       <div class="panel-title">Funnel by Traffic Source</div>
       <div class="chart-container" id="sourceChart"></div>
     </div>
@@ -200,12 +243,28 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
       <div class="panel-title">Purchase Frequency Distribution</div>
       <div class="chart-container" id="purchaseFreqChart"></div>
     </div>
-    <div class="panel panel-full">
+    <div class="panel">
       <div class="panel-title">Daily Trend</div>
       <div class="chart-container" id="trendChart"></div>
     </div>
-    <div class="panel panel-full">
-      <div class="panel-title">Top 20 User Journeys</div>
+  </div>
+
+  <!-- Combined Sankey + Journey Section -->
+  <div class="journey-section">
+    <div class="section-left">
+      <div class="panel-title-bar">
+        <div class="panel-title">User Flow (Sankey)</div>
+      </div>
+      <div class="chart-container-tall" id="sankeyChart"></div>
+      <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px; text-align:center;">
+        Click a node or link to filter journeys &rarr;
+      </p>
+    </div>
+    <div class="section-right">
+      <div class="panel-title-bar">
+        <div class="panel-title">Top 20 User Journeys</div>
+        <div id="journeyFilterTag" style="display:none;"></div>
+      </div>
       <div class="journey-scroll" id="journeyTable"></div>
     </div>
   </div>
@@ -220,7 +279,19 @@ const COLORS = {
 const FUNNEL_COLORS = ['#3b82f6','#06b6d4','#10b981','#f59e0b','#8b5cf6','#ef4444','#ec4899'];
 const SOURCE_COLORS = ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#06b6d4','#ec4899'];
 
+// Label mapping for matching Sankey nodes to Journey badges
+const STEP_LABELS = {
+  'View Items': 'View Items',
+  'Add to Cart': 'Add to Cart',
+  'View Cart': 'View Cart',
+  'Begin Checkout': 'Begin Checkout',
+  'Add Payment': 'Add Payment',
+  'Purchase': 'Purchase'
+};
+
 let fullData = null;
+let currentJourneys = null;
+let currentSankeyFilter = null;
 const chartInstances = {};
 
 function fmt(n) {
@@ -237,6 +308,12 @@ function getBadgeClass(step) {
   if (s.includes('payment')) return 'badge-payment';
   if (s.includes('purchase')) return 'badge-purchase';
   return 'badge-view';
+}
+
+// Parse Sankey node name "S2: Add to Cart" → "Add to Cart"
+function parseSankeyLabel(name) {
+  const m = name.match(/^S\d+:\s*(.+)$/);
+  return m ? m[1] : name;
 }
 
 function renderMeta(meta) {
@@ -337,7 +414,94 @@ function renderSankey(data) {
       links: data.links
     }]
   });
+
+  // Click node → filter journeys
+  chart.on('click', (params) => {
+    if (params.dataType === 'node') {
+      const stepName = parseSankeyLabel(params.name);
+      applyJourneyFilter({ type: 'node', step: stepName, label: stepName });
+    } else if (params.dataType === 'edge') {
+      const src = parseSankeyLabel(params.data.source);
+      const tgt = parseSankeyLabel(params.data.target);
+      applyJourneyFilter({ type: 'edge', from: src, to: tgt, label: `${src} → ${tgt}` });
+    }
+  });
+
   window.addEventListener('resize', () => chart.resize());
+}
+
+// --- Journey filter logic ---
+function applyJourneyFilter(filter) {
+  // If clicking same filter again, clear it
+  if (currentSankeyFilter && currentSankeyFilter.label === filter.label) {
+    clearJourneyFilter();
+    return;
+  }
+  currentSankeyFilter = filter;
+  renderJourneyFilterTag(filter.label);
+  highlightJourneyRows(filter);
+}
+
+function clearJourneyFilter() {
+  currentSankeyFilter = null;
+  document.getElementById('journeyFilterTag').style.display = 'none';
+  // Remove all dim/highlight classes
+  const rows = document.querySelectorAll('.journey-table tbody tr');
+  rows.forEach(row => {
+    row.classList.remove('dimmed', 'highlighted');
+    row.querySelectorAll('.badge').forEach(b => b.classList.remove('badge-glow'));
+  });
+}
+
+function renderJourneyFilterTag(label) {
+  const el = document.getElementById('journeyFilterTag');
+  el.style.display = 'inline-flex';
+  el.innerHTML = `<span class="journey-filter-tag">
+    Filtering: ${label}
+    <button class="clear-btn" title="Clear filter">&times;</button>
+  </span>`;
+  el.querySelector('.clear-btn').addEventListener('click', clearJourneyFilter);
+}
+
+function highlightJourneyRows(filter) {
+  const rows = document.querySelectorAll('.journey-table tbody tr');
+  rows.forEach(row => {
+    const badges = row.querySelectorAll('.badge');
+    const steps = Array.from(badges).map(b => b.textContent.trim());
+    let match = false;
+
+    if (filter.type === 'node') {
+      match = steps.includes(filter.step);
+    } else if (filter.type === 'edge') {
+      // Check if the transition exists in the path
+      for (let i = 0; i < steps.length - 1; i++) {
+        if (steps[i] === filter.from && steps[i + 1] === filter.to) {
+          match = true;
+          break;
+        }
+      }
+    }
+
+    if (match) {
+      row.classList.remove('dimmed');
+      row.classList.add('highlighted');
+      // Glow matching badges
+      badges.forEach(b => {
+        const txt = b.textContent.trim();
+        if (filter.type === 'node' && txt === filter.step) {
+          b.classList.add('badge-glow');
+        } else if (filter.type === 'edge' && (txt === filter.from || txt === filter.to)) {
+          b.classList.add('badge-glow');
+        } else {
+          b.classList.remove('badge-glow');
+        }
+      });
+    } else {
+      row.classList.add('dimmed');
+      row.classList.remove('highlighted');
+      badges.forEach(b => b.classList.remove('badge-glow'));
+    }
+  });
 }
 
 function renderSourceChart(data) {
@@ -377,8 +541,6 @@ function renderPurchaseFreq(data) {
   }
 
   const totalUsers = data.reduce((s, d) => s + d.users, 0);
-  const labels = data.map(d => d.purchases >= 5 ? '5+' : String(d.purchases));
-  // Aggregate 5+ if needed
   const aggregated = [];
   let fivePlus = { purchases: '5+', users: 0 };
   data.forEach(d => {
@@ -417,7 +579,7 @@ function renderPurchaseFreq(data) {
     },
     series: [{
       type: 'bar',
-      data: values.map((v, i) => ({
+      data: values.map(v => ({
         value: v,
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -495,11 +657,12 @@ function renderTrend(data) {
 }
 
 function renderJourneys(data) {
+  currentJourneys = data;
   let html = `<table class="journey-table">
     <thead><tr><th>#</th><th>Journey Path</th><th>Steps</th><th>Users</th></tr></thead><tbody>`;
   data.forEach((j, i) => {
     const badges = j.path.map(s => `<span class="badge ${getBadgeClass(s)}">${s}</span>`).join(' &rarr; ');
-    html += `<tr>
+    html += `<tr data-idx="${i}">
       <td class="rank-num">${i+1}</td>
       <td>${badges}</td>
       <td>${j.steps}</td>
@@ -508,6 +671,11 @@ function renderJourneys(data) {
   });
   html += '</tbody></table>';
   document.getElementById('journeyTable').innerHTML = html;
+
+  // Re-apply filter if active
+  if (currentSankeyFilter) {
+    highlightJourneyRows(currentSankeyFilter);
+  }
 }
 
 function renderAll(data) {
@@ -533,11 +701,11 @@ async function init() {
     // Global filter
     document.getElementById('sourceFilter').addEventListener('change', (e) => {
       const source = e.target.value;
+      clearJourneyFilter();
       if (source === 'All') {
         renderAll(fullData);
       } else if (fullData.by_source && fullData.by_source[source]) {
         const srcData = fullData.by_source[source];
-        // Use source-specific data, fall back to full data for sankey/journeys
         renderAll({
           kpi: srcData.kpi,
           funnel: srcData.funnel,
