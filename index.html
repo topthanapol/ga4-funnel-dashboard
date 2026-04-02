@@ -48,6 +48,19 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   background: var(--bg-card); padding: 4px 12px; border-radius: 20px;
   font-size: 0.8rem; color: var(--text-secondary);
 }
+.filter-bar {
+  display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px;
+}
+.filter-bar label {
+  font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;
+}
+.filter-bar select {
+  background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 14px; font-size: 0.85rem; cursor: pointer;
+  outline: none; transition: border-color 0.2s;
+}
+.filter-bar select:hover { border-color: var(--accent-blue); }
+.filter-bar select:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
 
 /* KPI Cards */
 .kpi-grid {
@@ -153,6 +166,17 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
     <h1>User Journey & Funnel Analysis</h1>
     <p>GA4 Traffic Events — Online Lottery Platform</p>
     <div class="meta-info" id="metaInfo"></div>
+    <div class="filter-bar">
+      <label for="sourceFilter">Traffic Source:</label>
+      <select id="sourceFilter">
+        <option value="All">All Sources</option>
+        <option value="Direct">Direct</option>
+        <option value="LINE Richmenu">LINE Richmenu</option>
+        <option value="Search">Search</option>
+        <option value="Social">Social</option>
+        <option value="Others">Others</option>
+      </select>
+    </div>
   </header>
 
   <div class="kpi-grid" id="kpiGrid">
@@ -173,6 +197,10 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
       <div class="chart-container" id="sourceChart"></div>
     </div>
     <div class="panel">
+      <div class="panel-title">Purchase Frequency Distribution</div>
+      <div class="chart-container" id="purchaseFreqChart"></div>
+    </div>
+    <div class="panel panel-full">
       <div class="panel-title">Daily Trend</div>
       <div class="chart-container" id="trendChart"></div>
     </div>
@@ -191,6 +219,9 @@ const COLORS = {
 };
 const FUNNEL_COLORS = ['#3b82f6','#06b6d4','#10b981','#f59e0b','#8b5cf6','#ef4444','#ec4899'];
 const SOURCE_COLORS = ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#06b6d4','#ec4899'];
+
+let fullData = null;
+const chartInstances = {};
 
 function fmt(n) {
   if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
@@ -225,7 +256,7 @@ function renderKPIs(kpi) {
     { label: 'Avg Events/User', value: kpi.avg_events_per_user, sub: 'engagement depth' },
     { label: 'Time to 1st Purchase', value: kpi.avg_hours_to_first_purchase + 'h', sub: 'first touch → 1st buy' },
     { label: 'Repeat Purchase', value: kpi.repeat_purchase_pct + '%', sub: 'bought >1 time' },
-    { label: 'Days to Repeat', value: kpi.avg_days_to_repeat + 'd', sub: '1st buy → 2nd buy' },
+    { label: 'Hours to Repeat', value: kpi.avg_hours_to_repeat + 'h', sub: '1st buy → 2nd buy' },
   ];
   document.getElementById('kpiGrid').innerHTML = cards.map(c => `
     <div class="kpi-card">
@@ -236,9 +267,17 @@ function renderKPIs(kpi) {
   `).join('');
 }
 
+function initChart(id) {
+  if (chartInstances[id]) {
+    chartInstances[id].dispose();
+  }
+  const chart = echarts.init(document.getElementById(id), null, {renderer:'canvas'});
+  chartInstances[id] = chart;
+  return chart;
+}
+
 function renderFunnel(data) {
-  const chart = echarts.init(document.getElementById('funnelChart'), null, {renderer:'canvas'});
-  const maxVal = data[0].users;
+  const chart = initChart('funnelChart');
   const seriesData = data.map((d, i) => ({
     name: d.step,
     value: d.pct_of_total,
@@ -275,7 +314,7 @@ function renderFunnel(data) {
 }
 
 function renderSankey(data) {
-  const chart = echarts.init(document.getElementById('sankeyChart'), null, {renderer:'canvas'});
+  const chart = initChart('sankeyChart');
   chart.setOption({
     tooltip: { trigger: 'item', triggerOn: 'mousemove' },
     series: [{
@@ -302,7 +341,7 @@ function renderSankey(data) {
 }
 
 function renderSourceChart(data) {
-  const chart = echarts.init(document.getElementById('sourceChart'), null, {renderer:'canvas'});
+  const chart = initChart('sourceChart');
   const steps = ['View Items','Add to Cart','Begin Checkout','Purchase'];
   const sources = data.map(d => d.source);
 
@@ -330,8 +369,77 @@ function renderSourceChart(data) {
   window.addEventListener('resize', () => chart.resize());
 }
 
+function renderPurchaseFreq(data) {
+  const chart = initChart('purchaseFreqChart');
+  if (!data || data.length === 0) {
+    chart.setOption({ title: { text: 'No data', left: 'center', top: 'center', textStyle: { color: '#64748b' } } });
+    return;
+  }
+
+  const totalUsers = data.reduce((s, d) => s + d.users, 0);
+  const labels = data.map(d => d.purchases >= 5 ? '5+' : String(d.purchases));
+  // Aggregate 5+ if needed
+  const aggregated = [];
+  let fivePlus = { purchases: '5+', users: 0 };
+  data.forEach(d => {
+    if (d.purchases >= 5) {
+      fivePlus.users += d.users;
+    } else {
+      aggregated.push(d);
+    }
+  });
+  if (fivePlus.users > 0) aggregated.push(fivePlus);
+  const xLabels = aggregated.map(d => typeof d.purchases === 'string' ? d.purchases : d.purchases + 'x');
+  const values = aggregated.map(d => d.users);
+
+  chart.setOption({
+    tooltip: {
+      trigger: 'axis',
+      formatter: params => {
+        const p = params[0];
+        const pct = (p.value / totalUsers * 100).toFixed(1);
+        return `<b>${p.name}</b><br/>Users: ${fmt(p.value)}<br/>Share: ${pct}%`;
+      }
+    },
+    grid: { left: 60, right: 30, bottom: 40, top: 20 },
+    xAxis: {
+      type: 'category', data: xLabels,
+      axisLabel: { color: '#94a3b8', fontSize: 12 },
+      axisLine: { lineStyle: { color: '#334155' } },
+      name: 'Purchase Count', nameLocation: 'center', nameGap: 30,
+      nameTextStyle: { color: '#94a3b8' }
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: { color: '#94a3b8', formatter: v => fmt(v) },
+      splitLine: { lineStyle: { color: '#1e293b' } },
+      name: 'Users', nameTextStyle: { color: '#94a3b8' }
+    },
+    series: [{
+      type: 'bar',
+      data: values.map((v, i) => ({
+        value: v,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#3b82f6' },
+            { offset: 1, color: '#1d4ed8' }
+          ]),
+          borderRadius: [4, 4, 0, 0]
+        }
+      })),
+      barMaxWidth: 60,
+      label: {
+        show: true, position: 'top',
+        formatter: p => fmt(p.value),
+        color: '#94a3b8', fontSize: 11
+      }
+    }]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
 function renderTrend(data) {
-  const chart = echarts.init(document.getElementById('trendChart'), null, {renderer:'canvas'});
+  const chart = initChart('trendChart');
   const dates = data.map(d => d.date);
 
   chart.setOption({
@@ -390,7 +498,7 @@ function renderJourneys(data) {
   let html = `<table class="journey-table">
     <thead><tr><th>#</th><th>Journey Path</th><th>Steps</th><th>Users</th></tr></thead><tbody>`;
   data.forEach((j, i) => {
-    const badges = j.path.map(s => `<span class="badge ${getBadgeClass(s)}">${s}</span>`).join(' → ');
+    const badges = j.path.map(s => `<span class="badge ${getBadgeClass(s)}">${s}</span>`).join(' &rarr; ');
     html += `<tr>
       <td class="rank-num">${i+1}</td>
       <td>${badges}</td>
@@ -402,20 +510,45 @@ function renderJourneys(data) {
   document.getElementById('journeyTable').innerHTML = html;
 }
 
+function renderAll(data) {
+  renderKPIs(data.kpi);
+  renderFunnel(data.funnel);
+  if (data.sankey) renderSankey(data.sankey);
+  renderSourceChart(data.funnel_by_source);
+  renderPurchaseFreq(data.purchase_frequency);
+  renderTrend(data.daily_trend);
+  if (data.journeys) renderJourneys(data.journeys);
+}
+
 // Load and render
 async function init() {
   try {
     const resp = await fetch('data/ga_funnel_data.json');
     if (!resp.ok) throw new Error('Failed to load data');
-    const data = await resp.json();
+    fullData = await resp.json();
 
-    renderMeta(data.meta);
-    renderKPIs(data.kpi);
-    renderFunnel(data.funnel);
-    renderSankey(data.sankey);
-    renderSourceChart(data.funnel_by_source);
-    renderTrend(data.daily_trend);
-    renderJourneys(data.journeys);
+    renderMeta(fullData.meta);
+    renderAll(fullData);
+
+    // Global filter
+    document.getElementById('sourceFilter').addEventListener('change', (e) => {
+      const source = e.target.value;
+      if (source === 'All') {
+        renderAll(fullData);
+      } else if (fullData.by_source && fullData.by_source[source]) {
+        const srcData = fullData.by_source[source];
+        // Use source-specific data, fall back to full data for sankey/journeys
+        renderAll({
+          kpi: srcData.kpi,
+          funnel: srcData.funnel,
+          sankey: fullData.sankey,
+          funnel_by_source: srcData.funnel_by_source,
+          purchase_frequency: srcData.purchase_frequency,
+          daily_trend: srcData.daily_trend,
+          journeys: fullData.journeys,
+        });
+      }
+    });
   } catch (e) {
     console.error(e);
     document.getElementById('kpiGrid').innerHTML =

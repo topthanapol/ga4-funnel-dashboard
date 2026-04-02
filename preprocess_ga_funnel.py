@@ -46,7 +46,7 @@ def main():
     con = duckdb.connect()
 
     # Create a view over the CSV for reuse
-    print("[1/8] Creating CSV view...")
+    print("[1/12] Creating CSV view...")
     con.execute(f"""
         CREATE VIEW events AS
         SELECT
@@ -55,14 +55,15 @@ def main():
             user_id_final::VARCHAR AS uid,
             event_name,
             source,
-            platform
+            platform,
+            {SOURCE_CASE} AS source_group
         FROM read_csv_auto('{CSV_PATH}', header=true, ignore_errors=true, all_varchar=true)
         WHERE event_name != 'event_name'
           AND user_id_final LIKE 'U%'
     """)
 
     # --- Query 1: Meta ---
-    print("[2/8] Meta stats...")
+    print("[2/12] Meta stats...")
     meta = con.execute("""
         SELECT
             COUNT(*) AS total_events,
@@ -77,7 +78,7 @@ def main():
     print(f"   Total events: {meta['total_events']:,}, Users: {meta['total_users']:,}")
 
     # --- Query 2: KPI ---
-    print("[3/8] KPI calculations...")
+    print("[3/12] KPI calculations...")
     kpi = con.execute("""
         WITH purchase_events AS (
             SELECT uid, event_ts,
@@ -115,8 +116,8 @@ def main():
             (SELECT ROUND(AVG(EXTRACT(EPOCH FROM (fp.first_purchase_ts - uf.first_touch)) / 3600.0), 1)
              FROM first_purchase fp JOIN user_first uf ON fp.uid = uf.uid
              WHERE uf.first_touch < fp.first_purchase_ts) AS avg_hours_to_first_purchase,
-            (SELECT ROUND(AVG(EXTRACT(EPOCH FROM (sp.second_purchase_ts - fp.first_purchase_ts)) / 86400.0), 1)
-             FROM first_purchase fp JOIN second_purchase sp ON fp.uid = sp.uid) AS avg_days_to_repeat,
+            (SELECT ROUND(AVG(EXTRACT(EPOCH FROM (sp.second_purchase_ts - fp.first_purchase_ts)) / 3600.0), 1)
+             FROM first_purchase fp JOIN second_purchase sp ON fp.uid = sp.uid) AS avg_hours_to_repeat,
             (SELECT ROUND(100.0 * COUNT(CASE WHEN purchase_count > 1 THEN 1 END) / NULLIF(COUNT(*), 0), 1)
              FROM purchaser_counts) AS repeat_purchase_pct
     """).fetchdf().to_dict(orient="records")[0]
@@ -127,13 +128,13 @@ def main():
         "purchases": int(kpi["purchasers"]),
         "avg_events_per_user": float(kpi["avg_events_per_user"]),
         "avg_hours_to_first_purchase": float(kpi["avg_hours_to_first_purchase"]) if kpi["avg_hours_to_first_purchase"] else 0,
-        "avg_days_to_repeat": float(kpi["avg_days_to_repeat"]) if kpi["avg_days_to_repeat"] else 0,
+        "avg_hours_to_repeat": float(kpi["avg_hours_to_repeat"]) if kpi["avg_hours_to_repeat"] else 0,
         "repeat_purchase_pct": float(kpi["repeat_purchase_pct"]) if kpi["repeat_purchase_pct"] else 0,
     }
     print(f"   Conv rate: {kpi_data['conversion_rate']}%, Purchasers: {kpi_data['purchases']:,}")
 
     # --- Query 3: Funnel ---
-    print("[4/8] Funnel counts...")
+    print("[4/12] Funnel counts...")
     funnel_parts = []
     for evt in FUNNEL_EVENTS:
         funnel_parts.append(
@@ -163,7 +164,7 @@ def main():
     })
 
     # --- Query 4: Sankey (layered transitions) ---
-    print("[5/8] Sankey transitions...")
+    print("[5/12] Sankey transitions...")
     sankey_sql = """
         WITH funnel_events AS (
             SELECT uid, event_name, event_ts,
@@ -223,7 +224,7 @@ def main():
         })
 
     # --- Query 5: Top User Journeys ---
-    print("[6/8] Top user journeys...")
+    print("[6/12] Top user journeys...")
     journeys_sql = """
         WITH funnel_events AS (
             SELECT uid, event_name, event_ts,
@@ -278,7 +279,7 @@ def main():
         })
 
     # --- Query 6: Funnel by Source ---
-    print("[7/8] Funnel by source...")
+    print("[7/12] Funnel by source...")
     source_parts = []
     for evt in FUNNEL_EVENTS:
         source_parts.append(
@@ -286,7 +287,7 @@ def main():
         )
     source_sql = f"""
         SELECT
-            {SOURCE_CASE} AS source_group,
+            source_group,
             COUNT(DISTINCT uid) AS total_users,
             {', '.join(source_parts)}
         FROM events
@@ -302,7 +303,7 @@ def main():
         source_data.append(entry)
 
     # --- Query 7: Daily Trend ---
-    print("[8/8] Daily trend...")
+    print("[8/12] Daily trend...")
     daily_sql = """
         SELECT
             event_date,
@@ -340,6 +341,228 @@ def main():
             "users": int(row["user_count"]),
         })
 
+    # --- Query 9: Purchase Frequency Distribution ---
+    print("[9/12] Purchase frequency distribution...")
+    pf_sql = """
+        WITH purchase_counts AS (
+            SELECT uid, COUNT(*) AS purchase_count
+            FROM events
+            WHERE event_name = 'purchase'
+            GROUP BY uid
+        )
+        SELECT purchase_count, COUNT(*) AS user_count
+        FROM purchase_counts
+        GROUP BY purchase_count
+        ORDER BY purchase_count
+    """
+    pf_raw = con.execute(pf_sql).fetchdf()
+    purchase_freq = []
+    for _, row in pf_raw.iterrows():
+        purchase_freq.append({
+            "purchases": int(row["purchase_count"]),
+            "users": int(row["user_count"]),
+        })
+
+    # --- Query 10: KPI per source ---
+    print("[10/12] KPI per source...")
+    kpi_per_source_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group
+            FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        base AS (
+            SELECT us.source_group,
+                COUNT(*) AS total_users,
+                COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END) AS purchasers
+            FROM uid_source us
+            LEFT JOIN events e ON e.uid = us.uid AND e.event_name = 'purchase'
+            GROUP BY us.source_group
+        ),
+        avg_events AS (
+            SELECT us.source_group,
+                ROUND(AVG(ue.cnt), 1) AS avg_events_per_user
+            FROM uid_source us
+            JOIN (SELECT uid, COUNT(*) AS cnt FROM events GROUP BY uid) ue ON ue.uid = us.uid
+            GROUP BY us.source_group
+        ),
+        purchase_seq AS (
+            SELECT e.uid, e.event_ts,
+                ROW_NUMBER() OVER (PARTITION BY e.uid ORDER BY e.event_ts) AS seq
+            FROM events e
+            WHERE e.event_name = 'purchase'
+        ),
+        time_to_first AS (
+            SELECT us.source_group,
+                ROUND(AVG(EXTRACT(EPOCH FROM (ps.event_ts - uf.first_touch)) / 3600.0), 1)
+                    AS avg_hours_to_first_purchase
+            FROM uid_source us
+            JOIN purchase_seq ps ON ps.uid = us.uid AND ps.seq = 1
+            JOIN (SELECT uid, MIN(event_ts) AS first_touch FROM events GROUP BY uid) uf ON uf.uid = us.uid
+            WHERE uf.first_touch < ps.event_ts
+            GROUP BY us.source_group
+        ),
+        time_to_repeat AS (
+            SELECT us.source_group,
+                ROUND(AVG(EXTRACT(EPOCH FROM (p2.event_ts - p1.event_ts)) / 3600.0), 1)
+                    AS avg_hours_to_repeat
+            FROM uid_source us
+            JOIN purchase_seq p1 ON p1.uid = us.uid AND p1.seq = 1
+            JOIN purchase_seq p2 ON p2.uid = us.uid AND p2.seq = 2
+            GROUP BY us.source_group
+        ),
+        repeat_pct AS (
+            SELECT us.source_group,
+                ROUND(100.0 * COUNT(CASE WHEN pc.cnt > 1 THEN 1 END)
+                    / NULLIF(COUNT(*), 0), 1) AS repeat_purchase_pct
+            FROM uid_source us
+            JOIN (SELECT uid, COUNT(*) AS cnt FROM events WHERE event_name = 'purchase' GROUP BY uid) pc
+                ON pc.uid = us.uid
+            GROUP BY us.source_group
+        )
+        SELECT
+            b.source_group, b.total_users, b.purchasers,
+            ae.avg_events_per_user,
+            tf.avg_hours_to_first_purchase,
+            tr.avg_hours_to_repeat,
+            rp.repeat_purchase_pct
+        FROM base b
+        LEFT JOIN avg_events ae ON ae.source_group = b.source_group
+        LEFT JOIN time_to_first tf ON tf.source_group = b.source_group
+        LEFT JOIN time_to_repeat tr ON tr.source_group = b.source_group
+        LEFT JOIN repeat_pct rp ON rp.source_group = b.source_group
+    """
+    kpi_source_raw = con.execute(kpi_per_source_sql).fetchdf()
+
+    # --- Query 11: Daily trend per source ---
+    print("[11/12] Daily trend per source...")
+    daily_source_sql = f"""
+        WITH uid_source AS (
+            SELECT uid, source_group
+            FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        )
+        SELECT
+            us.source_group,
+            e.event_date,
+            COUNT(DISTINCT e.uid) AS daily_users,
+            COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END) AS daily_purchases,
+            ROUND(100.0 * COUNT(DISTINCT CASE WHEN e.event_name = 'purchase' THEN e.uid END)
+                  / NULLIF(COUNT(DISTINCT e.uid), 0), 1) AS daily_conv_rate
+        FROM events e
+        JOIN uid_source us ON e.uid = us.uid
+        GROUP BY us.source_group, e.event_date
+        ORDER BY us.source_group, e.event_date
+    """
+    daily_source_raw = con.execute(daily_source_sql).fetchdf()
+
+    # --- Query 12: Purchase frequency per source ---
+    print("[12/12] Purchase frequency per source...")
+    pf_source_sql = f"""
+        WITH uid_source AS (
+            SELECT uid, source_group
+            FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        purchase_counts AS (
+            SELECT e.uid, us.source_group, COUNT(*) AS purchase_count
+            FROM events e
+            JOIN uid_source us ON e.uid = us.uid
+            WHERE e.event_name = 'purchase'
+            GROUP BY e.uid, us.source_group
+        )
+        SELECT source_group, purchase_count, COUNT(*) AS user_count
+        FROM purchase_counts
+        GROUP BY source_group, purchase_count
+        ORDER BY source_group, purchase_count
+    """
+    pf_source_raw = con.execute(pf_source_sql).fetchdf()
+
+    # --- Build by_source structure ---
+    # Get funnel per source (already computed in source_data)
+    by_source = {}
+    source_groups = set()
+
+    # Collect all source groups
+    for _, row in kpi_source_raw.iterrows():
+        source_groups.add(row["source_group"])
+
+    for sg in sorted(source_groups):
+        # KPI per source
+        sg_kpi_row = kpi_source_raw[kpi_source_raw["source_group"] == sg].to_dict(orient="records")
+        if sg_kpi_row:
+            r = sg_kpi_row[0]
+            sg_total = int(r["total_users"])
+            sg_purchasers = int(r["purchasers"])
+            sg_kpi = {
+                "total_users": sg_total,
+                "conversion_rate": round(100.0 * sg_purchasers / sg_total, 1) if sg_total else 0,
+                "purchases": sg_purchasers,
+                "avg_events_per_user": float(r["avg_events_per_user"]) if r["avg_events_per_user"] else 0,
+                "avg_hours_to_first_purchase": float(r["avg_hours_to_first_purchase"]) if r["avg_hours_to_first_purchase"] else 0,
+                "avg_hours_to_repeat": float(r["avg_hours_to_repeat"]) if r["avg_hours_to_repeat"] else 0,
+                "repeat_purchase_pct": float(r["repeat_purchase_pct"]) if r["repeat_purchase_pct"] else 0,
+            }
+        else:
+            sg_kpi = {}
+
+        # Funnel per source (from source_data)
+        sg_funnel_entry = [s for s in source_data if s["source"] == sg]
+        sg_funnel = []
+        if sg_funnel_entry:
+            entry = sg_funnel_entry[0]
+            sg_total_users = entry["total_users"]
+            sg_funnel.append({
+                "step": "Total Users", "event": "all",
+                "users": sg_total_users, "pct_of_total": 100.0, "drop_off_pct": 0
+            })
+            for i, evt in enumerate(FUNNEL_EVENTS):
+                count = entry.get(FUNNEL_LABELS[i], 0)
+                prev_count = sg_funnel[-1]["users"]
+                sg_funnel.append({
+                    "step": FUNNEL_LABELS[i], "event": evt,
+                    "users": count,
+                    "pct_of_total": round(100.0 * count / sg_total_users, 1) if sg_total_users else 0,
+                    "drop_off_pct": round(100.0 * (1 - count / prev_count), 1) if prev_count else 0,
+                })
+
+        # Daily trend per source
+        sg_daily_rows = daily_source_raw[daily_source_raw["source_group"] == sg]
+        sg_daily = []
+        for _, row in sg_daily_rows.iterrows():
+            sg_daily.append({
+                "date": str(row["event_date"])[:10],
+                "users": int(row["daily_users"]),
+                "purchases": int(row["daily_purchases"]),
+                "conv_rate": float(row["daily_conv_rate"]) if row["daily_conv_rate"] else 0,
+            })
+
+        # Purchase frequency per source
+        sg_pf_rows = pf_source_raw[pf_source_raw["source_group"] == sg]
+        sg_pf = []
+        for _, row in sg_pf_rows.iterrows():
+            sg_pf.append({
+                "purchases": int(row["purchase_count"]),
+                "users": int(row["user_count"]),
+            })
+
+        by_source[sg] = {
+            "kpi": sg_kpi,
+            "funnel": sg_funnel,
+            "daily_trend": sg_daily,
+            "purchase_frequency": sg_pf,
+            "funnel_by_source": [s for s in source_data if s["source"] == sg],
+        }
+
     # --- Assemble & Write JSON ---
     output = {
         "meta": meta,
@@ -350,6 +573,8 @@ def main():
         "funnel_by_source": source_data,
         "daily_trend": daily_data,
         "event_distribution": event_dist,
+        "purchase_frequency": purchase_freq,
+        "by_source": by_source,
     }
 
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
