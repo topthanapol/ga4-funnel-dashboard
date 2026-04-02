@@ -50,7 +50,7 @@ SOURCE_CASE = """
 def main():
     start = time.time()
 
-    print("[0/33] Connecting to Databricks...")
+    print("[0/42] Connecting to Databricks...")
     conn = databricks_sql.connect(
         server_hostname=DATABRICKS_HOST,
         http_path=DATABRICKS_HTTP_PATH,
@@ -65,7 +65,7 @@ def main():
         return pd.DataFrame(rows, columns=cols)
 
     # Create a temp view for reuse
-    print("[1/33] Creating temp view...")
+    print("[1/42] Creating temp view...")
     cursor.execute(f"""
         CREATE OR REPLACE TEMP VIEW events AS
         SELECT *,
@@ -84,7 +84,12 @@ def main():
                 ec_transaction_id AS transaction_id,
                 COALESCE(engagement_time_msec, 0) AS engagement_msec,
                 ga_session_number AS session_number,
-                first_item_name
+                first_item_name,
+                device_category,
+                os,
+                browser_final,
+                geo_region,
+                page_location
             FROM {DATABRICKS_TABLE}
             WHERE user_id_final LIKE 'U%'
               AND p_event_date >= '{DATE_FROM}'
@@ -92,7 +97,7 @@ def main():
     """)
 
     # --- Query 1: Meta ---
-    print("[2/33] Meta stats...")
+    print("[2/42] Meta stats...")
     meta = query("""
         SELECT
             COUNT(*) AS total_events,
@@ -107,7 +112,7 @@ def main():
     print(f"   Total events: {meta['total_events']:,}, Users: {meta['total_users']:,}")
 
     # --- Query 2: KPI ---
-    print("[3/33] KPI calculations...")
+    print("[3/42] KPI calculations...")
     kpi = query("""
         WITH purchase_events AS (
             SELECT uid, event_ts,
@@ -163,7 +168,7 @@ def main():
     print(f"   Conv rate: {kpi_data['conversion_rate']}%, Purchasers: {kpi_data['purchases']:,}")
 
     # --- Query 3: Funnel ---
-    print("[4/33] Funnel counts...")
+    print("[4/42] Funnel counts...")
     funnel_parts = []
     for evt in FUNNEL_EVENTS:
         funnel_parts.append(
@@ -193,7 +198,7 @@ def main():
     })
 
     # --- Query 4: Sankey (layered transitions) ---
-    print("[5/33] Sankey transitions...")
+    print("[5/42] Sankey transitions...")
     sankey_sql = """
         WITH funnel_events AS (
             SELECT uid, event_name, event_ts,
@@ -252,7 +257,7 @@ def main():
         })
 
     # --- Query 5: Top User Journeys ---
-    print("[6/33] Top user journeys...")
+    print("[6/42] Top user journeys...")
     journeys_sql = """
         WITH funnel_events AS (
             SELECT uid, event_name, event_ts,
@@ -316,7 +321,7 @@ def main():
         })
 
     # --- Query 6: Funnel by Source ---
-    print("[7/33] Funnel by source...")
+    print("[7/42] Funnel by source...")
     source_parts = []
     for evt in FUNNEL_EVENTS:
         source_parts.append(
@@ -340,7 +345,7 @@ def main():
         source_data.append(entry)
 
     # --- Query 7: Daily Trend ---
-    print("[8/33] Daily trend...")
+    print("[8/42] Daily trend...")
     daily_sql = """
         SELECT
             event_date,
@@ -379,7 +384,7 @@ def main():
         })
 
     # --- Query 9: Platform Distribution ---
-    print("[9/33] Platform distribution...")
+    print("[9/42] Platform distribution...")
     platform_sql = """
         SELECT
             COALESCE(NULLIF(platform, ''), 'Unknown') AS platform,
@@ -399,7 +404,7 @@ def main():
         })
 
     # --- Query 10: Purchase Frequency Distribution ---
-    print("[10/33] Purchase frequency distribution...")
+    print("[10/42] Purchase frequency distribution...")
     pf_sql = """
         WITH purchase_counts AS (
             SELECT uid, COUNT(*) AS purchase_count
@@ -421,7 +426,7 @@ def main():
         })
 
     # --- Query 11: KPI per source ---
-    print("[11/33] KPI per source...")
+    print("[11/42] KPI per source...")
     kpi_per_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group
@@ -495,7 +500,7 @@ def main():
     kpi_source_raw = query(kpi_per_source_sql)
 
     # --- Query 12: Daily trend per source ---
-    print("[12/33] Daily trend per source...")
+    print("[12/42] Daily trend per source...")
     daily_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group
@@ -520,7 +525,7 @@ def main():
     daily_source_raw = query(daily_source_sql)
 
     # --- Query 13: Purchase frequency per source ---
-    print("[13/33] Purchase frequency per source...")
+    print("[13/42] Purchase frequency per source...")
     pf_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group
@@ -545,7 +550,7 @@ def main():
     pf_source_raw = query(pf_source_sql)
 
     # --- Query 14: Revenue Trend ---
-    print("[14/33] Revenue trend...")
+    print("[14/42] Revenue trend...")
     rev_trend_sql = """
         SELECT
             event_date,
@@ -570,7 +575,7 @@ def main():
         })
 
     # --- Query 15: Hourly Heatmap ---
-    print("[15/33] Hourly heatmap...")
+    print("[15/42] Hourly heatmap...")
     heatmap_sql = """
         SELECT
             day_of_week, event_hour,
@@ -593,7 +598,7 @@ def main():
         })
 
     # --- Query 16: AOV Distribution ---
-    print("[16/33] AOV distribution...")
+    print("[16/42] AOV distribution...")
     aov_sql = """
         WITH orders AS (
             SELECT transaction_id, SUM(revenue) AS order_value
@@ -634,7 +639,7 @@ def main():
         })
 
     # --- Query 17: New vs Returning ---
-    print("[17/33] New vs returning...")
+    print("[17/42] New vs returning...")
     nvr_sql = """
         WITH user_type AS (
             SELECT uid,
@@ -666,7 +671,7 @@ def main():
         })
 
     # --- Query 18: Revenue by Source (global only) ---
-    print("[18/33] Revenue by source...")
+    print("[18/42] Revenue by source...")
     rev_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -694,7 +699,7 @@ def main():
         })
 
     # --- Query 19: Session Depth vs CVR ---
-    print("[19/33] Session depth CVR...")
+    print("[19/42] Session depth CVR...")
     sess_cvr_sql = """
         WITH user_max_session AS (
             SELECT uid, MAX(session_number) AS max_session
@@ -735,7 +740,7 @@ def main():
         })
 
     # --- Query 20: Engagement Time Distribution ---
-    print("[20/33] Engagement distribution...")
+    print("[20/42] Engagement distribution...")
     engage_sql = """
         WITH user_engagement AS (
             SELECT uid,
@@ -792,7 +797,7 @@ def main():
             engagement_distribution.append(buckets_seen[b])
 
     # --- Query 21: Hourly Revenue ---
-    print("[21/33] Hourly revenue...")
+    print("[21/42] Hourly revenue...")
     hourly_rev_sql = """
         SELECT event_hour,
             SUM(CASE WHEN event_name = 'purchase' THEN revenue ELSE 0 END) AS revenue,
@@ -811,7 +816,7 @@ def main():
         })
 
     # --- Query 22: Day of Week Performance ---
-    print("[22/33] Day of week...")
+    print("[22/42] Day of week...")
     dow_sql = """
         SELECT day_of_week,
             COUNT(DISTINCT uid) AS users,
@@ -838,7 +843,7 @@ def main():
         })
 
     # --- Query 23: Top Items ---
-    print("[23/33] Top items...")
+    print("[23/42] Top items...")
     items_sql = """
         SELECT first_item_name AS item_name,
             SUM(CASE WHEN event_name = 'purchase' THEN revenue ELSE 0 END) AS revenue,
@@ -860,8 +865,179 @@ def main():
             "buyers": int(row["buyers"]),
         })
 
+    # --- Query 34: Device & Browser CVR ---
+    print("[34/42] Device & browser CVR...")
+    device_browser_sql = """
+        WITH purchasers AS (
+            SELECT DISTINCT uid FROM events WHERE event_name = 'purchase'
+        )
+        SELECT
+            COALESCE(device_category, 'Unknown') AS device_category,
+            COALESCE(os, 'Unknown') AS os,
+            COALESCE(browser_final, 'Unknown') AS browser,
+            COUNT(DISTINCT e.uid) AS users,
+            COUNT(DISTINCT p.uid) AS purchasers,
+            ROUND(100.0 * COUNT(DISTINCT p.uid) / NULLIF(COUNT(DISTINCT e.uid), 0), 1) AS cvr
+        FROM events e
+        LEFT JOIN purchasers p ON e.uid = p.uid
+        GROUP BY device_category, os, browser_final
+        ORDER BY users DESC
+    """
+    device_browser_raw = query(device_browser_sql)
+    device_browser_data = []
+    for _, row in device_browser_raw.iterrows():
+        device_browser_data.append({
+            "device": row["device_category"],
+            "os": row["os"],
+            "browser": row["browser"],
+            "users": int(row["users"]),
+            "purchasers": int(row["purchasers"]),
+            "cvr": float(row["cvr"]) if row["cvr"] else 0,
+        })
+
+    # --- Query 35: Geo Region ---
+    print("[35/42] Geo region...")
+    geo_region_sql = """
+        WITH purchasers AS (
+            SELECT DISTINCT uid FROM events WHERE event_name = 'purchase'
+        )
+        SELECT
+            COALESCE(geo_region, 'Unknown') AS region,
+            COUNT(DISTINCT e.uid) AS users,
+            COUNT(DISTINCT p.uid) AS purchasers,
+            SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) AS revenue,
+            ROUND(100.0 * COUNT(DISTINCT p.uid) / NULLIF(COUNT(DISTINCT e.uid), 0), 1) AS cvr
+        FROM events e
+        LEFT JOIN purchasers p ON e.uid = p.uid
+        GROUP BY geo_region
+        ORDER BY users DESC
+        LIMIT 15
+    """
+    geo_region_raw = query(geo_region_sql)
+    geo_region_data = []
+    for _, row in geo_region_raw.iterrows():
+        geo_region_data.append({
+            "region": row["region"],
+            "users": int(row["users"]),
+            "purchasers": int(row["purchasers"]),
+            "revenue": float(row["revenue"]),
+            "cvr": float(row["cvr"]) if row["cvr"] else 0,
+        })
+
+    # --- Query 36: Campaign Performance (from raw table) ---
+    print("[36/42] Campaign performance...")
+    campaign_sql = f"""
+        WITH raw_campaigns AS (
+            SELECT
+                user_id_final AS uid,
+                event_name,
+                COALESCE(ec_purchase_revenue, 0) AS revenue,
+                collected_traffic_source.manual_source AS manual_source,
+                collected_traffic_source.manual_medium AS manual_medium,
+                collected_traffic_source.manual_campaign_name AS manual_campaign_name
+            FROM {DATABRICKS_TABLE}
+            WHERE user_id_final LIKE 'U%'
+              AND p_event_date >= '{DATE_FROM}'
+              AND collected_traffic_source.manual_campaign_name IS NOT NULL
+              AND collected_traffic_source.manual_campaign_name != 'None'
+        ),
+        purchasers AS (
+            SELECT DISTINCT uid FROM raw_campaigns WHERE event_name = 'purchase'
+        )
+        SELECT
+            COALESCE(rc.manual_source, 'unknown') AS source,
+            COALESCE(rc.manual_medium, 'unknown') AS medium,
+            COALESCE(rc.manual_campaign_name, 'unknown') AS campaign,
+            COUNT(DISTINCT rc.uid) AS users,
+            COUNT(DISTINCT p.uid) AS purchasers,
+            SUM(CASE WHEN rc.event_name = 'purchase' THEN rc.revenue ELSE 0 END) AS revenue,
+            ROUND(100.0 * COUNT(DISTINCT p.uid) / NULLIF(COUNT(DISTINCT rc.uid), 0), 1) AS cvr
+        FROM raw_campaigns rc
+        LEFT JOIN purchasers p ON rc.uid = p.uid
+        GROUP BY rc.manual_source, rc.manual_medium, rc.manual_campaign_name
+        ORDER BY users DESC
+        LIMIT 15
+    """
+    campaign_raw = query(campaign_sql)
+    campaign_data = []
+    for _, row in campaign_raw.iterrows():
+        campaign_data.append({
+            "source": row["source"],
+            "medium": row["medium"],
+            "campaign": row["campaign"],
+            "users": int(row["users"]),
+            "purchasers": int(row["purchasers"]),
+            "revenue": float(row["revenue"]),
+            "cvr": float(row["cvr"]) if row["cvr"] else 0,
+        })
+
+    # --- Query 37: Page Path CVR ---
+    print("[37/42] Page path CVR...")
+    page_path_sql = """
+        WITH page_visits AS (
+            SELECT uid,
+                CASE
+                    WHEN page_location LIKE '%/cart%' THEN '/cart'
+                    WHEN page_location LIKE '%/lottoboard/series%' THEN '/lottoboard/series'
+                    WHEN page_location LIKE '%/lottoboard/all%' THEN '/lottoboard/all'
+                    WHEN page_location LIKE '%/lottoboard/single%' THEN '/lottoboard/single'
+                    WHEN page_location LIKE '%/safe%' THEN '/safe'
+                    WHEN page_location LIKE '%/highlights%' THEN '/highlights'
+                    WHEN page_location LIKE '%/jidrid%' THEN '/jidrid'
+                    WHEN page_location LIKE '%/profile%' THEN '/profile'
+                    WHEN page_location LIKE '%/orders%' THEN '/orders'
+                    WHEN page_location LIKE '%/register%' THEN '/register'
+                    WHEN page_location LIKE '%/dashboard%' THEN '/dashboard'
+                    WHEN page_location LIKE '%/prize-history%' THEN '/prize-history'
+                    ELSE '/ (home)'
+                END AS page_path
+            FROM events
+            WHERE page_location IS NOT NULL
+        ),
+        purchasers AS (
+            SELECT DISTINCT uid FROM events WHERE event_name = 'purchase'
+        )
+        SELECT
+            pv.page_path,
+            COUNT(DISTINCT pv.uid) AS visitors,
+            COUNT(DISTINCT p.uid) AS purchasers,
+            ROUND(100.0 * COUNT(DISTINCT p.uid) / NULLIF(COUNT(DISTINCT pv.uid), 0), 1) AS cvr
+        FROM page_visits pv
+        LEFT JOIN purchasers p ON pv.uid = p.uid
+        GROUP BY pv.page_path
+        ORDER BY cvr DESC
+    """
+    page_path_raw = query(page_path_sql)
+    page_path_data = []
+    for _, row in page_path_raw.iterrows():
+        page_path_data.append({
+            "path": row["page_path"],
+            "visitors": int(row["visitors"]),
+            "purchasers": int(row["purchasers"]),
+            "cvr": float(row["cvr"]) if row["cvr"] else 0,
+        })
+
+    # --- Query 38: Event Distribution Full (all events) ---
+    print("[38/42] Event distribution full...")
+    event_dist_full_sql = """
+        SELECT event_name,
+            COUNT(*) AS event_count,
+            COUNT(DISTINCT uid) AS user_count
+        FROM events
+        GROUP BY event_name
+        ORDER BY event_count DESC
+    """
+    event_dist_full_raw = query(event_dist_full_sql)
+    event_dist_full_data = []
+    for _, row in event_dist_full_raw.iterrows():
+        event_dist_full_data.append({
+            "event": row["event_name"],
+            "events": int(row["event_count"]),
+            "users": int(row["user_count"]),
+        })
+
     # --- Per-Source: Revenue Trend ---
-    print("[24/33] Revenue trend per source...")
+    print("[24/42] Revenue trend per source...")
     rev_trend_src_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -885,7 +1061,7 @@ def main():
     rev_trend_src_raw = query(rev_trend_src_sql)
 
     # --- Per-Source: Hourly Heatmap ---
-    print("[25/33] Hourly heatmap per source...")
+    print("[25/42] Hourly heatmap per source...")
     heatmap_src_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -906,7 +1082,7 @@ def main():
     heatmap_src_raw = query(heatmap_src_sql)
 
     # --- Per-Source: AOV Distribution ---
-    print("[26/33] AOV distribution per source...")
+    print("[26/42] AOV distribution per source...")
     aov_src_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -948,7 +1124,7 @@ def main():
     aov_src_raw = query(aov_src_sql)
 
     # --- Per-Source: New vs Returning ---
-    print("[27/33] New vs returning per source...")
+    print("[27/42] New vs returning per source...")
     nvr_src_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -976,7 +1152,7 @@ def main():
     nvr_src_raw = query(nvr_src_sql)
 
     # --- Per-Source: Session Depth CVR ---
-    print("[28/33] Session depth CVR per source...")
+    print("[28/42] Session depth CVR per source...")
     sess_src_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -1016,7 +1192,7 @@ def main():
     sess_src_raw = query(sess_src_sql)
 
     # --- Per-Source: Engagement Distribution ---
-    print("[29/33] Engagement per source...")
+    print("[29/42] Engagement per source...")
     engage_src_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -1059,7 +1235,7 @@ def main():
     engage_src_raw = query(engage_src_sql)
 
     # --- Per-Source: Hourly Revenue ---
-    print("[30/33] Hourly revenue per source...")
+    print("[30/42] Hourly revenue per source...")
     hourly_rev_src_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -1079,7 +1255,7 @@ def main():
     hourly_rev_src_raw = query(hourly_rev_src_sql)
 
     # --- Per-Source: Day of Week ---
-    print("[31/33] Day of week per source...")
+    print("[31/42] Day of week per source...")
     dow_src_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -1102,7 +1278,7 @@ def main():
     dow_src_raw = query(dow_src_sql)
 
     # --- Per-Source: Top Items ---
-    print("[32/33] Top items per source...")
+    print("[32/42] Top items per source...")
     items_src_sql = """
         WITH uid_source AS (
             SELECT uid, source_group FROM (
@@ -1131,8 +1307,134 @@ def main():
     """
     items_src_raw = query(items_src_sql)
 
+    # --- Per-Source: Device & Browser CVR ---
+    print("[39/42] Device & browser per source...")
+    device_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        purchasers AS (
+            SELECT DISTINCT uid FROM events WHERE event_name = 'purchase'
+        )
+        SELECT
+            us.source_group,
+            COALESCE(e.device_category, 'Unknown') AS device_category,
+            COALESCE(e.os, 'Unknown') AS os,
+            COALESCE(e.browser_final, 'Unknown') AS browser,
+            COUNT(DISTINCT e.uid) AS users,
+            COUNT(DISTINCT p.uid) AS purchasers,
+            ROUND(100.0 * COUNT(DISTINCT p.uid) / NULLIF(COUNT(DISTINCT e.uid), 0), 1) AS cvr
+        FROM events e
+        JOIN uid_source us ON e.uid = us.uid
+        LEFT JOIN purchasers p ON e.uid = p.uid
+        GROUP BY us.source_group, e.device_category, e.os, e.browser_final
+        ORDER BY us.source_group, users DESC
+    """
+    device_src_raw = query(device_src_sql)
+
+    # --- Per-Source: Geo Region ---
+    print("[40/42] Geo region per source...")
+    geo_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        purchasers AS (
+            SELECT DISTINCT uid FROM events WHERE event_name = 'purchase'
+        )
+        SELECT
+            us.source_group,
+            COALESCE(e.geo_region, 'Unknown') AS region,
+            COUNT(DISTINCT e.uid) AS users,
+            COUNT(DISTINCT p.uid) AS purchasers,
+            SUM(CASE WHEN e.event_name = 'purchase' THEN e.revenue ELSE 0 END) AS revenue,
+            ROUND(100.0 * COUNT(DISTINCT p.uid) / NULLIF(COUNT(DISTINCT e.uid), 0), 1) AS cvr
+        FROM events e
+        JOIN uid_source us ON e.uid = us.uid
+        LEFT JOIN purchasers p ON e.uid = p.uid
+        GROUP BY us.source_group, e.geo_region
+        ORDER BY us.source_group, users DESC
+    """
+    geo_src_raw = query(geo_src_sql)
+
+    # --- Per-Source: Page Path CVR ---
+    print("[41/42] Page path CVR per source...")
+    page_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        ),
+        page_visits AS (
+            SELECT uid,
+                CASE
+                    WHEN page_location LIKE '%/cart%' THEN '/cart'
+                    WHEN page_location LIKE '%/lottoboard/series%' THEN '/lottoboard/series'
+                    WHEN page_location LIKE '%/lottoboard/all%' THEN '/lottoboard/all'
+                    WHEN page_location LIKE '%/lottoboard/single%' THEN '/lottoboard/single'
+                    WHEN page_location LIKE '%/safe%' THEN '/safe'
+                    WHEN page_location LIKE '%/highlights%' THEN '/highlights'
+                    WHEN page_location LIKE '%/jidrid%' THEN '/jidrid'
+                    WHEN page_location LIKE '%/profile%' THEN '/profile'
+                    WHEN page_location LIKE '%/orders%' THEN '/orders'
+                    WHEN page_location LIKE '%/register%' THEN '/register'
+                    WHEN page_location LIKE '%/dashboard%' THEN '/dashboard'
+                    WHEN page_location LIKE '%/prize-history%' THEN '/prize-history'
+                    ELSE '/ (home)'
+                END AS page_path
+            FROM events
+            WHERE page_location IS NOT NULL
+        ),
+        purchasers AS (
+            SELECT DISTINCT uid FROM events WHERE event_name = 'purchase'
+        )
+        SELECT
+            us.source_group,
+            pv.page_path,
+            COUNT(DISTINCT pv.uid) AS visitors,
+            COUNT(DISTINCT p.uid) AS purchasers,
+            ROUND(100.0 * COUNT(DISTINCT p.uid) / NULLIF(COUNT(DISTINCT pv.uid), 0), 1) AS cvr
+        FROM page_visits pv
+        JOIN uid_source us ON pv.uid = us.uid
+        LEFT JOIN purchasers p ON pv.uid = p.uid
+        GROUP BY us.source_group, pv.page_path
+        ORDER BY us.source_group, cvr DESC
+    """
+    page_src_raw = query(page_src_sql)
+
+    # --- Per-Source: Event Distribution Full ---
+    print("[42/42] Event distribution per source...")
+    event_src_sql = """
+        WITH uid_source AS (
+            SELECT uid, source_group FROM (
+                SELECT uid, source_group,
+                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS rn
+                FROM events
+            ) t WHERE rn = 1
+        )
+        SELECT
+            us.source_group,
+            e.event_name,
+            COUNT(*) AS event_count,
+            COUNT(DISTINCT e.uid) AS user_count
+        FROM events e
+        JOIN uid_source us ON e.uid = us.uid
+        GROUP BY us.source_group, e.event_name
+        ORDER BY us.source_group, event_count DESC
+    """
+    event_src_raw = query(event_src_sql)
+
     # --- Build by_source structure ---
-    print("[33/33] Building output...")
+    print("Building output...")
     by_source = {}
     source_groups = set()
 
@@ -1306,6 +1608,52 @@ def main():
                 "buyers": int(row["buyers"]),
             })
 
+        # Device & browser per source
+        sg_device_rows = device_src_raw[device_src_raw["source_group"] == sg]
+        sg_device = []
+        for _, row in sg_device_rows.iterrows():
+            sg_device.append({
+                "device": row["device_category"],
+                "os": row["os"],
+                "browser": row["browser"],
+                "users": int(row["users"]),
+                "purchasers": int(row["purchasers"]),
+                "cvr": float(row["cvr"]) if row["cvr"] else 0,
+            })
+
+        # Geo region per source (top 15)
+        sg_geo_rows = geo_src_raw[geo_src_raw["source_group"] == sg].head(15)
+        sg_geo = []
+        for _, row in sg_geo_rows.iterrows():
+            sg_geo.append({
+                "region": row["region"],
+                "users": int(row["users"]),
+                "purchasers": int(row["purchasers"]),
+                "revenue": float(row["revenue"]),
+                "cvr": float(row["cvr"]) if row["cvr"] else 0,
+            })
+
+        # Page path CVR per source
+        sg_page_rows = page_src_raw[page_src_raw["source_group"] == sg]
+        sg_page = []
+        for _, row in sg_page_rows.iterrows():
+            sg_page.append({
+                "path": row["page_path"],
+                "visitors": int(row["visitors"]),
+                "purchasers": int(row["purchasers"]),
+                "cvr": float(row["cvr"]) if row["cvr"] else 0,
+            })
+
+        # Event distribution per source
+        sg_event_rows = event_src_raw[event_src_raw["source_group"] == sg]
+        sg_event = []
+        for _, row in sg_event_rows.iterrows():
+            sg_event.append({
+                "event": row["event_name"],
+                "events": int(row["event_count"]),
+                "users": int(row["user_count"]),
+            })
+
         by_source[sg] = {
             "kpi": sg_kpi,
             "funnel": sg_funnel,
@@ -1321,6 +1669,10 @@ def main():
             "hourly_revenue": sg_hourly_rev,
             "day_of_week": sg_dow,
             "top_items": sg_items,
+            "device_browser": sg_device,
+            "geo_region": sg_geo,
+            "page_path_cvr": sg_page,
+            "event_distribution_full": sg_event,
         }
 
     # --- Assemble & Write JSON ---
@@ -1345,6 +1697,11 @@ def main():
         "hourly_revenue": hourly_revenue,
         "day_of_week": day_of_week_data,
         "top_items": top_items,
+        "device_browser": device_browser_data,
+        "geo_region": geo_region_data,
+        "campaign_performance": campaign_data,
+        "page_path_cvr": page_path_data,
+        "event_distribution_full": event_dist_full_data,
         "by_source": by_source,
     }
 

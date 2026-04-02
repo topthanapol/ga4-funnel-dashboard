@@ -281,6 +281,30 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
     </div>
   </div>
 
+  <!-- Insight Charts: Device, Event, Geo, Campaign, Page Path -->
+  <div class="panel-grid">
+    <div class="panel">
+      <div class="panel-title">Device & Browser CVR</div>
+      <div class="chart-container-tall" id="deviceBrowserChart"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Event Distribution (Treemap)</div>
+      <div class="chart-container-tall" id="eventDistFullChart"></div>
+    </div>
+    <div class="panel panel-full">
+      <div class="panel-title">Geo Region Performance (Top 15)</div>
+      <div class="chart-container-tall" id="geoRegionChart"></div>
+    </div>
+    <div class="panel panel-full">
+      <div class="panel-title">Campaign Performance (Top 15)</div>
+      <div class="chart-container-tall" id="campaignChart"></div>
+    </div>
+    <div class="panel panel-full">
+      <div class="panel-title">Page Path Conversion Rate</div>
+      <div class="chart-container-tall" id="pagePathChart"></div>
+    </div>
+  </div>
+
   <!-- Combined Sankey + Journey Section -->
   <div class="journey-section">
     <div class="section-left">
@@ -930,6 +954,247 @@ function renderEngagement(data) {
   window.addEventListener('resize', () => chart.resize());
 }
 
+function renderDeviceBrowser(data) {
+  const chart = initChart('deviceBrowserChart');
+  if (!data || data.length === 0) return;
+  const labels = data.map(d => `${d.device} / ${d.os} / ${d.browser}`).slice(0, 12);
+  const users = data.map(d => d.users).slice(0, 12);
+  const cvr = data.map(d => d.cvr).slice(0, 12);
+
+  chart.setOption({
+    tooltip: {
+      trigger: 'axis',
+      formatter: params => {
+        let s = `<b>${params[0].axisValue}</b>`;
+        params.forEach(p => {
+          const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background:${p.color}"></span>`;
+          s += `<br/>${marker}${p.seriesName}: ${p.seriesName === 'CVR %' ? p.value + '%' : fmt(p.value)}`;
+        });
+        return s;
+      }
+    },
+    legend: { data: ['Users','CVR %'], top: 0, textStyle: { color: '#94a3b8', fontSize: 11 } },
+    grid: { left: 160, right: 60, bottom: 20, top: 40 },
+    xAxis: [
+      { type: 'value', name: 'Users', axisLabel: { color: '#94a3b8', formatter: v => fmt(v) }, splitLine: { lineStyle: { color: '#1e293b' } }, nameTextStyle: { color: '#94a3b8' } },
+    ],
+    yAxis: {
+      type: 'category', data: labels, axisLabel: { color: '#94a3b8', fontSize: 10, width: 140, overflow: 'truncate' },
+      axisLine: { lineStyle: { color: '#334155' } }, inverse: true
+    },
+    series: [
+      {
+        name: 'Users', type: 'bar', barMaxWidth: 24,
+        data: users.map((v, i) => ({
+          value: v,
+          itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#3b82f6'},{offset:1,color:'#06b6d4'}]), borderRadius: [0,4,4,0] }
+        })),
+        label: {
+          show: true, position: 'right',
+          formatter: p => `${fmt(p.value)} | ${cvr[p.dataIndex]}%`,
+          color: '#94a3b8', fontSize: 10
+        }
+      }
+    ]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderGeoRegion(data) {
+  const chart = initChart('geoRegionChart');
+  if (!data || data.length === 0) return;
+  const regions = data.map(d => d.region);
+  const users = data.map(d => d.users);
+  const cvr = data.map(d => d.cvr);
+
+  chart.setOption({
+    tooltip: {
+      trigger: 'axis',
+      formatter: params => {
+        let s = `<b>${params[0].axisValue}</b>`;
+        params.forEach(p => {
+          const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background:${p.color}"></span>`;
+          s += `<br/>${marker}${p.seriesName}: ${p.seriesName === 'CVR %' ? p.value + '%' : fmt(p.value)}`;
+        });
+        return s;
+      }
+    },
+    legend: { data: ['Users','CVR %'], top: 0, textStyle: { color: '#94a3b8', fontSize: 11 } },
+    grid: { left: 140, right: 60, bottom: 20, top: 40 },
+    xAxis: [
+      { type: 'value', name: 'Users', axisLabel: { color: '#94a3b8', formatter: v => fmt(v) }, splitLine: { lineStyle: { color: '#1e293b' } }, nameTextStyle: { color: '#94a3b8' } },
+      { type: 'value', name: 'CVR %', axisLabel: { color: '#94a3b8', formatter: v => v+'%' }, splitLine: { show: false }, nameTextStyle: { color: '#94a3b8' } }
+    ],
+    yAxis: {
+      type: 'category', data: regions,
+      axisLabel: { color: '#94a3b8', fontSize: 11 },
+      axisLine: { lineStyle: { color: '#334155' } }, inverse: true
+    },
+    series: [
+      {
+        name: 'Users', type: 'bar', barMaxWidth: 24,
+        data: users.map(v => ({
+          value: v,
+          itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#3b82f6'},{offset:1,color:'#60a5fa'}]), borderRadius: [0,4,4,0] }
+        })),
+        label: { show: true, position: 'right', formatter: p => fmt(p.value), color: '#94a3b8', fontSize: 10 }
+      },
+      {
+        name: 'CVR %', type: 'line', xAxisIndex: 1,
+        data: cvr,
+        itemStyle: { color: COLORS.orange }, lineStyle: { width: 2 },
+        symbol: 'circle', symbolSize: 7,
+        label: { show: true, formatter: '{c}%', color: '#f59e0b', fontSize: 10, position: 'right' }
+      }
+    ]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderCampaign(data) {
+  const chart = initChart('campaignChart');
+  if (!data || data.length === 0) return;
+  const labels = data.map(d => {
+    const name = `${d.source}/${d.medium} — ${d.campaign}`;
+    return name.length > 50 ? name.substring(0, 47) + '...' : name;
+  });
+  const revenue = data.map(d => d.revenue);
+  const cvr = data.map(d => d.cvr);
+
+  chart.setOption({
+    tooltip: {
+      trigger: 'axis',
+      formatter: params => {
+        const idx = params[0].dataIndex;
+        const d = data[idx];
+        return `<b>${d.source}/${d.medium}</b><br/>Campaign: ${d.campaign}<br/>Users: ${fmt(d.users)}<br/>Purchasers: ${fmt(d.purchasers)}<br/>Revenue: ${fmt(d.revenue)}<br/>CVR: ${d.cvr}%`;
+      }
+    },
+    legend: { data: ['Revenue','CVR %'], top: 0, textStyle: { color: '#94a3b8', fontSize: 11 } },
+    grid: { left: 220, right: 60, bottom: 20, top: 40 },
+    xAxis: [
+      { type: 'value', name: 'Revenue', axisLabel: { color: '#94a3b8', formatter: v => fmt(v) }, splitLine: { lineStyle: { color: '#1e293b' } }, nameTextStyle: { color: '#94a3b8' } },
+      { type: 'value', name: 'CVR %', axisLabel: { color: '#94a3b8', formatter: v => v+'%' }, splitLine: { show: false }, nameTextStyle: { color: '#94a3b8' } }
+    ],
+    yAxis: {
+      type: 'category', data: labels,
+      axisLabel: { color: '#94a3b8', fontSize: 10, width: 200, overflow: 'truncate' },
+      axisLine: { lineStyle: { color: '#334155' } }, inverse: true
+    },
+    series: [
+      {
+        name: 'Revenue', type: 'bar', barMaxWidth: 22,
+        data: revenue.map(v => ({
+          value: v,
+          itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#10b981'},{offset:1,color:'#34d399'}]), borderRadius: [0,4,4,0] }
+        })),
+        label: { show: true, position: 'right', formatter: p => fmt(p.value), color: '#94a3b8', fontSize: 10 }
+      },
+      {
+        name: 'CVR %', type: 'line', xAxisIndex: 1,
+        data: cvr,
+        itemStyle: { color: COLORS.orange }, lineStyle: { width: 2 },
+        symbol: 'circle', symbolSize: 7,
+        label: { show: true, formatter: '{c}%', color: '#f59e0b', fontSize: 10, position: 'right' }
+      }
+    ]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderPagePath(data) {
+  const chart = initChart('pagePathChart');
+  if (!data || data.length === 0) return;
+  const paths = data.map(d => d.path);
+  const visitors = data.map(d => d.visitors);
+  const cvr = data.map(d => d.cvr);
+
+  chart.setOption({
+    tooltip: {
+      trigger: 'axis',
+      formatter: params => {
+        const idx = params[0].dataIndex;
+        const d = data[idx];
+        return `<b>${d.path}</b><br/>Visitors: ${fmt(d.visitors)}<br/>Purchasers: ${fmt(d.purchasers)}<br/>CVR: ${d.cvr}%`;
+      }
+    },
+    legend: { data: ['Visitors','CVR %'], top: 0, textStyle: { color: '#94a3b8', fontSize: 11 } },
+    grid: { left: 160, right: 60, bottom: 20, top: 40 },
+    xAxis: [
+      { type: 'value', name: 'Visitors', axisLabel: { color: '#94a3b8', formatter: v => fmt(v) }, splitLine: { lineStyle: { color: '#1e293b' } }, nameTextStyle: { color: '#94a3b8' } },
+      { type: 'value', name: 'CVR %', axisLabel: { color: '#94a3b8', formatter: v => v+'%' }, splitLine: { show: false }, nameTextStyle: { color: '#94a3b8' } }
+    ],
+    yAxis: {
+      type: 'category', data: paths,
+      axisLabel: { color: '#94a3b8', fontSize: 11 },
+      axisLine: { lineStyle: { color: '#334155' } }, inverse: true
+    },
+    series: [
+      {
+        name: 'Visitors', type: 'bar', barMaxWidth: 24,
+        data: visitors.map(v => ({
+          value: v,
+          itemStyle: { color: new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#8b5cf6'},{offset:1,color:'#a78bfa'}]), borderRadius: [0,4,4,0] }
+        })),
+        label: { show: true, position: 'right', formatter: p => fmt(p.value), color: '#94a3b8', fontSize: 10 }
+      },
+      {
+        name: 'CVR %', type: 'line', xAxisIndex: 1,
+        data: cvr,
+        itemStyle: { color: COLORS.orange }, lineStyle: { width: 2 },
+        symbol: 'circle', symbolSize: 7,
+        label: { show: true, formatter: '{c}%', color: '#f59e0b', fontSize: 10, position: 'right' }
+      }
+    ]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderEventDist(data) {
+  const chart = initChart('eventDistFullChart');
+  if (!data || data.length === 0) return;
+
+  const categoryColors = {
+    'view_item_list': '#3b82f6', 'select_item': '#60a5fa',
+    'add_to_cart': '#10b981', 'remove_from_cart': '#6ee7b7', 'view_cart': '#34d399',
+    'begin_checkout': '#f59e0b', 'add_payment_info': '#fbbf24',
+    'purchase': '#ef4444',
+    'page_view': '#8b5cf6', 'session_start': '#a78bfa', 'first_visit': '#c4b5fd',
+    'user_engagement': '#06b6d4', 'scroll': '#22d3ee',
+    'view_promotion': '#ec4899', 'select_promotion': '#f472b6',
+    'sign_up': '#84cc16', 'login': '#a3e635',
+  };
+
+  const treemapData = data.map(d => ({
+    name: d.event,
+    value: d.events,
+    users: d.users,
+    itemStyle: { color: categoryColors[d.event] || '#64748b' }
+  }));
+
+  chart.setOption({
+    tooltip: {
+      formatter: p => `<b>${p.name}</b><br/>Events: ${fmt(p.value)}<br/>Users: ${fmt(p.data.users)}`
+    },
+    series: [{
+      type: 'treemap',
+      width: '95%', height: '90%',
+      left: 'center', top: 20,
+      roam: false,
+      nodeClick: false,
+      breadcrumb: { show: false },
+      label: {
+        show: true,
+        formatter: p => `${p.name}\n${fmt(p.value)}`,
+        fontSize: 11, color: '#fff', lineHeight: 16
+      },
+      itemStyle: { borderColor: '#1e293b', borderWidth: 2, gapWidth: 2 },
+      data: treemapData
+    }]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
 function renderAll(data) {
   renderKPIs(data.kpi);
   renderFunnel(data.funnel);
@@ -946,6 +1211,12 @@ function renderAll(data) {
   if (data.revenue_by_source) renderRevenueBySource(data.revenue_by_source);
   if (data.session_depth_cvr) renderSessionCvr(data.session_depth_cvr);
   if (data.engagement_distribution) renderEngagement(data.engagement_distribution);
+  // Insight charts
+  if (data.device_browser) renderDeviceBrowser(data.device_browser);
+  if (data.event_distribution_full) renderEventDist(data.event_distribution_full);
+  if (data.geo_region) renderGeoRegion(data.geo_region);
+  if (data.campaign_performance) renderCampaign(data.campaign_performance);
+  if (data.page_path_cvr) renderPagePath(data.page_path_cvr);
 }
 
 // Load and render
@@ -979,6 +1250,11 @@ async function init() {
           revenue_by_source: fullData.revenue_by_source,
           session_depth_cvr: srcData.session_depth_cvr,
           engagement_distribution: srcData.engagement_distribution,
+          device_browser: srcData.device_browser,
+          geo_region: srcData.geo_region,
+          campaign_performance: fullData.campaign_performance,
+          page_path_cvr: srcData.page_path_cvr,
+          event_distribution_full: srcData.event_distribution_full,
         });
       }
     });

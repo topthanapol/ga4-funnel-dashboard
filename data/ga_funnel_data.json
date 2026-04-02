@@ -2043,13 +2043,13 @@
   "revenue_by_source": [
     {
       "source": "LINE Richmenu",
-      "revenue": 96565345.0,
-      "orders": 130512
+      "revenue": 96565660.0,
+      "orders": 130513
     },
     {
       "source": "Direct",
-      "revenue": 77546555.0,
-      "orders": 105310
+      "revenue": 77546240.0,
+      "orders": 105309
     },
     {
       "source": "Social",
@@ -2361,13 +2361,7 @@
       "buyers": 2
     },
     {
-      "item": "099561",
-      "revenue": 21210.0,
-      "orders": 2,
-      "buyers": 2
-    },
-    {
-      "item": "056998",
+      "item": "546102",
       "revenue": 21210.0,
       "orders": 2,
       "buyers": 2
@@ -2379,13 +2373,7 @@
       "buyers": 2
     },
     {
-      "item": "546102",
-      "revenue": 21210.0,
-      "orders": 2,
-      "buyers": 2
-    },
-    {
-      "item": "650893",
+      "item": "099561",
       "revenue": 21210.0,
       "orders": 2,
       "buyers": 2
@@ -2397,18 +2385,718 @@
       "buyers": 2
     },
     {
+      "item": "056998",
+      "revenue": 21210.0,
+      "orders": 2,
+      "buyers": 2
+    },
+    {
+      "item": "650893",
+      "revenue": 21210.0,
+      "orders": 2,
+      "buyers": 2
+    },
+    {
       "item": "926311",
       "revenue": 21105.0,
       "orders": 2,
       "buyers": 2
     }
   ],
+  "device_browser": [
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "Android Webview",
+      "users": 281859,
+      "purchasers": 95887,
+      "cvr": 34.0
+    },
+    {
+      "device": "mobile",
+      "os": "iOS",
+      "browser": "Safari (in-app)",
+      "users": 253634,
+      "purchasers": 93812,
+      "cvr": 37.0
+    },
+    {
+      "device": "mobile",
+      "os": "iOS",
+      "browser": "Safari",
+      "users": 60793,
+      "purchasers": 21577,
+      "cvr": 35.5
+    },
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "Chrome",
+      "users": 58295,
+      "purchasers": 20210,
+      "cvr": 34.7
+    },
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "Samsung Internet",
+      "users": 6924,
+      "purchasers": 2939,
+      "cvr": 42.4
+    },
+    {
+      "device": "mobile",
+      "os": "iOS",
+      "browser": "Chrome",
+      "users": 2764,
+      "purchasers": 1157,
+      "cvr": 41.9
+    },
+    {
+      "device": "desktop",
+      "os": "Windows",
+      "browser": "Chrome",
+      "users": 2186,
+      "purchasers": 964,
+      "cvr": 44.1
+    },
+    {
+      "device": "desktop",
+      "os": "Macintosh",
+      "browser": "Safari",
+      "users": 1800,
+      "purchasers": 772,
+      "cvr": 42.9
+    },
+    {
+      "device": "tablet",
+      "os": "iOS",
+      "browser": "Safari (in-app)",
+      "users": 1778,
+      "purchasers": 761,
+      "cvr": 42.8
+    },
+    {
+      "device": "tablet",
+      "os": "Android",
+      "browser": "Android Webview",
+      "users": 1737,
+      "purchasers": 700,
+      "cvr": 40.3
+    },
+    {
+      "device": "desktop",
+      "os": "Windows",
+      "browser": "Edge",
+      "users": 979,
+      "purchasers": 465,
+      "cvr": 47.5
+    },
+    {
+      "device": "desktop",
+      "os": "Linux",
+      "browser": "Chrome",
+      "users": 360,
+      "purchasers": 132,
+      "cvr": 36.7
+    },
+    {
+      "device": "desktop",
+      "os": "Macintosh",
+      "browser": "Chrome",
+      "users": 262,
+      "purchasers": 116,
+      "cvr": 44.3
+    },
+    {
+      "device": "tablet",
+      "os": "Android",
+      "browser": "Chrome",
+      "users": 250,
+      "purchasers": 96,
+      "cvr": 38.4
+    },
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "Edge",
+      "users": 223,
+      "purchasers": 97,
+      "cvr": 43.5
+    },
+    {
+      "device": "tablet",
+      "os": "iOS",
+      "browser": "Safari",
+      "users": 167,
+      "purchasers": 72,
+      "cvr": 43.1
+    },
+    {
+      "device": "tablet",
+      "os": "iOS",
+      "browser": "Chrome",
+      "users": 105,
+      "purchasers": 55,
+      "cvr": 52.4
+    },
+    {
+      "device": "desktop",
+      "os": "Windows",
+      "browser": "Firefox",
+      "users": 76,
+      "purchasers": 32,
+      "cvr": 42.1
+    },
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "Firefox",
+      "users": 64,
+      "purchasers": 20,
+      "cvr": 31.3
+    },
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "Opera",
+      "users": 48,
+      "purchasers": 14,
+      "cvr": 29.2
+    },
+    {
+      "device": "desktop",
+      "os": "Linux",
+      "browser": "Samsung Internet",
+      "users": 43,
+      "purchasers": 16,
+      "cvr": 37.2
+    },
+    {
+      "device": "desktop",
+      "os": "Windows",
+      "browser": "Opera",
+      "users": 22,
+      "purchasers": 12,
+      "cvr": 54.5
+    },
+    {
+      "device": "desktop",
+      "os": "Macintosh",
+      "browser": "Edge",
+      "users": 11,
+      "purchasers": 6,
+      "cvr": 54.5
+    },
+    {
+      "device": "desktop",
+      "os": "Macintosh",
+      "browser": "Firefox",
+      "users": 6,
+      "purchasers": 5,
+      "cvr": 83.3
+    },
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "UC Browser",
+      "users": 5,
+      "purchasers": 1,
+      "cvr": 20.0
+    },
+    {
+      "device": "desktop",
+      "os": "Linux",
+      "browser": "Edge",
+      "users": 4,
+      "purchasers": 4,
+      "cvr": 100.0
+    },
+    {
+      "device": "mobile",
+      "os": "Macintosh",
+      "browser": "Chrome",
+      "users": 4,
+      "purchasers": 3,
+      "cvr": 75.0
+    },
+    {
+      "device": "tablet",
+      "os": "Android",
+      "browser": "Samsung Internet",
+      "users": 2,
+      "purchasers": 0,
+      "cvr": 0
+    },
+    {
+      "device": "mobile",
+      "os": "iOS",
+      "browser": "YaBrowser",
+      "users": 1,
+      "purchasers": 0,
+      "cvr": 0
+    },
+    {
+      "device": "mobile",
+      "os": "Linux",
+      "browser": "Chrome",
+      "users": 1,
+      "purchasers": 0,
+      "cvr": 0
+    },
+    {
+      "device": "desktop",
+      "os": "Chrome OS",
+      "browser": "Chrome",
+      "users": 1,
+      "purchasers": 1,
+      "cvr": 100.0
+    },
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "Android Browser",
+      "users": 1,
+      "purchasers": 1,
+      "cvr": 100.0
+    },
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "Whale Browser",
+      "users": 1,
+      "purchasers": 0,
+      "cvr": 0
+    },
+    {
+      "device": "mobile",
+      "os": "Macintosh",
+      "browser": "Edge",
+      "users": 1,
+      "purchasers": 1,
+      "cvr": 100.0
+    },
+    {
+      "device": "mobile",
+      "os": "Android",
+      "browser": "Aloha Browser",
+      "users": 1,
+      "purchasers": 1,
+      "cvr": 100.0
+    },
+    {
+      "device": "mobile",
+      "os": "Windows",
+      "browser": "Chrome",
+      "users": 1,
+      "purchasers": 0,
+      "cvr": 0
+    }
+  ],
+  "geo_region": [
+    {
+      "region": "Bangkok",
+      "users": 322602,
+      "purchasers": 113452,
+      "revenue": 81204430.0,
+      "cvr": 35.2
+    },
+    {
+      "region": "Chon Buri",
+      "users": 40772,
+      "purchasers": 15957,
+      "revenue": 10734160.0,
+      "cvr": 39.1
+    },
+    {
+      "region": "Nakhon Ratchasima",
+      "users": 27376,
+      "purchasers": 9814,
+      "revenue": 6063510.0,
+      "cvr": 35.8
+    },
+    {
+      "region": "Chiang Mai",
+      "users": 24975,
+      "purchasers": 9177,
+      "revenue": 5915065.0,
+      "cvr": 36.7
+    },
+    {
+      "region": "Phuket",
+      "users": 20231,
+      "purchasers": 8133,
+      "revenue": 4469600.0,
+      "cvr": 40.2
+    },
+    {
+      "region": "Nakhon Sawan",
+      "users": 18085,
+      "purchasers": 6893,
+      "revenue": 3381620.0,
+      "cvr": 38.1
+    },
+    {
+      "region": "Khon Kaen",
+      "users": 16987,
+      "purchasers": 6031,
+      "revenue": 4193350.0,
+      "cvr": 35.5
+    },
+    {
+      "region": "Surat Thani",
+      "users": 16431,
+      "purchasers": 6888,
+      "revenue": 2494105.0,
+      "cvr": 41.9
+    },
+    {
+      "region": "Kanchanaburi",
+      "users": 13429,
+      "purchasers": 5564,
+      "revenue": 1794050.0,
+      "cvr": 41.4
+    },
+    {
+      "region": "Songkhla",
+      "users": 12944,
+      "purchasers": 4858,
+      "revenue": 2529645.0,
+      "cvr": 37.5
+    },
+    {
+      "region": "Ubon Ratchathani",
+      "users": 11890,
+      "purchasers": 4507,
+      "revenue": 1843650.0,
+      "cvr": 37.9
+    },
+    {
+      "region": "Saraburi",
+      "users": 10592,
+      "purchasers": 4479,
+      "revenue": 1675310.0,
+      "cvr": 42.3
+    },
+    {
+      "region": "Chachoengsao",
+      "users": 10007,
+      "purchasers": 4538,
+      "revenue": 1526660.0,
+      "cvr": 45.3
+    },
+    {
+      "region": "Ang Thong",
+      "users": 9891,
+      "purchasers": 4228,
+      "revenue": 1107755.0,
+      "cvr": 42.7
+    },
+    {
+      "region": "Pathum Thani",
+      "users": 9755,
+      "purchasers": 3954,
+      "revenue": 2956370.0,
+      "cvr": 40.5
+    }
+  ],
+  "campaign_performance": [
+    {
+      "source": "line",
+      "medium": "bc_nok",
+      "campaign": "line_\u0e0a\u0e38\u0e14\u0e01\u0e25\u0e32\u0e076-10",
+      "users": 11157,
+      "purchasers": 1536,
+      "revenue": 1022520.0,
+      "cvr": 13.8
+    },
+    {
+      "source": "google",
+      "medium": "organic",
+      "campaign": "(organic)",
+      "users": 9403,
+      "purchasers": 6,
+      "revenue": 0.0,
+      "cvr": 0.1
+    },
+    {
+      "source": "line",
+      "medium": "bc_nok",
+      "campaign": "line_\u0e0a\u0e38\u0e14\u0e40\u0e25\u0e47\u0e01<5",
+      "users": 6103,
+      "purchasers": 755,
+      "revenue": 425095.0,
+      "cvr": 12.4
+    },
+    {
+      "source": "richmenu_nokplus",
+      "medium": "richmenu",
+      "campaign": "line_\u0e0a\u0e38\u0e14\u0e01\u0e25\u0e32\u0e076-10",
+      "users": 3669,
+      "purchasers": 542,
+      "revenue": 319175.0,
+      "cvr": 14.8
+    },
+    {
+      "source": "line",
+      "medium": "bc_nok",
+      "campaign": "line_\u0e0a\u0e38\u0e14\u0e43\u0e2b\u0e0d\u0e48>11",
+      "users": 3122,
+      "purchasers": 429,
+      "revenue": 327705.0,
+      "cvr": 13.7
+    },
+    {
+      "source": "richmenu_nokplus",
+      "medium": "richmenu",
+      "campaign": "line_\u0e0a\u0e38\u0e14\u0e40\u0e25\u0e47\u0e01<5",
+      "users": 2254,
+      "purchasers": 262,
+      "revenue": 145190.0,
+      "cvr": 11.6
+    },
+    {
+      "source": "line",
+      "medium": "cpc",
+      "campaign": "ads_buy\u0e40\u0e25\u0e02\u0e44\u0e2b\u0e19\u0e01\u0e47\u0e2b\u0e32\u0e40\u0e08\u0e2d\u0e1e\u0e35\u0e48\u0e19\u0e2d\u0e17",
+      "users": 2082,
+      "purchasers": 90,
+      "revenue": 66465.0,
+      "cvr": 4.3
+    },
+    {
+      "source": "line",
+      "medium": "cpc",
+      "campaign": "ads_buy\u0e23\u0e30\u0e27\u0e31\u0e07\u0e40\u0e25\u0e02\u0e17\u0e35\u0e48\u0e0a\u0e2d\u0e1a\u0e2b\u0e21\u0e14",
+      "users": 1990,
+      "purchasers": 87,
+      "revenue": 74580.0,
+      "cvr": 4.4
+    },
+    {
+      "source": "richmenu_nokplus",
+      "medium": "richmenu",
+      "campaign": "line_\u0e0a\u0e38\u0e14\u0e43\u0e2b\u0e0d\u0e48>11",
+      "users": 1160,
+      "purchasers": 163,
+      "revenue": 115395.0,
+      "cvr": 14.1
+    },
+    {
+      "source": "richmenu_nokplus,line",
+      "medium": "richmenu,bc_nok",
+      "campaign": "line_\u0e0a\u0e38\u0e14\u0e01\u0e25\u0e32\u0e076-10",
+      "users": 1031,
+      "purchasers": 207,
+      "revenue": 161990.0,
+      "cvr": 20.1
+    },
+    {
+      "source": "line",
+      "medium": "bc_nok",
+      "campaign": "line_\u0e23\u0e2d\u0e1a\u0e2b\u0e25\u0e31\u0e01",
+      "users": 825,
+      "purchasers": 160,
+      "revenue": 110985.0,
+      "cvr": 19.4
+    },
+    {
+      "source": "line",
+      "medium": "cpc",
+      "campaign": "ads_Old\u0e25\u0e2d\u0e15\u0e40\u0e15\u0e2d\u0e23\u0e35\u0e48\u0e1e\u0e25\u0e31\u0e2a\u0e04\u0e27\u0e32\u0e21\u0e2b\u0e27\u0e31\u0e07\u0e02\u0e2d\u0e07\u0e04\u0e19\u0e08\u0e30\u0e23\u0e27\u0e22",
+      "users": 783,
+      "purchasers": 15,
+      "revenue": 19215.0,
+      "cvr": 1.9
+    },
+    {
+      "source": "richmenu_nokplus,line",
+      "medium": "richmenu,bc_nok",
+      "campaign": "line_\u0e0a\u0e38\u0e14\u0e40\u0e25\u0e47\u0e01<5",
+      "users": 686,
+      "purchasers": 109,
+      "revenue": 60900.0,
+      "cvr": 15.9
+    },
+    {
+      "source": "line",
+      "medium": "bc_nok",
+      "campaign": "line_\u0e0a\u0e38\u0e1418",
+      "users": 453,
+      "purchasers": 63,
+      "revenue": 19320.0,
+      "cvr": 13.9
+    },
+    {
+      "source": "tiktok",
+      "medium": "paid",
+      "campaign": "202603_16\u0e21\u0e35\u0e19\u0e32\u0e04\u0e21_regis_tt_thailand_vdo",
+      "users": 447,
+      "purchasers": 6,
+      "revenue": 1890.0,
+      "cvr": 1.3
+    }
+  ],
+  "page_path_cvr": [
+    {
+      "path": "/safe",
+      "visitors": 296229,
+      "purchasers": 201150,
+      "cvr": 67.9
+    },
+    {
+      "path": "/dashboard",
+      "visitors": 44620,
+      "purchasers": 28428,
+      "cvr": 63.7
+    },
+    {
+      "path": "/prize-history",
+      "visitors": 58506,
+      "purchasers": 35364,
+      "cvr": 60.4
+    },
+    {
+      "path": "/cart",
+      "visitors": 368554,
+      "purchasers": 212005,
+      "cvr": 57.5
+    },
+    {
+      "path": "/jidrid",
+      "visitors": 97169,
+      "purchasers": 40452,
+      "cvr": 41.6
+    },
+    {
+      "path": "/orders",
+      "visitors": 133857,
+      "purchasers": 52601,
+      "cvr": 39.3
+    },
+    {
+      "path": "/profile",
+      "visitors": 188853,
+      "purchasers": 66619,
+      "cvr": 35.3
+    },
+    {
+      "path": "/ (home)",
+      "visitors": 621457,
+      "purchasers": 212339,
+      "cvr": 34.2
+    },
+    {
+      "path": "/highlights",
+      "visitors": 67661,
+      "purchasers": 21149,
+      "cvr": 31.3
+    },
+    {
+      "path": "/register",
+      "visitors": 50841,
+      "purchasers": 11899,
+      "cvr": 23.4
+    }
+  ],
+  "event_distribution_full": [
+    {
+      "event": "view_item_list",
+      "events": 15463991,
+      "users": 586973
+    },
+    {
+      "event": "page_view",
+      "events": 12676015,
+      "users": 621479
+    },
+    {
+      "event": "add_to_cart",
+      "events": 1652780,
+      "users": 344644
+    },
+    {
+      "event": "session_start",
+      "events": 1186423,
+      "users": 621241
+    },
+    {
+      "event": "view_cart",
+      "events": 830185,
+      "users": 367168
+    },
+    {
+      "event": "login",
+      "events": 705970,
+      "users": 621379
+    },
+    {
+      "event": "user_engagement",
+      "events": 415370,
+      "users": 222310
+    },
+    {
+      "event": "add_payment_info",
+      "events": 363032,
+      "users": 261451
+    },
+    {
+      "event": "begin_checkout",
+      "events": 331483,
+      "users": 267161
+    },
+    {
+      "event": "purchase",
+      "events": 252020,
+      "users": 212339
+    },
+    {
+      "event": "first_visit",
+      "events": 235728,
+      "users": 213452
+    },
+    {
+      "event": "remove_from_cart",
+      "events": 170313,
+      "users": 81160
+    },
+    {
+      "event": "view_search_results",
+      "events": 76275,
+      "users": 35002
+    },
+    {
+      "event": "signup",
+      "events": 50728,
+      "users": 50618
+    },
+    {
+      "event": "click_top_seller_number",
+      "events": 10750,
+      "users": 9446
+    },
+    {
+      "event": "click",
+      "events": 65,
+      "users": 50
+    },
+    {
+      "event": "video_start",
+      "events": 4,
+      "users": 3
+    },
+    {
+      "event": "video_progress",
+      "events": 2,
+      "users": 2
+    }
+  ],
   "by_source": {
     "Direct": {
       "kpi": {
-        "total_users": 274403,
+        "total_users": 274402,
         "conversion_rate": 32.2,
-        "purchases": 88447,
+        "purchases": 88446,
         "avg_events_per_user": 59.1,
         "avg_hours_to_first_purchase": 5.0,
         "avg_hours_to_repeat": 15.6,
@@ -2528,8 +3216,8 @@
         },
         {
           "date": "2026-03-30",
-          "users": 23245,
-          "purchases": 8050,
+          "users": 23244,
+          "purchases": 8049,
           "conv_rate": 34.6
         },
         {
@@ -2540,7 +3228,7 @@
         },
         {
           "date": "2026-04-01",
-          "users": 135023,
+          "users": 135022,
           "purchases": 19281,
           "conv_rate": 14.3
         }
@@ -2702,9 +3390,9 @@
         },
         {
           "date": "2026-03-30",
-          "revenue": 6319195.0,
-          "orders": 9073,
-          "aov": 696.0
+          "revenue": 6318880.0,
+          "orders": 9072,
+          "aov": 697.0
         },
         {
           "date": "2026-03-31",
@@ -2954,16 +3642,16 @@
         {
           "day": 2,
           "hour": 9,
-          "users": 2320,
+          "users": 2319,
           "orders": 671,
           "revenue": 449875.0
         },
         {
           "day": 2,
           "hour": 10,
-          "users": 2613,
-          "orders": 713,
-          "revenue": 455205.0
+          "users": 2612,
+          "orders": 712,
+          "revenue": 454890.0
         },
         {
           "day": 2,
@@ -3360,7 +4048,7 @@
         {
           "day": 4,
           "hour": 19,
-          "users": 5552,
+          "users": 5551,
           "orders": 264,
           "revenue": 172280.0
         },
@@ -3905,7 +4593,7 @@
         },
         {
           "bucket": "100-499",
-          "orders": 51843,
+          "orders": 51844,
           "avg_value": 269.0
         },
         {
@@ -3932,9 +4620,9 @@
       "new_vs_returning": [
         {
           "type": "New",
-          "users": 86146,
-          "revenue": 20958400.0,
-          "purchasers": 25827,
+          "users": 86145,
+          "revenue": 20958085.0,
+          "purchasers": 25826,
           "cvr": 30.0
         },
         {
@@ -4000,7 +4688,7 @@
         },
         {
           "bucket": "3-10m",
-          "purchasers": 43297,
+          "purchasers": 43296,
           "non_purchasers": 48514
         },
         {
@@ -4062,8 +4750,8 @@
         },
         {
           "hour": 10,
-          "revenue": 5888015.0,
-          "orders": 7433
+          "revenue": 5888330.0,
+          "orders": 7434
         },
         {
           "hour": 11,
@@ -4191,13 +4879,13 @@
       ],
       "top_items": [
         {
-          "item": "157019",
+          "item": "775163",
           "revenue": 21315.0,
           "orders": 2,
           "buyers": 2
         },
         {
-          "item": "775163",
+          "item": "157019",
           "revenue": 21315.0,
           "orders": 2,
           "buyers": 2
@@ -4251,7 +4939,19 @@
           "buyers": 1
         },
         {
+          "item": "659712",
+          "revenue": 21000.0,
+          "orders": 1,
+          "buyers": 1
+        },
+        {
           "item": "373917",
+          "revenue": 21000.0,
+          "orders": 1,
+          "buyers": 1
+        },
+        {
+          "item": "717065",
           "revenue": 21000.0,
           "orders": 1,
           "buyers": 1
@@ -4263,30 +4963,553 @@
           "buyers": 1
         },
         {
-          "item": "756551",
+          "item": "187433",
           "revenue": 21000.0,
           "orders": 1,
           "buyers": 1
+        }
+      ],
+      "device_browser": [
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 130231,
+          "purchasers": 47061,
+          "cvr": 36.1
         },
         {
-          "item": "337561",
-          "revenue": 21000.0,
-          "orders": 1,
-          "buyers": 1
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari (in-app)",
+          "users": 65034,
+          "purchasers": 24621,
+          "cvr": 37.9
         },
         {
-          "item": "724384",
-          "revenue": 21000.0,
-          "orders": 1,
-          "buyers": 1
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 44589,
+          "purchasers": 14985,
+          "cvr": 33.6
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 34909,
+          "purchasers": 12384,
+          "cvr": 35.5
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Samsung Internet",
+          "users": 5351,
+          "purchasers": 2218,
+          "cvr": 41.5
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Chrome",
+          "users": 2002,
+          "purchasers": 842,
+          "cvr": 42.1
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Safari",
+          "users": 1280,
+          "purchasers": 546,
+          "cvr": 42.7
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Safari (in-app)",
+          "users": 957,
+          "purchasers": 380,
+          "cvr": 39.7
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Chrome",
+          "users": 778,
+          "purchasers": 342,
+          "cvr": 44.0
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 671,
+          "purchasers": 289,
+          "cvr": 43.1
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Edge",
+          "users": 324,
+          "purchasers": 163,
+          "cvr": 50.3
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Chrome",
+          "users": 225,
+          "purchasers": 77,
+          "cvr": 34.2
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Edge",
+          "users": 161,
+          "purchasers": 68,
+          "cvr": 42.2
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 137,
+          "purchasers": 53,
+          "cvr": 38.7
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Chrome",
+          "users": 109,
+          "purchasers": 50,
+          "cvr": 45.9
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 106,
+          "purchasers": 50,
+          "cvr": 47.2
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Chrome",
+          "users": 80,
+          "purchasers": 45,
+          "cvr": 56.3
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Firefox",
+          "users": 48,
+          "purchasers": 14,
+          "cvr": 29.2
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Samsung Internet",
+          "users": 39,
+          "purchasers": 15,
+          "cvr": 38.5
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Opera",
+          "users": 35,
+          "purchasers": 8,
+          "cvr": 22.9
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Firefox",
+          "users": 33,
+          "purchasers": 16,
+          "cvr": 48.5
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Firefox",
+          "users": 5,
+          "purchasers": 4,
+          "cvr": 80.0
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Opera",
+          "users": 5,
+          "purchasers": 4,
+          "cvr": 80.0
+        },
+        {
+          "device": "mobile",
+          "os": "Macintosh",
+          "browser": "Chrome",
+          "users": 4,
+          "purchasers": 3,
+          "cvr": 75.0
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Edge",
+          "users": 4,
+          "purchasers": 1,
+          "cvr": 25.0
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Edge",
+          "users": 3,
+          "purchasers": 3,
+          "cvr": 100.0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "UC Browser",
+          "users": 3,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Samsung Internet",
+          "users": 2,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Android Browser",
+          "users": 1,
+          "purchasers": 1,
+          "cvr": 100.0
+        },
+        {
+          "device": "mobile",
+          "os": "Linux",
+          "browser": "Chrome",
+          "users": 1,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Whale Browser",
+          "users": 1,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "mobile",
+          "os": "Macintosh",
+          "browser": "Edge",
+          "users": 1,
+          "purchasers": 1,
+          "cvr": 100.0
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "YaBrowser",
+          "users": 1,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Aloha Browser",
+          "users": 1,
+          "purchasers": 1,
+          "cvr": 100.0
+        }
+      ],
+      "geo_region": [
+        {
+          "region": "Bangkok",
+          "users": 124651,
+          "purchasers": 44874,
+          "revenue": 31241670.0,
+          "cvr": 36.0
+        },
+        {
+          "region": "Chon Buri",
+          "users": 15624,
+          "purchasers": 6250,
+          "revenue": 4004775.0,
+          "cvr": 40.0
+        },
+        {
+          "region": "Nakhon Ratchasima",
+          "users": 12543,
+          "purchasers": 4570,
+          "revenue": 2488510.0,
+          "cvr": 36.4
+        },
+        {
+          "region": "Chiang Mai",
+          "users": 10583,
+          "purchasers": 3951,
+          "revenue": 2449135.0,
+          "cvr": 37.3
+        },
+        {
+          "region": "Surat Thani",
+          "users": 10061,
+          "purchasers": 4175,
+          "revenue": 1342645.0,
+          "cvr": 41.5
+        },
+        {
+          "region": "Phuket",
+          "users": 9240,
+          "purchasers": 3781,
+          "revenue": 1804220.0,
+          "cvr": 40.9
+        },
+        {
+          "region": "Nakhon Sawan",
+          "users": 9020,
+          "purchasers": 3566,
+          "revenue": 1519120.0,
+          "cvr": 39.5
+        },
+        {
+          "region": "Kanchanaburi",
+          "users": 8813,
+          "purchasers": 3639,
+          "revenue": 1168375.0,
+          "cvr": 41.3
+        },
+        {
+          "region": "Ang Thong",
+          "users": 7031,
+          "purchasers": 2976,
+          "revenue": 784040.0,
+          "cvr": 42.3
+        },
+        {
+          "region": "Khon Kaen",
+          "users": 6926,
+          "purchasers": 2488,
+          "revenue": 1689930.0,
+          "cvr": 35.9
+        },
+        {
+          "region": "Pattani",
+          "users": 6749,
+          "purchasers": 2836,
+          "revenue": 732985.0,
+          "cvr": 42.0
+        },
+        {
+          "region": "Saraburi",
+          "users": 6701,
+          "purchasers": 2816,
+          "revenue": 984590.0,
+          "cvr": 42.0
+        },
+        {
+          "region": "Ubon Ratchathani",
+          "users": 6560,
+          "purchasers": 2586,
+          "revenue": 916945.0,
+          "cvr": 39.4
+        },
+        {
+          "region": "Chachoengsao",
+          "users": 6304,
+          "purchasers": 2828,
+          "revenue": 862190.0,
+          "cvr": 44.9
+        },
+        {
+          "region": "Narathiwat",
+          "users": 5744,
+          "purchasers": 2495,
+          "revenue": 587640.0,
+          "cvr": 43.4
+        }
+      ],
+      "page_path_cvr": [
+        {
+          "path": "/safe",
+          "visitors": 130579,
+          "purchasers": 84546,
+          "cvr": 64.7
+        },
+        {
+          "path": "/dashboard",
+          "visitors": 16087,
+          "purchasers": 9897,
+          "cvr": 61.5
+        },
+        {
+          "path": "/prize-history",
+          "visitors": 25890,
+          "purchasers": 15062,
+          "cvr": 58.2
+        },
+        {
+          "path": "/cart",
+          "visitors": 160269,
+          "purchasers": 88286,
+          "cvr": 55.1
+        },
+        {
+          "path": "/jidrid",
+          "visitors": 40342,
+          "purchasers": 16134,
+          "cvr": 40.0
+        },
+        {
+          "path": "/orders",
+          "visitors": 63110,
+          "purchasers": 24187,
+          "cvr": 38.3
+        },
+        {
+          "path": "/ (home)",
+          "visitors": 257454,
+          "purchasers": 88446,
+          "cvr": 34.4
+        },
+        {
+          "path": "/profile",
+          "visitors": 88276,
+          "purchasers": 30178,
+          "cvr": 34.2
+        },
+        {
+          "path": "/highlights",
+          "visitors": 30826,
+          "purchasers": 9636,
+          "cvr": 31.3
+        },
+        {
+          "path": "/register",
+          "visitors": 36724,
+          "purchasers": 9059,
+          "cvr": 24.7
+        }
+      ],
+      "event_distribution_full": [
+        {
+          "event": "view_item_list",
+          "events": 6714479,
+          "users": 243051
+        },
+        {
+          "event": "page_view",
+          "events": 5676670,
+          "users": 257468
+        },
+        {
+          "event": "add_to_cart",
+          "events": 721420,
+          "users": 148623
+        },
+        {
+          "event": "session_start",
+          "events": 515106,
+          "users": 257333
+        },
+        {
+          "event": "view_cart",
+          "events": 382699,
+          "users": 159478
+        },
+        {
+          "event": "login",
+          "events": 299387,
+          "users": 257427
+        },
+        {
+          "event": "user_engagement",
+          "events": 218261,
+          "users": 110799
+        },
+        {
+          "event": "add_payment_info",
+          "events": 158075,
+          "users": 111533
+        },
+        {
+          "event": "begin_checkout",
+          "events": 142119,
+          "users": 114282
+        },
+        {
+          "event": "purchase",
+          "events": 105372,
+          "users": 88447
+        },
+        {
+          "event": "first_visit",
+          "events": 96521,
+          "users": 86083
+        },
+        {
+          "event": "remove_from_cart",
+          "events": 78640,
+          "users": 36587
+        },
+        {
+          "event": "view_search_results",
+          "events": 55073,
+          "users": 22977
+        },
+        {
+          "event": "signup",
+          "events": 36735,
+          "users": 36636
+        },
+        {
+          "event": "click_top_seller_number",
+          "events": 4953,
+          "users": 4408
+        },
+        {
+          "event": "click",
+          "events": 23,
+          "users": 19
+        },
+        {
+          "event": "video_start",
+          "events": 4,
+          "users": 3
+        },
+        {
+          "event": "video_progress",
+          "events": 2,
+          "users": 2
         }
       ]
     },
     "LINE Richmenu": {
       "kpi": {
-        "total_users": 340172,
+        "total_users": 340173,
         "conversion_rate": 32.4,
-        "purchases": 110284,
+        "purchases": 110285,
         "avg_events_per_user": 51.4,
         "avg_hours_to_first_purchase": 3.8,
         "avg_hours_to_repeat": 14.2,
@@ -4406,8 +5629,8 @@
         },
         {
           "date": "2026-03-30",
-          "users": 25956,
-          "purchases": 9822,
+          "users": 25957,
+          "purchases": 9823,
           "conv_rate": 37.8
         },
         {
@@ -4418,7 +5641,7 @@
         },
         {
           "date": "2026-04-01",
-          "users": 177163,
+          "users": 177164,
           "purchases": 26118,
           "conv_rate": 14.7
         }
@@ -4576,8 +5799,8 @@
         },
         {
           "date": "2026-03-30",
-          "revenue": 7419365.0,
-          "orders": 11051,
+          "revenue": 7419680.0,
+          "orders": 11052,
           "aov": 671.0
         },
         {
@@ -4828,16 +6051,16 @@
         {
           "day": 2,
           "hour": 9,
-          "users": 2443,
+          "users": 2444,
           "orders": 834,
           "revenue": 475495.0
         },
         {
           "day": 2,
           "hour": 10,
-          "users": 2684,
-          "orders": 879,
-          "revenue": 637615.0
+          "users": 2685,
+          "orders": 880,
+          "revenue": 637930.0
         },
         {
           "day": 2,
@@ -5234,7 +6457,7 @@
         {
           "day": 4,
           "hour": 19,
-          "users": 5630,
+          "users": 5631,
           "orders": 254,
           "revenue": 163170.0
         },
@@ -5779,7 +7002,7 @@
         },
         {
           "bucket": "100-499",
-          "orders": 63098,
+          "orders": 63097,
           "avg_value": 272.0
         },
         {
@@ -5813,9 +7036,9 @@
         },
         {
           "type": "New",
-          "users": 112534,
-          "revenue": 28455575.0,
-          "purchasers": 33633,
+          "users": 112535,
+          "revenue": 28455890.0,
+          "purchasers": 33634,
           "cvr": 29.9
         }
       ],
@@ -5874,7 +7097,7 @@
         },
         {
           "bucket": "3-10m",
-          "purchasers": 51455,
+          "purchasers": 51456,
           "non_purchasers": 41984
         },
         {
@@ -5936,8 +7159,8 @@
         },
         {
           "hour": 10,
-          "revenue": 7749370.0,
-          "orders": 9186
+          "revenue": 7749055.0,
+          "orders": 9185
         },
         {
           "hour": 11,
@@ -6077,12 +7300,6 @@
           "buyers": 2
         },
         {
-          "item": "546102",
-          "revenue": 21210.0,
-          "orders": 2,
-          "buyers": 2
-        },
-        {
           "item": "367942",
           "revenue": 21210.0,
           "orders": 2,
@@ -6090,6 +7307,12 @@
         },
         {
           "item": "291036",
+          "revenue": 21210.0,
+          "orders": 2,
+          "buyers": 2
+        },
+        {
+          "item": "546102",
           "revenue": 21210.0,
           "orders": 2,
           "buyers": 2
@@ -6107,19 +7330,31 @@
           "buyers": 1
         },
         {
-          "item": "628619",
-          "revenue": 21000.0,
-          "orders": 1,
-          "buyers": 1
-        },
-        {
           "item": "668556",
           "revenue": 21000.0,
           "orders": 1,
           "buyers": 1
         },
         {
+          "item": "927830",
+          "revenue": 21000.0,
+          "orders": 2,
+          "buyers": 2
+        },
+        {
+          "item": "628619",
+          "revenue": 21000.0,
+          "orders": 1,
+          "buyers": 1
+        },
+        {
           "item": "893636",
+          "revenue": 21000.0,
+          "orders": 1,
+          "buyers": 1
+        },
+        {
+          "item": "924966",
           "revenue": 21000.0,
           "orders": 1,
           "buyers": 1
@@ -6137,22 +7372,455 @@
           "buyers": 1
         },
         {
-          "item": "924966",
-          "revenue": 21000.0,
-          "orders": 1,
-          "buyers": 1
-        },
-        {
           "item": "890583",
           "revenue": 21000.0,
           "orders": 1,
           "buyers": 1
+        }
+      ],
+      "device_browser": [
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari (in-app)",
+          "users": 180653,
+          "purchasers": 65906,
+          "cvr": 36.5
         },
         {
-          "item": "887306",
-          "revenue": 21000.0,
-          "orders": 1,
-          "buyers": 1
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 138317,
+          "purchasers": 44115,
+          "cvr": 31.9
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 7028,
+          "purchasers": 3620,
+          "cvr": 51.5
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 5881,
+          "purchasers": 2674,
+          "cvr": 45.5
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 975,
+          "purchasers": 374,
+          "cvr": 38.4
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Safari (in-app)",
+          "users": 597,
+          "purchasers": 299,
+          "cvr": 50.1
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Samsung Internet",
+          "users": 484,
+          "purchasers": 249,
+          "cvr": 51.4
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Safari",
+          "users": 205,
+          "purchasers": 118,
+          "cvr": 57.6
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Chrome",
+          "users": 173,
+          "purchasers": 102,
+          "cvr": 59.0
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Edge",
+          "users": 168,
+          "purchasers": 96,
+          "cvr": 57.1
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Chrome",
+          "users": 163,
+          "purchasers": 96,
+          "cvr": 58.9
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 33,
+          "purchasers": 18,
+          "cvr": 54.5
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Chrome",
+          "users": 29,
+          "purchasers": 14,
+          "cvr": 48.3
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Edge",
+          "users": 22,
+          "purchasers": 10,
+          "cvr": 45.5
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Chrome",
+          "users": 20,
+          "purchasers": 10,
+          "cvr": 50.0
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 12,
+          "purchasers": 9,
+          "cvr": 75.0
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Firefox",
+          "users": 7,
+          "purchasers": 4,
+          "cvr": 57.1
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Opera",
+          "users": 5,
+          "purchasers": 3,
+          "cvr": 60.0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Opera",
+          "users": 3,
+          "purchasers": 3,
+          "cvr": 100.0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "UC Browser",
+          "users": 2,
+          "purchasers": 1,
+          "cvr": 50.0
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Chrome",
+          "users": 2,
+          "purchasers": 1,
+          "cvr": 50.0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Firefox",
+          "users": 2,
+          "purchasers": 1,
+          "cvr": 50.0
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Samsung Internet",
+          "users": 1,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Edge",
+          "users": 1,
+          "purchasers": 1,
+          "cvr": 100.0
+        }
+      ],
+      "geo_region": [
+        {
+          "region": "Bangkok",
+          "users": 176549,
+          "purchasers": 61642,
+          "revenue": 45192375.0,
+          "cvr": 34.9
+        },
+        {
+          "region": "Chon Buri",
+          "users": 22777,
+          "purchasers": 8872,
+          "revenue": 6183700.0,
+          "cvr": 39.0
+        },
+        {
+          "region": "Chiang Mai",
+          "users": 12600,
+          "purchasers": 4596,
+          "revenue": 3105410.0,
+          "cvr": 36.5
+        },
+        {
+          "region": "Nakhon Ratchasima",
+          "users": 12554,
+          "purchasers": 4449,
+          "revenue": 3105780.0,
+          "cvr": 35.4
+        },
+        {
+          "region": "Phuket",
+          "users": 9249,
+          "purchasers": 3648,
+          "revenue": 2390805.0,
+          "cvr": 39.4
+        },
+        {
+          "region": "Khon Kaen",
+          "users": 8886,
+          "purchasers": 3156,
+          "revenue": 2266565.0,
+          "cvr": 35.5
+        },
+        {
+          "region": "Nakhon Sawan",
+          "users": 7315,
+          "purchasers": 2693,
+          "revenue": 1646015.0,
+          "cvr": 36.8
+        },
+        {
+          "region": "Songkhla",
+          "users": 6216,
+          "purchasers": 2262,
+          "revenue": 1352140.0,
+          "cvr": 36.4
+        },
+        {
+          "region": "Pathum Thani",
+          "users": 5527,
+          "purchasers": 2217,
+          "revenue": 1735340.0,
+          "cvr": 40.1
+        },
+        {
+          "region": "Samut Prakan",
+          "users": 4786,
+          "purchasers": 1944,
+          "revenue": 1445255.0,
+          "cvr": 40.6
+        },
+        {
+          "region": "Nonthaburi",
+          "users": 4504,
+          "purchasers": 1787,
+          "revenue": 1254235.0,
+          "cvr": 39.7
+        },
+        {
+          "region": "Nakhon Pathom",
+          "users": 4373,
+          "purchasers": 1748,
+          "revenue": 1217795.0,
+          "cvr": 40.0
+        },
+        {
+          "region": "Rayong",
+          "users": 4220,
+          "purchasers": 1747,
+          "revenue": 1134715.0,
+          "cvr": 41.4
+        },
+        {
+          "region": "Surat Thani",
+          "users": 4151,
+          "purchasers": 1784,
+          "revenue": 914815.0,
+          "cvr": 43.0
+        },
+        {
+          "region": "Ubon Ratchathani",
+          "users": 3964,
+          "purchasers": 1382,
+          "revenue": 765005.0,
+          "cvr": 34.9
+        }
+      ],
+      "page_path_cvr": [
+        {
+          "path": "/safe",
+          "visitors": 144527,
+          "purchasers": 103565,
+          "cvr": 71.7
+        },
+        {
+          "path": "/dashboard",
+          "visitors": 25803,
+          "purchasers": 16748,
+          "cvr": 64.9
+        },
+        {
+          "path": "/prize-history",
+          "visitors": 28048,
+          "purchasers": 17701,
+          "cvr": 63.1
+        },
+        {
+          "path": "/cart",
+          "visitors": 181211,
+          "purchasers": 110138,
+          "cvr": 60.8
+        },
+        {
+          "path": "/jidrid",
+          "visitors": 49101,
+          "purchasers": 21690,
+          "cvr": 44.2
+        },
+        {
+          "path": "/orders",
+          "visitors": 58520,
+          "purchasers": 24118,
+          "cvr": 41.2
+        },
+        {
+          "path": "/profile",
+          "visitors": 85244,
+          "purchasers": 31407,
+          "cvr": 36.8
+        },
+        {
+          "path": "/ (home)",
+          "visitors": 319923,
+          "purchasers": 110285,
+          "cvr": 34.5
+        },
+        {
+          "path": "/highlights",
+          "visitors": 30694,
+          "purchasers": 9859,
+          "cvr": 32.1
+        },
+        {
+          "path": "/register",
+          "visitors": 7363,
+          "purchasers": 1532,
+          "cvr": 20.8
+        }
+      ],
+      "event_distribution_full": [
+        {
+          "event": "view_item_list",
+          "events": 7510525,
+          "users": 302169
+        },
+        {
+          "event": "page_view",
+          "events": 5957233,
+          "users": 319932
+        },
+        {
+          "event": "add_to_cart",
+          "events": 811233,
+          "users": 171266
+        },
+        {
+          "event": "session_start",
+          "events": 577471,
+          "users": 319851
+        },
+        {
+          "event": "view_cart",
+          "events": 382367,
+          "users": 180884
+        },
+        {
+          "event": "login",
+          "events": 351761,
+          "users": 319880
+        },
+        {
+          "event": "add_payment_info",
+          "events": 179974,
+          "users": 132544
+        },
+        {
+          "event": "begin_checkout",
+          "events": 167047,
+          "users": 134949
+        },
+        {
+          "event": "user_engagement",
+          "events": 149717,
+          "users": 91419
+        },
+        {
+          "event": "purchase",
+          "events": 130523,
+          "users": 110284
+        },
+        {
+          "event": "first_visit",
+          "events": 121616,
+          "users": 112501
+        },
+        {
+          "event": "remove_from_cart",
+          "events": 78008,
+          "users": 38083
+        },
+        {
+          "event": "view_search_results",
+          "events": 13112,
+          "users": 7934
+        },
+        {
+          "event": "signup",
+          "events": 7295,
+          "users": 7287
+        },
+        {
+          "event": "click_top_seller_number",
+          "events": 4664,
+          "users": 4081
+        },
+        {
+          "event": "click",
+          "events": 13,
+          "users": 8
         }
       ]
     },
@@ -7911,13 +9579,13 @@
           "buyers": 1
         },
         {
-          "item": "919201",
+          "item": "897676",
           "revenue": 3990.0,
           "orders": 1,
           "buyers": 1
         },
         {
-          "item": "897676",
+          "item": "919201",
           "revenue": 3990.0,
           "orders": 1,
           "buyers": 1
@@ -7947,13 +9615,13 @@
           "buyers": 1
         },
         {
-          "item": "308030",
+          "item": "145914",
           "revenue": 2625.0,
           "orders": 1,
           "buyers": 1
         },
         {
-          "item": "145914",
+          "item": "308030",
           "revenue": 2625.0,
           "orders": 1,
           "buyers": 1
@@ -7963,6 +9631,395 @@
           "revenue": 2625.0,
           "orders": 1,
           "buyers": 1
+        }
+      ],
+      "device_browser": [
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 1887,
+          "purchasers": 468,
+          "cvr": 24.8
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 665,
+          "purchasers": 255,
+          "cvr": 38.3
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Samsung Internet",
+          "users": 49,
+          "purchasers": 22,
+          "cvr": 44.9
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Chrome",
+          "users": 37,
+          "purchasers": 20,
+          "cvr": 54.1
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 31,
+          "purchasers": 9,
+          "cvr": 29.0
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari (in-app)",
+          "users": 25,
+          "purchasers": 9,
+          "cvr": 36.0
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Chrome",
+          "users": 12,
+          "purchasers": 4,
+          "cvr": 33.3
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Chrome",
+          "users": 8,
+          "purchasers": 1,
+          "cvr": 12.5
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 8,
+          "purchasers": 1,
+          "cvr": 12.5
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Edge",
+          "users": 7,
+          "purchasers": 3,
+          "cvr": 42.9
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 4,
+          "purchasers": 1,
+          "cvr": 25.0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Edge",
+          "users": 2,
+          "purchasers": 1,
+          "cvr": 50.0
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Safari",
+          "users": 2,
+          "purchasers": 1,
+          "cvr": 50.0
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Chrome",
+          "users": 1,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Edge",
+          "users": 1,
+          "purchasers": 1,
+          "cvr": 100.0
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Firefox",
+          "users": 1,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 1,
+          "purchasers": 0,
+          "cvr": 0
+        }
+      ],
+      "geo_region": [
+        {
+          "region": "Bangkok",
+          "users": 1253,
+          "purchasers": 340,
+          "revenue": 227430.0,
+          "cvr": 27.1
+        },
+        {
+          "region": "Chon Buri",
+          "users": 117,
+          "purchasers": 45,
+          "revenue": 23310.0,
+          "cvr": 38.5
+        },
+        {
+          "region": "Chiang Mai",
+          "users": 102,
+          "purchasers": 25,
+          "revenue": 19635.0,
+          "cvr": 24.5
+        },
+        {
+          "region": "Nakhon Ratchasima",
+          "users": 79,
+          "purchasers": 24,
+          "revenue": 10710.0,
+          "cvr": 30.4
+        },
+        {
+          "region": "Phuket",
+          "users": 66,
+          "purchasers": 19,
+          "revenue": 10920.0,
+          "cvr": 28.8
+        },
+        {
+          "region": "Khon Kaen",
+          "users": 65,
+          "purchasers": 14,
+          "revenue": 5880.0,
+          "cvr": 21.5
+        },
+        {
+          "region": "Ubon Ratchathani",
+          "users": 54,
+          "purchasers": 20,
+          "revenue": 8925.0,
+          "cvr": 37.0
+        },
+        {
+          "region": "Nakhon Sawan",
+          "users": 52,
+          "purchasers": 11,
+          "revenue": 4935.0,
+          "cvr": 21.2
+        },
+        {
+          "region": "Songkhla",
+          "users": 45,
+          "purchasers": 10,
+          "revenue": 3570.0,
+          "cvr": 22.2
+        },
+        {
+          "region": "Surat Thani",
+          "users": 34,
+          "purchasers": 7,
+          "revenue": 315.0,
+          "cvr": 20.6
+        },
+        {
+          "region": "Sakon Nakhon",
+          "users": 32,
+          "purchasers": 8,
+          "revenue": 2625.0,
+          "cvr": 25.0
+        },
+        {
+          "region": "Pathum Thani",
+          "users": 30,
+          "purchasers": 5,
+          "revenue": 1785.0,
+          "cvr": 16.7
+        },
+        {
+          "region": "Nonthaburi",
+          "users": 28,
+          "purchasers": 10,
+          "revenue": 3675.0,
+          "cvr": 35.7
+        },
+        {
+          "region": "Nakhon Pathom",
+          "users": 27,
+          "purchasers": 9,
+          "revenue": 5145.0,
+          "cvr": 33.3
+        },
+        {
+          "region": "Chiang Rai",
+          "users": 26,
+          "purchasers": 7,
+          "revenue": 2100.0,
+          "cvr": 26.9
+        }
+      ],
+      "page_path_cvr": [
+        {
+          "path": "/dashboard",
+          "visitors": 116,
+          "purchasers": 79,
+          "cvr": 68.1
+        },
+        {
+          "path": "/safe",
+          "visitors": 1050,
+          "purchasers": 538,
+          "cvr": 51.2
+        },
+        {
+          "path": "/prize-history",
+          "visitors": 285,
+          "purchasers": 114,
+          "cvr": 40.0
+        },
+        {
+          "path": "/cart",
+          "visitors": 1389,
+          "purchasers": 556,
+          "cvr": 40.0
+        },
+        {
+          "path": "/orders",
+          "visitors": 776,
+          "purchasers": 241,
+          "cvr": 31.1
+        },
+        {
+          "path": "/profile",
+          "visitors": 858,
+          "purchasers": 227,
+          "cvr": 26.5
+        },
+        {
+          "path": "/ (home)",
+          "visitors": 2180,
+          "purchasers": 556,
+          "cvr": 25.5
+        },
+        {
+          "path": "/jidrid",
+          "visitors": 376,
+          "purchasers": 94,
+          "cvr": 25.0
+        },
+        {
+          "path": "/highlights",
+          "visitors": 428,
+          "purchasers": 89,
+          "cvr": 20.8
+        },
+        {
+          "path": "/register",
+          "visitors": 480,
+          "purchasers": 96,
+          "cvr": 20.0
+        }
+      ],
+      "event_distribution_full": [
+        {
+          "event": "view_item_list",
+          "events": 66009,
+          "users": 2069
+        },
+        {
+          "event": "page_view",
+          "events": 58558,
+          "users": 2181
+        },
+        {
+          "event": "add_to_cart",
+          "events": 6079,
+          "users": 1255
+        },
+        {
+          "event": "session_start",
+          "events": 4702,
+          "users": 2181
+        },
+        {
+          "event": "view_cart",
+          "events": 4089,
+          "users": 1371
+        },
+        {
+          "event": "login",
+          "events": 2878,
+          "users": 2180
+        },
+        {
+          "event": "user_engagement",
+          "events": 2361,
+          "users": 964
+        },
+        {
+          "event": "add_payment_info",
+          "events": 1309,
+          "users": 800
+        },
+        {
+          "event": "begin_checkout",
+          "events": 1051,
+          "users": 847
+        },
+        {
+          "event": "remove_from_cart",
+          "events": 795,
+          "users": 310
+        },
+        {
+          "event": "purchase",
+          "events": 649,
+          "users": 556
+        },
+        {
+          "event": "first_visit",
+          "events": 577,
+          "users": 471
+        },
+        {
+          "event": "signup",
+          "events": 472,
+          "users": 472
+        },
+        {
+          "event": "view_search_results",
+          "events": 364,
+          "users": 202
+        },
+        {
+          "event": "click_top_seller_number",
+          "events": 75,
+          "users": 67
+        },
+        {
+          "event": "click",
+          "events": 4,
+          "users": 4
         }
       ]
     },
@@ -9763,13 +11820,13 @@
           "buyers": 1
         },
         {
-          "item": "844111",
+          "item": "931727",
           "revenue": 7350.0,
           "orders": 1,
           "buyers": 1
         },
         {
-          "item": "931727",
+          "item": "844111",
           "revenue": 7350.0,
           "orders": 1,
           "buyers": 1
@@ -9797,6 +11854,459 @@
           "revenue": 6195.0,
           "orders": 1,
           "buyers": 1
+        }
+      ],
+      "device_browser": [
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 6814,
+          "purchasers": 1874,
+          "cvr": 27.5
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 4991,
+          "purchasers": 1543,
+          "cvr": 30.9
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 1505,
+          "purchasers": 730,
+          "cvr": 48.5
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari (in-app)",
+          "users": 976,
+          "purchasers": 559,
+          "cvr": 57.3
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Chrome",
+          "users": 826,
+          "purchasers": 324,
+          "cvr": 39.2
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Chrome",
+          "users": 413,
+          "purchasers": 146,
+          "cvr": 35.4
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Safari",
+          "users": 200,
+          "purchasers": 51,
+          "cvr": 25.5
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Samsung Internet",
+          "users": 111,
+          "purchasers": 34,
+          "cvr": 30.6
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Chrome",
+          "users": 103,
+          "purchasers": 42,
+          "cvr": 40.8
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Edge",
+          "users": 93,
+          "purchasers": 35,
+          "cvr": 37.6
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Chrome",
+          "users": 52,
+          "purchasers": 26,
+          "cvr": 50.0
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 41,
+          "purchasers": 11,
+          "cvr": 26.8
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 41,
+          "purchasers": 9,
+          "cvr": 22.0
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Chrome",
+          "users": 21,
+          "purchasers": 9,
+          "cvr": 42.9
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Firefox",
+          "users": 16,
+          "purchasers": 7,
+          "cvr": 43.8
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Safari (in-app)",
+          "users": 15,
+          "purchasers": 13,
+          "cvr": 86.7
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 13,
+          "purchasers": 6,
+          "cvr": 46.2
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Edge",
+          "users": 8,
+          "purchasers": 4,
+          "cvr": 50.0
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Opera",
+          "users": 5,
+          "purchasers": 2,
+          "cvr": 40.0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Firefox",
+          "users": 4,
+          "purchasers": 1,
+          "cvr": 25.0
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Edge",
+          "users": 4,
+          "purchasers": 2,
+          "cvr": 50.0
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Opera",
+          "users": 3,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "desktop",
+          "os": "Chrome OS",
+          "browser": "Chrome",
+          "users": 1,
+          "purchasers": 1,
+          "cvr": 100.0
+        },
+        {
+          "device": "mobile",
+          "os": "Windows",
+          "browser": "Chrome",
+          "users": 1,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Samsung Internet",
+          "users": 1,
+          "purchasers": 1,
+          "cvr": 100.0
+        }
+      ],
+      "geo_region": [
+        {
+          "region": "Bangkok",
+          "users": 5581,
+          "purchasers": 1794,
+          "revenue": 887470.0,
+          "cvr": 32.1
+        },
+        {
+          "region": "Surat Thani",
+          "users": 1171,
+          "purchasers": 494,
+          "revenue": 79985.0,
+          "cvr": 42.2
+        },
+        {
+          "region": "Kanchanaburi",
+          "users": 1122,
+          "purchasers": 440,
+          "revenue": 73395.0,
+          "cvr": 39.2
+        },
+        {
+          "region": "Pattani",
+          "users": 1009,
+          "purchasers": 403,
+          "revenue": 104790.0,
+          "cvr": 39.9
+        },
+        {
+          "region": "Ang Thong",
+          "users": 962,
+          "purchasers": 400,
+          "revenue": 73710.0,
+          "cvr": 41.6
+        },
+        {
+          "region": "Nakhon Ratchasima",
+          "users": 891,
+          "purchasers": 321,
+          "revenue": 134085.0,
+          "cvr": 36.0
+        },
+        {
+          "region": "Saraburi",
+          "users": 833,
+          "purchasers": 344,
+          "revenue": 68880.0,
+          "cvr": 41.3
+        },
+        {
+          "region": "Narathiwat",
+          "users": 831,
+          "purchasers": 327,
+          "revenue": 76545.0,
+          "cvr": 39.4
+        },
+        {
+          "region": "Uttaradit",
+          "users": 760,
+          "purchasers": 350,
+          "revenue": 56280.0,
+          "cvr": 46.1
+        },
+        {
+          "region": "Nakhon Sawan",
+          "users": 744,
+          "purchasers": 282,
+          "revenue": 74105.0,
+          "cvr": 37.9
+        },
+        {
+          "region": "Chachoengsao",
+          "users": 738,
+          "purchasers": 333,
+          "revenue": 50585.0,
+          "cvr": 45.1
+        },
+        {
+          "region": "Loei",
+          "users": 691,
+          "purchasers": 294,
+          "revenue": 35490.0,
+          "cvr": 42.5
+        },
+        {
+          "region": "Trang",
+          "users": 677,
+          "purchasers": 325,
+          "revenue": 61505.0,
+          "cvr": 48.0
+        },
+        {
+          "region": "Phuket",
+          "users": 666,
+          "purchasers": 296,
+          "revenue": 73395.0,
+          "cvr": 44.4
+        },
+        {
+          "region": "Ubon Ratchathani",
+          "users": 664,
+          "purchasers": 270,
+          "revenue": 36855.0,
+          "cvr": 40.7
+        }
+      ],
+      "page_path_cvr": [
+        {
+          "path": "/dashboard",
+          "visitors": 518,
+          "purchasers": 376,
+          "cvr": 72.6
+        },
+        {
+          "path": "/safe",
+          "visitors": 6268,
+          "purchasers": 3867,
+          "cvr": 61.7
+        },
+        {
+          "path": "/prize-history",
+          "visitors": 1603,
+          "purchasers": 968,
+          "cvr": 60.4
+        },
+        {
+          "path": "/cart",
+          "visitors": 9065,
+          "purchasers": 3992,
+          "cvr": 44.0
+        },
+        {
+          "path": "/profile",
+          "visitors": 5841,
+          "purchasers": 1885,
+          "cvr": 32.3
+        },
+        {
+          "path": "/orders",
+          "visitors": 4429,
+          "purchasers": 1332,
+          "cvr": 30.1
+        },
+        {
+          "path": "/ (home)",
+          "visitors": 13549,
+          "purchasers": 4003,
+          "cvr": 29.5
+        },
+        {
+          "path": "/jidrid",
+          "visitors": 2965,
+          "purchasers": 869,
+          "cvr": 29.3
+        },
+        {
+          "path": "/highlights",
+          "visitors": 2216,
+          "purchasers": 530,
+          "cvr": 23.9
+        },
+        {
+          "path": "/register",
+          "visitors": 5207,
+          "purchasers": 1066,
+          "cvr": 20.5
+        }
+      ],
+      "event_distribution_full": [
+        {
+          "event": "view_item_list",
+          "events": 414263,
+          "users": 12822
+        },
+        {
+          "event": "page_view",
+          "events": 367851,
+          "users": 13545
+        },
+        {
+          "event": "add_to_cart",
+          "events": 40446,
+          "users": 8031
+        },
+        {
+          "event": "session_start",
+          "events": 30785,
+          "users": 13541
+        },
+        {
+          "event": "view_cart",
+          "events": 23393,
+          "users": 8986
+        },
+        {
+          "event": "user_engagement",
+          "events": 19862,
+          "users": 6979
+        },
+        {
+          "event": "login",
+          "events": 17126,
+          "users": 13542
+        },
+        {
+          "event": "first_visit",
+          "events": 9329,
+          "users": 7598
+        },
+        {
+          "event": "add_payment_info",
+          "events": 6497,
+          "users": 4754
+        },
+        {
+          "event": "begin_checkout",
+          "events": 6161,
+          "users": 5014
+        },
+        {
+          "event": "remove_from_cart",
+          "events": 5963,
+          "users": 2901
+        },
+        {
+          "event": "signup",
+          "events": 5174,
+          "users": 5171
+        },
+        {
+          "event": "purchase",
+          "events": 4681,
+          "users": 4003
+        },
+        {
+          "event": "view_search_results",
+          "events": 4270,
+          "users": 1878
+        },
+        {
+          "event": "click_top_seller_number",
+          "events": 561,
+          "users": 488
+        },
+        {
+          "event": "click",
+          "events": 24,
+          "users": 18
         }
       ]
     },
@@ -11547,18 +14057,6 @@
       ],
       "top_items": [
         {
-          "item": "845058",
-          "revenue": 21000.0,
-          "orders": 1,
-          "buyers": 1
-        },
-        {
-          "item": "954393",
-          "revenue": 21000.0,
-          "orders": 1,
-          "buyers": 1
-        },
-        {
           "item": "801156",
           "revenue": 21000.0,
           "orders": 1,
@@ -11571,7 +14069,19 @@
           "buyers": 1
         },
         {
+          "item": "845058",
+          "revenue": 21000.0,
+          "orders": 1,
+          "buyers": 1
+        },
+        {
           "item": "257535",
+          "revenue": 21000.0,
+          "orders": 1,
+          "buyers": 1
+        },
+        {
+          "item": "954393",
           "revenue": 21000.0,
           "orders": 1,
           "buyers": 1
@@ -11595,13 +14105,13 @@
           "buyers": 1
         },
         {
-          "item": "267704",
+          "item": "826858",
           "revenue": 19845.0,
           "orders": 1,
           "buyers": 1
         },
         {
-          "item": "826858",
+          "item": "267704",
           "revenue": 19845.0,
           "orders": 1,
           "buyers": 1
@@ -11635,6 +14145,451 @@
           "revenue": 14805.0,
           "orders": 1,
           "buyers": 1
+        }
+      ],
+      "device_browser": [
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 11141,
+          "purchasers": 3726,
+          "cvr": 33.4
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 8804,
+          "purchasers": 2810,
+          "cvr": 31.9
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari (in-app)",
+          "users": 6946,
+          "purchasers": 2717,
+          "cvr": 39.1
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 4154,
+          "purchasers": 1420,
+          "cvr": 34.2
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Samsung Internet",
+          "users": 929,
+          "purchasers": 416,
+          "cvr": 44.8
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Edge",
+          "users": 387,
+          "purchasers": 168,
+          "cvr": 43.4
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Chrome",
+          "users": 372,
+          "purchasers": 176,
+          "cvr": 47.3
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Safari (in-app)",
+          "users": 209,
+          "purchasers": 69,
+          "cvr": 33.0
+        },
+        {
+          "device": "mobile",
+          "os": "iOS",
+          "browser": "Chrome",
+          "users": 178,
+          "purchasers": 72,
+          "cvr": 40.4
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Safari",
+          "users": 113,
+          "purchasers": 56,
+          "cvr": 49.6
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Android Webview",
+          "users": 74,
+          "purchasers": 30,
+          "cvr": 40.5
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Chrome",
+          "users": 42,
+          "purchasers": 11,
+          "cvr": 26.2
+        },
+        {
+          "device": "tablet",
+          "os": "Android",
+          "browser": "Chrome",
+          "users": 31,
+          "purchasers": 13,
+          "cvr": 41.9
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Edge",
+          "users": 30,
+          "purchasers": 14,
+          "cvr": 46.7
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Chrome",
+          "users": 29,
+          "purchasers": 14,
+          "cvr": 48.3
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Firefox",
+          "users": 19,
+          "purchasers": 5,
+          "cvr": 26.3
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Firefox",
+          "users": 10,
+          "purchasers": 4,
+          "cvr": 40.0
+        },
+        {
+          "device": "desktop",
+          "os": "Windows",
+          "browser": "Opera",
+          "users": 7,
+          "purchasers": 3,
+          "cvr": 42.9
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Safari",
+          "users": 7,
+          "purchasers": 4,
+          "cvr": 57.1
+        },
+        {
+          "device": "mobile",
+          "os": "Android",
+          "browser": "Opera",
+          "users": 7,
+          "purchasers": 3,
+          "cvr": 42.9
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Edge",
+          "users": 2,
+          "purchasers": 2,
+          "cvr": 100.0
+        },
+        {
+          "device": "desktop",
+          "os": "Linux",
+          "browser": "Samsung Internet",
+          "users": 2,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "tablet",
+          "os": "iOS",
+          "browser": "Chrome",
+          "users": 2,
+          "purchasers": 0,
+          "cvr": 0
+        },
+        {
+          "device": "desktop",
+          "os": "Macintosh",
+          "browser": "Firefox",
+          "users": 1,
+          "purchasers": 1,
+          "cvr": 100.0
+        }
+      ],
+      "geo_region": [
+        {
+          "region": "Bangkok",
+          "users": 14568,
+          "purchasers": 4802,
+          "revenue": 3655485.0,
+          "cvr": 33.0
+        },
+        {
+          "region": "Chon Buri",
+          "users": 1691,
+          "purchasers": 590,
+          "revenue": 437535.0,
+          "cvr": 34.9
+        },
+        {
+          "region": "Nakhon Ratchasima",
+          "users": 1309,
+          "purchasers": 450,
+          "revenue": 324425.0,
+          "cvr": 34.4
+        },
+        {
+          "region": "Chiang Mai",
+          "users": 1159,
+          "purchasers": 430,
+          "revenue": 272215.0,
+          "cvr": 37.1
+        },
+        {
+          "region": "Surat Thani",
+          "users": 1014,
+          "purchasers": 428,
+          "revenue": 156345.0,
+          "cvr": 42.2
+        },
+        {
+          "region": "Phuket",
+          "users": 1010,
+          "purchasers": 389,
+          "revenue": 190260.0,
+          "cvr": 38.5
+        },
+        {
+          "region": "Nakhon Sawan",
+          "users": 954,
+          "purchasers": 341,
+          "revenue": 137445.0,
+          "cvr": 35.7
+        },
+        {
+          "region": "Kanchanaburi",
+          "users": 937,
+          "purchasers": 381,
+          "revenue": 100275.0,
+          "cvr": 40.7
+        },
+        {
+          "region": "Khon Kaen",
+          "users": 800,
+          "purchasers": 281,
+          "revenue": 190865.0,
+          "cvr": 35.1
+        },
+        {
+          "region": "Ang Thong",
+          "users": 741,
+          "purchasers": 287,
+          "revenue": 89985.0,
+          "cvr": 38.7
+        },
+        {
+          "region": "Saraburi",
+          "users": 714,
+          "purchasers": 290,
+          "revenue": 89355.0,
+          "cvr": 40.6
+        },
+        {
+          "region": "Songkhla",
+          "users": 648,
+          "purchasers": 254,
+          "revenue": 112640.0,
+          "cvr": 39.2
+        },
+        {
+          "region": "Ubon Ratchathani",
+          "users": 648,
+          "purchasers": 249,
+          "revenue": 115920.0,
+          "cvr": 38.4
+        },
+        {
+          "region": "Pattani",
+          "users": 638,
+          "purchasers": 261,
+          "revenue": 93975.0,
+          "cvr": 40.9
+        },
+        {
+          "region": "Chachoengsao",
+          "users": 626,
+          "purchasers": 273,
+          "revenue": 113190.0,
+          "cvr": 43.6
+        }
+      ],
+      "page_path_cvr": [
+        {
+          "path": "/dashboard",
+          "visitors": 2096,
+          "purchasers": 1328,
+          "cvr": 63.4
+        },
+        {
+          "path": "/safe",
+          "visitors": 13805,
+          "purchasers": 8634,
+          "cvr": 62.5
+        },
+        {
+          "path": "/prize-history",
+          "visitors": 2680,
+          "purchasers": 1519,
+          "cvr": 56.7
+        },
+        {
+          "path": "/cart",
+          "visitors": 16620,
+          "purchasers": 9033,
+          "cvr": 54.4
+        },
+        {
+          "path": "/orders",
+          "visitors": 7022,
+          "purchasers": 2723,
+          "cvr": 38.8
+        },
+        {
+          "path": "/jidrid",
+          "visitors": 4385,
+          "purchasers": 1665,
+          "cvr": 38.0
+        },
+        {
+          "path": "/profile",
+          "visitors": 8634,
+          "purchasers": 2922,
+          "cvr": 33.8
+        },
+        {
+          "path": "/ (home)",
+          "visitors": 28351,
+          "purchasers": 9049,
+          "cvr": 31.9
+        },
+        {
+          "path": "/highlights",
+          "visitors": 3497,
+          "purchasers": 1035,
+          "cvr": 29.6
+        },
+        {
+          "path": "/register",
+          "visitors": 1067,
+          "purchasers": 146,
+          "cvr": 13.7
+        }
+      ],
+      "event_distribution_full": [
+        {
+          "event": "view_item_list",
+          "events": 758715,
+          "users": 26862
+        },
+        {
+          "event": "page_view",
+          "events": 615703,
+          "users": 28353
+        },
+        {
+          "event": "add_to_cart",
+          "events": 73602,
+          "users": 15469
+        },
+        {
+          "event": "session_start",
+          "events": 58359,
+          "users": 28335
+        },
+        {
+          "event": "view_cart",
+          "events": 37637,
+          "users": 16449
+        },
+        {
+          "event": "login",
+          "events": 34818,
+          "users": 28350
+        },
+        {
+          "event": "user_engagement",
+          "events": 25169,
+          "users": 12149
+        },
+        {
+          "event": "add_payment_info",
+          "events": 17177,
+          "users": 11820
+        },
+        {
+          "event": "begin_checkout",
+          "events": 15105,
+          "users": 12069
+        },
+        {
+          "event": "purchase",
+          "events": 10795,
+          "users": 9049
+        },
+        {
+          "event": "first_visit",
+          "events": 7685,
+          "users": 6799
+        },
+        {
+          "event": "remove_from_cart",
+          "events": 6907,
+          "users": 3279
+        },
+        {
+          "event": "view_search_results",
+          "events": 3456,
+          "users": 2011
+        },
+        {
+          "event": "signup",
+          "events": 1052,
+          "users": 1052
+        },
+        {
+          "event": "click_top_seller_number",
+          "events": 497,
+          "users": 402
+        },
+        {
+          "event": "click",
+          "events": 1,
+          "users": 1
         }
       ]
     }
