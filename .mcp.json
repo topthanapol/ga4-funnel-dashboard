@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "databricks": {
+      "command": "uvx",
+      "args": [
+        "databricks-mcp-server@latest"
+      ],
+      "env": {
+        "DATABRICKS_HOST": "https://886789292378781.1.gcp.databricks.com",
+        "DATABRICKS_AUTH_TYPE": "databricks-cli"
+      }
+    }
+  }
+}

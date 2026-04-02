@@ -1,69 +1,69 @@
 {
   "meta": {
-    "total_events": 19908874,
-    "total_users": 401533,
+    "total_events": 34421134,
+    "total_users": 621495,
     "date_from": "2026-03-20",
-    "date_to": "2026-03-31",
-    "num_days": 12
+    "date_to": "2026-04-01",
+    "num_days": 13
   },
   "kpi": {
-    "total_users": 401533,
-    "conversion_rate": 41.7,
-    "purchases": 167422,
-    "avg_events_per_user": 49.6,
-    "avg_hours_to_first_purchase": 3.9,
-    "avg_hours_to_repeat": 12.5,
-    "repeat_purchase_pct": 13.7
+    "total_users": 621495,
+    "conversion_rate": 34.2,
+    "purchases": 212339,
+    "avg_events_per_user": 55.4,
+    "avg_hours_to_first_purchase": 4.5,
+    "avg_hours_to_repeat": 14.9,
+    "repeat_purchase_pct": 14.2
   },
   "funnel": [
     {
       "step": "Total Users",
       "event": "all",
-      "users": 401533,
+      "users": 621495,
       "pct_of_total": 100.0,
       "drop_off_pct": 0
     },
     {
       "step": "View Items",
       "event": "view_item_list",
-      "users": 400777,
-      "pct_of_total": 99.8,
+      "users": 586973,
+      "pct_of_total": 94.4,
       "drop_off_pct": 0
     },
     {
       "step": "Add to Cart",
       "event": "add_to_cart",
-      "users": 262105,
-      "pct_of_total": 65.3,
-      "drop_off_pct": 34.6
+      "users": 344644,
+      "pct_of_total": 55.5,
+      "drop_off_pct": 41.3
     },
     {
       "step": "View Cart",
       "event": "view_cart",
-      "users": 263843,
-      "pct_of_total": 65.7,
-      "drop_off_pct": -0.7
+      "users": 367168,
+      "pct_of_total": 59.1,
+      "drop_off_pct": -6.5
     },
     {
       "step": "Begin Checkout",
       "event": "begin_checkout",
-      "users": 212327,
-      "pct_of_total": 52.9,
-      "drop_off_pct": 19.5
+      "users": 267161,
+      "pct_of_total": 43.0,
+      "drop_off_pct": 27.2
     },
     {
       "step": "Add Payment",
       "event": "add_payment_info",
-      "users": 207728,
-      "pct_of_total": 51.7,
-      "drop_off_pct": 2.2
+      "users": 261451,
+      "pct_of_total": 42.1,
+      "drop_off_pct": 2.1
     },
     {
       "step": "Purchase",
       "event": "purchase",
-      "users": 167422,
-      "pct_of_total": 41.7,
-      "drop_off_pct": 19.4
+      "users": 212339,
+      "pct_of_total": 34.2,
+      "drop_off_pct": 18.8
     }
   ],
   "sankey": {
@@ -91,77 +91,77 @@
       {
         "source": "S1: View Items",
         "target": "S2: Add to Cart",
-        "value": 261741
+        "value": 344210
       },
       {
         "source": "S2: Add to Cart",
         "target": "S3: View Cart",
-        "value": 232250
+        "value": 304117
       },
       {
         "source": "S3: View Cart",
         "target": "S4: Begin Checkout",
-        "value": 212135
+        "value": 266908
       },
       {
         "source": "S4: Begin Checkout",
         "target": "S5: Add Payment",
-        "value": 204694
+        "value": 257601
       },
       {
         "source": "S5: Add Payment",
         "target": "S6: Purchase",
-        "value": 163538
+        "value": 207318
       },
       {
         "source": "S1: View Items",
         "target": "S3: View Cart",
-        "value": 111748
+        "value": 172323
       },
       {
         "source": "S1: View Items",
         "target": "S5: Add Payment",
-        "value": 14565
+        "value": 18149
       },
       {
         "source": "S1: View Items",
         "target": "S6: Purchase",
-        "value": 2236
+        "value": 3209
       },
       {
         "source": "S4: Begin Checkout",
         "target": "S6: Purchase",
-        "value": 2017
+        "value": 2321
       },
       {
         "source": "S3: View Cart",
         "target": "S5: Add Payment",
-        "value": 1249
+        "value": 1580
       },
       {
         "source": "S1: View Items",
         "target": "S4: Begin Checkout",
-        "value": 252
+        "value": 342
       },
       {
         "source": "S3: View Cart",
         "target": "S6: Purchase",
-        "value": 240
+        "value": 340
       },
       {
         "source": "S2: Add to Cart",
         "target": "S5: Add Payment",
-        "value": 124
+        "value": 154
       },
       {
         "source": "S2: Add to Cart",
         "target": "S4: Begin Checkout",
-        "value": 48
+        "value": 62
       },
       {
         "source": "S2: Add to Cart",
         "target": "S6: Purchase",
-        "value": 22
+        "value": 28
       }
     ]
   },
@@ -170,7 +170,7 @@
       "path": [
         "View Items"
       ],
-      "users": 129506,
+      "users": 216316,
       "steps": 1
     },
     {
@@ -183,7 +183,7 @@
         "Purchase",
         "View Items"
       ],
-      "users": 30026,
+      "users": 37608,
       "steps": 7
     },
     {
@@ -195,7 +195,7 @@
         "Add Payment",
         "Purchase"
       ],
-      "users": 27198,
+      "users": 30866,
       "steps": 6
     },
     {
@@ -205,19 +205,17 @@
         "View Cart",
         "View Items"
       ],
-      "users": 10125,
+      "users": 16893,
       "steps": 4
     },
     {
       "path": [
         "View Items",
-        "Add to Cart",
         "View Cart",
-        "Begin Checkout",
-        "Add Payment"
+        "View Items"
       ],
-      "users": 7555,
-      "steps": 5
+      "users": 11484,
+      "steps": 3
     },
     {
       "path": [
@@ -232,22 +230,43 @@
         "View Cart",
         "Begin Checkout"
       ],
-      "users": 6964,
+      "users": 8921,
       "steps": 10
     },
     {
       "path": [
         "View Items",
         "Add to Cart",
+        "View Cart",
+        "Begin Checkout",
+        "Add Payment"
+      ],
+      "users": 8168,
+      "steps": 5
+    },
+    {
+      "path": [
+        "View Items",
+        "Add to Cart",
+        "View Cart",
+        "View Items",
+        "View Cart",
+        "View Items"
+      ],
+      "users": 7353,
+      "steps": 6
+    },
+    {
+      "path": [
         "View Items",
         "Add to Cart",
         "View Cart",
         "Begin Checkout",
         "Add Payment",
-        "Purchase"
+        "View Items"
       ],
-      "users": 5878,
-      "steps": 8
+      "users": 7190,
+      "steps": 6
     },
     {
       "path": [
@@ -261,20 +280,38 @@
         "Purchase",
         "View Items"
       ],
-      "users": 5832,
+      "users": 6703,
       "steps": 9
+    },
+    {
+      "path": [
+        "View Cart"
+      ],
+      "users": 6261,
+      "steps": 1
     },
     {
       "path": [
         "View Items",
         "Add to Cart",
+        "View Items",
+        "Add to Cart",
         "View Cart",
         "Begin Checkout",
         "Add Payment",
+        "Purchase"
+      ],
+      "users": 6203,
+      "steps": 8
+    },
+    {
+      "path": [
+        "View Items",
+        "Add to Cart",
         "View Items"
       ],
-      "users": 5652,
-      "steps": 6
+      "users": 6129,
+      "steps": 3
     },
     {
       "path": [
@@ -289,7 +326,7 @@
         "View Items",
         "Add to Cart"
       ],
-      "users": 5327,
+      "users": 6025,
       "steps": 10
     },
     {
@@ -305,38 +342,16 @@
         "Add Payment",
         "Purchase"
       ],
-      "users": 5222,
+      "users": 5921,
       "steps": 10
     },
     {
       "path": [
         "View Items",
-        "View Cart",
-        "View Items"
+        "View Cart"
       ],
-      "users": 4889,
-      "steps": 3
-    },
-    {
-      "path": [
-        "View Items",
-        "Add to Cart",
-        "View Items"
-      ],
-      "users": 4442,
-      "steps": 3
-    },
-    {
-      "path": [
-        "View Items",
-        "Add to Cart",
-        "View Cart",
-        "View Items",
-        "View Cart",
-        "View Items"
-      ],
-      "users": 4144,
-      "steps": 6
+      "users": 5025,
+      "steps": 2
     },
     {
       "path": [
@@ -344,7 +359,7 @@
         "Add to Cart",
         "View Cart"
       ],
-      "users": 4078,
+      "users": 4998,
       "steps": 3
     },
     {
@@ -358,8 +373,24 @@
         "Purchase",
         "View Items"
       ],
-      "users": 3339,
+      "users": 4502,
       "steps": 8
+    },
+    {
+      "path": [
+        "View Items",
+        "Add to Cart",
+        "View Cart",
+        "View Items",
+        "Add to Cart",
+        "View Cart",
+        "Begin Checkout",
+        "Add Payment",
+        "Purchase",
+        "View Items"
+      ],
+      "users": 3842,
+      "steps": 10
     },
     {
       "path": [
@@ -374,104 +405,60 @@
         "View Cart",
         "Begin Checkout"
       ],
-      "users": 3337,
+      "users": 3709,
       "steps": 10
-    },
-    {
-      "path": [
-        "View Items",
-        "Add to Cart",
-        "View Cart",
-        "View Items",
-        "Add to Cart",
-        "View Cart",
-        "Begin Checkout",
-        "Add Payment",
-        "Purchase",
-        "View Items"
-      ],
-      "users": 2735,
-      "steps": 10
-    },
-    {
-      "path": [
-        "View Items",
-        "Add to Cart",
-        "View Items",
-        "View Cart",
-        "Begin Checkout",
-        "Add Payment",
-        "Purchase"
-      ],
-      "users": 2703,
-      "steps": 7
-    },
-    {
-      "path": [
-        "View Items",
-        "Add to Cart",
-        "View Cart",
-        "Begin Checkout",
-        "Add Payment",
-        "Purchase",
-        "View Items",
-        "View Cart",
-        "View Items"
-      ],
-      "users": 2367,
-      "steps": 9
     }
   ],
   "funnel_by_source": [
     {
       "source": "LINE Richmenu",
-      "total_users": 211755,
-      "View Items": 211411,
-      "Add to Cart": 130036,
-      "View Cart": 130590,
-      "Begin Checkout": 106640,
-      "Add Payment": 104910,
-      "Purchase": 86747
+      "total_users": 338642,
+      "View Items": 316188,
+      "Add to Cart": 172921,
+      "View Cart": 184063,
+      "Begin Checkout": 135621,
+      "Add Payment": 133424,
+      "Purchase": 110989
     },
     {
       "source": "Direct",
-      "total_users": 178404,
-      "View Items": 177959,
-      "Add to Cart": 117273,
-      "View Cart": 119013,
-      "Begin Checkout": 93732,
-      "Add Payment": 91538,
-      "Purchase": 71334
+      "total_users": 274238,
+      "View Items": 255635,
+      "Add to Cart": 152222,
+      "View Cart": 164224,
+      "Begin Checkout": 116471,
+      "Add Payment": 113829,
+      "Purchase": 89417
     },
     {
       "source": "Social",
-      "total_users": 20403,
-      "View Items": 20360,
-      "Add to Cart": 12178,
-      "View Cart": 12271,
-      "Begin Checkout": 9730,
-      "Add Payment": 9599,
-      "Purchase": 7080
+      "total_users": 33283,
+      "View Items": 30822,
+      "Add to Cart": 16386,
+      "View Cart": 17634,
+      "Begin Checkout": 12627,
+      "Add Payment": 12438,
+      "Purchase": 9247
     },
     {
       "source": "Search",
-      "total_users": 8472,
-      "View Items": 8436,
-      "Add to Cart": 5882,
-      "View Cart": 6045,
-      "Begin Checkout": 4001,
-      "Add Payment": 3802,
-      "Purchase": 3115
+      "total_users": 14489,
+      "View Items": 13502,
+      "Add to Cart": 8037,
+      "View Cart": 9040,
+      "Begin Checkout": 4991,
+      "Add Payment": 4747,
+      "Purchase": 3939
     },
     {
       "source": "Others",
-      "total_users": 1710,
-      "View Items": 1702,
-      "Add to Cart": 1060,
-      "View Cart": 1090,
-      "Begin Checkout": 731,
-      "Add Payment": 696,
-      "Purchase": 456
+      "total_users": 2530,
+      "View Items": 2355,
+      "Add to Cart": 1325,
+      "View Cart": 1462,
+      "Begin Checkout": 891,
+      "Add Payment": 849,
+      "Purchase": 566
     }
   ],
   "daily_trend": [
@@ -531,155 +518,161 @@
     },
     {
       "date": "2026-03-29",
-      "users": 35176,
-      "purchases": 13904,
-      "conv_rate": 39.5
+      "users": 36198,
+      "purchases": 14074,
+      "conv_rate": 38.9
     },
     {
       "date": "2026-03-30",
-      "users": 52368,
-      "purchases": 18943,
-      "conv_rate": 36.2
+      "users": 53617,
+      "purchases": 19128,
+      "conv_rate": 35.7
     },
     {
       "date": "2026-03-31",
-      "users": 124737,
-      "purchases": 43795,
-      "conv_rate": 35.1
+      "users": 127045,
+      "purchases": 44039,
+      "conv_rate": 34.7
+    },
+    {
+      "date": "2026-04-01",
+      "users": 336938,
+      "purchases": 48678,
+      "conv_rate": 14.4
     }
   ],
   "event_distribution": [
     {
       "event": "view_item_list",
-      "events": 8526221,
-      "users": 400777
+      "events": 15463991,
+      "users": 586973
     },
     {
       "event": "page_view",
-      "events": 7173899,
-      "users": 401519
+      "events": 12676015,
+      "users": 621479
     },
     {
       "event": "add_to_cart",
-      "events": 1279173,
-      "users": 262105
+      "events": 1652780,
+      "users": 344644
     },
     {
       "event": "session_start",
-      "events": 615322,
-      "users": 401359
+      "events": 1186423,
+      "users": 621241
     },
     {
       "event": "view_cart",
-      "events": 568480,
-      "users": 263843
+      "events": 830185,
+      "users": 367168
     },
     {
       "event": "login",
-      "events": 444134,
-      "users": 401447
-    },
-    {
-      "event": "add_payment_info",
-      "events": 286830,
-      "users": 207728
-    },
-    {
-      "event": "begin_checkout",
-      "events": 260982,
-      "users": 212327
+      "events": 705970,
+      "users": 621379
     },
     {
       "event": "user_engagement",
-      "events": 212909,
-      "users": 129106
+      "events": 415370,
+      "users": 222310
+    },
+    {
+      "event": "add_payment_info",
+      "events": 363032,
+      "users": 261451
+    },
+    {
+      "event": "begin_checkout",
+      "events": 331483,
+      "users": 267161
     },
     {
       "event": "purchase",
-      "events": 197390,
-      "users": 167422
+      "events": 252020,
+      "users": 212339
     },
     {
       "event": "first_visit",
-      "events": 135371,
-      "users": 124608
+      "events": 235728,
+      "users": 213452
     },
     {
       "event": "remove_from_cart",
-      "events": 114956,
-      "users": 54474
+      "events": 170313,
+      "users": 81160
     },
     {
       "event": "view_search_results",
-      "events": 52839,
-      "users": 23393
+      "events": 76275,
+      "users": 35002
     },
     {
       "event": "signup",
-      "events": 34559,
-      "users": 34468
+      "events": 50728,
+      "users": 50618
     },
     {
       "event": "click_top_seller_number",
-      "events": 5756,
-      "users": 5130
+      "events": 10750,
+      "users": 9446
     },
     {
       "event": "click",
-      "events": 49,
-      "users": 34
+      "events": 65,
+      "users": 50
     },
     {
       "event": "video_start",
-      "events": 3,
-      "users": 2
+      "events": 4,
+      "users": 3
     },
     {
       "event": "video_progress",
-      "events": 1,
-      "users": 1
+      "events": 2,
+      "users": 2
     }
   ],
   "purchase_frequency": [
     {
       "purchases": 1,
-      "users": 144515
+      "users": 182227
     },
     {
       "purchases": 2,
-      "users": 18496
+      "users": 24149
     },
     {
       "purchases": 3,
-      "users": 3111
+      "users": 4174
     },
     {
       "purchases": 4,
-      "users": 768
+      "users": 1067
     },
     {
       "purchases": 5,
-      "users": 274
+      "users": 373
     },
     {
       "purchases": 6,
-      "users": 111
+      "users": 157
     },
     {
       "purchases": 7,
-      "users": 45
+      "users": 65
     },
     {
       "purchases": 8,
-      "users": 33
+      "users": 42
     },
     {
       "purchases": 9,
-      "users": 20
+      "users": 27
     },
     {
       "purchases": 10,
-      "users": 8
+      "users": 11
     },
     {
       "purchases": 11,
@@ -687,15 +680,15 @@
     },
     {
       "purchases": 12,
-      "users": 6
-    },
-    {
-      "purchases": 13,
       "users": 7
     },
     {
+      "purchases": 13,
+      "users": 8
+    },
+    {
       "purchases": 14,
-      "users": 4
+      "users": 5
     },
     {
       "purchases": 15,
@@ -711,92 +704,96 @@
     },
     {
       "purchases": 18,
-      "users": 3
+      "users": 4
     },
     {
       "purchases": 20,
-      "users": 1
+      "users": 2
     },
     {
       "purchases": 22,
       "users": 1
     },
     {
-      "purchases": 34,
+      "purchases": 35,
       "users": 1
     },
     {
       "purchases": 36,
+      "users": 1
+    },
+    {
+      "purchases": 73,
       "users": 1
     }
   ],
   "platform_distribution": [
     {
       "platform": "WEB",
-      "users": 401533,
-      "purchasers": 167422
+      "users": 621495,
+      "purchasers": 212339
     }
   ],
   "by_source": {
     "Direct": {
       "kpi": {
-        "total_users": 184047,
-        "conversion_rate": 38.4,
-        "purchases": 70691,
-        "avg_events_per_user": 53.1,
-        "avg_hours_to_first_purchase": 4.4,
-        "avg_hours_to_repeat": 12.9,
-        "repeat_purchase_pct": 14.0
+        "total_users": 274402,
+        "conversion_rate": 32.2,
+        "purchases": 88446,
+        "avg_events_per_user": 59.1,
+        "avg_hours_to_first_purchase": 5.0,
+        "avg_hours_to_repeat": 15.6,
+        "repeat_purchase_pct": 14.4
       },
       "funnel": [
         {
           "step": "Total Users",
           "event": "all",
-          "users": 178404,
+          "users": 274238,
           "pct_of_total": 100.0,
           "drop_off_pct": 0
         },
         {
           "step": "View Items",
           "event": "view_item_list",
-          "users": 177959,
-          "pct_of_total": 99.8,
-          "drop_off_pct": 0.2
+          "users": 255635,
+          "pct_of_total": 93.2,
+          "drop_off_pct": 6.8
         },
         {
           "step": "Add to Cart",
           "event": "add_to_cart",
-          "users": 117273,
-          "pct_of_total": 65.7,
-          "drop_off_pct": 34.1
+          "users": 152222,
+          "pct_of_total": 55.5,
+          "drop_off_pct": 40.5
         },
         {
           "step": "View Cart",
           "event": "view_cart",
-          "users": 119013,
-          "pct_of_total": 66.7,
-          "drop_off_pct": -1.5
+          "users": 164224,
+          "pct_of_total": 59.9,
+          "drop_off_pct": -7.9
         },
         {
           "step": "Begin Checkout",
           "event": "begin_checkout",
-          "users": 93732,
-          "pct_of_total": 52.5,
-          "drop_off_pct": 21.2
+          "users": 116471,
+          "pct_of_total": 42.5,
+          "drop_off_pct": 29.1
         },
         {
           "step": "Add Payment",
           "event": "add_payment_info",
-          "users": 91538,
-          "pct_of_total": 51.3,
+          "users": 113829,
+          "pct_of_total": 41.5,
           "drop_off_pct": 2.3
         },
         {
           "step": "Purchase",
           "event": "purchase",
-          "users": 71334,
-          "pct_of_total": 40.0,
-          "drop_off_pct": 22.1
+          "users": 89417,
+          "pct_of_total": 32.6,
+          "drop_off_pct": 21.4
         }
       ],
       "daily_trend": [
@@ -856,67 +853,69 @@
         },
         {
           "date": "2026-03-29",
-          "users": 15185,
-          "purchases": 5889,
-          "conv_rate": 38.8
+          "users": 15769,
+          "purchases": 5967,
+          "conv_rate": 37.8
         },
         {
           "date": "2026-03-30",
-          "users": 22515,
-          "purchases": 7949,
-          "conv_rate": 35.3
+          "users": 23245,
+          "purchases": 8050,
+          "conv_rate": 34.6
         },
         {
           "date": "2026-03-31",
-          "users": 51047,
-          "purchases": 17627,
-          "conv_rate": 34.5
+          "users": 52465,
+          "purchases": 17756,
+          "conv_rate": 33.8
+        },
+        {
+          "date": "2026-04-01",
+          "users": 135023,
+          "purchases": 19281,
+          "conv_rate": 14.3
         }
       ],
       "purchase_frequency": [
         {
           "purchases": 1,
-          "users": 60822
+          "users": 75682
         },
         {
           "purchases": 2,
-          "users": 7918
+          "users": 10178
         },
         {
           "purchases": 3,
-          "users": 1382
+          "users": 1827
         },
         {
           "purchases": 4,
-          "users": 341
+          "users": 445
         },
         {
           "purchases": 5,
-          "users": 118
+          "users": 167
         },
         {
           "purchases": 6,
-          "users": 52
+          "users": 75
         },
         {
           "purchases": 7,
-          "users": 17
+          "users": 23
         },
         {
           "purchases": 8,
-          "users": 12
+          "users": 15
         },
         {
           "purchases": 9,
-          "users": 10
-        },
-        {
-          "purchases": 10,
-          "users": 1
+          "users": 13
         },
         {
           "purchases": 11,
-          "users": 4
+          "users": 5
         },
         {
           "purchases": 12,
@@ -924,7 +923,7 @@
         },
         {
           "purchases": 13,
-          "users": 3
+          "users": 4
         },
         {
           "purchases": 14,
@@ -944,89 +943,93 @@
         },
         {
           "purchases": 18,
-          "users": 1
+          "users": 2
         },
         {
           "purchases": 22,
           "users": 1
         },
         {
-          "purchases": 34,
+          "purchases": 35,
+          "users": 1
+        },
+        {
+          "purchases": 73,
           "users": 1
         }
       ],
       "funnel_by_source": [
         {
           "source": "Direct",
-          "total_users": 178404,
-          "View Items": 177959,
-          "Add to Cart": 117273,
-          "View Cart": 119013,
-          "Begin Checkout": 93732,
-          "Add Payment": 91538,
-          "Purchase": 71334
+          "total_users": 274238,
+          "View Items": 255635,
+          "Add to Cart": 152222,
+          "View Cart": 164224,
+          "Begin Checkout": 116471,
+          "Add Payment": 113829,
+          "Purchase": 89417
         }
       ]
     },
     "LINE Richmenu": {
       "kpi": {
-        "total_users": 217838,
-        "conversion_rate": 39.6,
-        "purchases": 86214,
-        "avg_events_per_user": 45.7,
-        "avg_hours_to_first_purchase": 3.2,
-        "avg_hours_to_repeat": 11.7,
-        "repeat_purchase_pct": 13.5
+        "total_users": 340173,
+        "conversion_rate": 32.4,
+        "purchases": 110285,
+        "avg_events_per_user": 51.4,
+        "avg_hours_to_first_purchase": 3.8,
+        "avg_hours_to_repeat": 14.2,
+        "repeat_purchase_pct": 14.0
       },
       "funnel": [
         {
           "step": "Total Users",
           "event": "all",
-          "users": 211755,
+          "users": 338642,
           "pct_of_total": 100.0,
           "drop_off_pct": 0
         },
         {
           "step": "View Items",
           "event": "view_item_list",
-          "users": 211411,
-          "pct_of_total": 99.8,
-          "drop_off_pct": 0.2
+          "users": 316188,
+          "pct_of_total": 93.4,
+          "drop_off_pct": 6.6
         },
         {
           "step": "Add to Cart",
           "event": "add_to_cart",
-          "users": 130036,
-          "pct_of_total": 61.4,
-          "drop_off_pct": 38.5
+          "users": 172921,
+          "pct_of_total": 51.1,
+          "drop_off_pct": 45.3
         },
         {
           "step": "View Cart",
           "event": "view_cart",
-          "users": 130590,
-          "pct_of_total": 61.7,
-          "drop_off_pct": -0.4
+          "users": 184063,
+          "pct_of_total": 54.4,
+          "drop_off_pct": -6.4
         },
         {
           "step": "Begin Checkout",
           "event": "begin_checkout",
-          "users": 106640,
-          "pct_of_total": 50.4,
-          "drop_off_pct": 18.3
+          "users": 135621,
+          "pct_of_total": 40.0,
+          "drop_off_pct": 26.3
         },
         {
           "step": "Add Payment",
           "event": "add_payment_info",
-          "users": 104910,
-          "pct_of_total": 49.5,
+          "users": 133424,
+          "pct_of_total": 39.4,
           "drop_off_pct": 1.6
         },
         {
           "step": "Purchase",
           "event": "purchase",
-          "users": 86747,
-          "pct_of_total": 41.0,
-          "drop_off_pct": 17.3
+          "users": 110989,
+          "pct_of_total": 32.8,
+          "drop_off_pct": 16.8
         }
       ],
       "daily_trend": [
@@ -1086,71 +1089,77 @@
         },
         {
           "date": "2026-03-29",
-          "users": 17190,
-          "purchases": 7057,
-          "conv_rate": 41.1
+          "users": 17487,
+          "purchases": 7136,
+          "conv_rate": 40.8
         },
         {
           "date": "2026-03-30",
-          "users": 25633,
-          "purchases": 9755,
-          "conv_rate": 38.1
+          "users": 25956,
+          "purchases": 9822,
+          "conv_rate": 37.8
         },
         {
           "date": "2026-03-31",
-          "users": 64258,
-          "purchases": 23235,
-          "conv_rate": 36.2
+          "users": 64705,
+          "purchases": 23316,
+          "conv_rate": 36.0
+        },
+        {
+          "date": "2026-04-01",
+          "users": 177163,
+          "purchases": 26118,
+          "conv_rate": 14.7
         }
       ],
       "purchase_frequency": [
         {
           "purchases": 1,
-          "users": 74611
+          "users": 94864
         },
         {
           "purchases": 2,
-          "users": 9431
+          "users": 12427
         },
         {
           "purchases": 3,
-          "users": 1522
+          "users": 2078
         },
         {
           "purchases": 4,
-          "users": 375
+          "users": 552
         },
         {
           "purchases": 5,
-          "users": 142
+          "users": 183
         },
         {
           "purchases": 6,
-          "users": 53
+          "users": 73
         },
         {
           "purchases": 7,
-          "users": 23
+          "users": 36
         },
         {
           "purchases": 8,
-          "users": 20
+          "users": 25
         },
         {
           "purchases": 9,
-          "users": 10
+          "users": 13
         },
         {
           "purchases": 10,
-          "users": 6
+          "users": 10
         },
         {
           "purchases": 11,
-          "users": 6
+          "users": 5
         },
         {
           "purchases": 12,
-          "users": 3
+          "users": 4
         },
         {
           "purchases": 13,
@@ -1158,7 +1167,7 @@
         },
         {
           "purchases": 14,
-          "users": 2
+          "users": 3
         },
         {
           "purchases": 15,
@@ -1174,7 +1183,7 @@
         },
         {
           "purchases": 20,
-          "users": 1
+          "users": 2
         },
         {
           "purchases": 36,
@@ -1184,75 +1193,75 @@
       "funnel_by_source": [
         {
           "source": "LINE Richmenu",
-          "total_users": 211755,
-          "View Items": 211411,
-          "Add to Cart": 130036,
-          "View Cart": 130590,
-          "Begin Checkout": 106640,
-          "Add Payment": 104910,
-          "Purchase": 86747
+          "total_users": 338642,
+          "View Items": 316188,
+          "Add to Cart": 172921,
+          "View Cart": 184063,
+          "Begin Checkout": 135621,
+          "Add Payment": 133424,
+          "Purchase": 110989
         }
       ]
     },
     "Others": {
       "kpi": {
-        "total_users": 1600,
-        "conversion_rate": 28.1,
-        "purchases": 449,
-        "avg_events_per_user": 64.1,
-        "avg_hours_to_first_purchase": 7.1,
-        "avg_hours_to_repeat": 24.7,
-        "repeat_purchase_pct": 13.4
+        "total_users": 2274,
+        "conversion_rate": 24.5,
+        "purchases": 556,
+        "avg_events_per_user": 68.8,
+        "avg_hours_to_first_purchase": 8.6,
+        "avg_hours_to_repeat": 23.9,
+        "repeat_purchase_pct": 13.1
       },
       "funnel": [
         {
           "step": "Total Users",
           "event": "all",
-          "users": 1710,
+          "users": 2530,
           "pct_of_total": 100.0,
           "drop_off_pct": 0
         },
         {
           "step": "View Items",
           "event": "view_item_list",
-          "users": 1702,
-          "pct_of_total": 99.5,
-          "drop_off_pct": 0.5
+          "users": 2355,
+          "pct_of_total": 93.1,
+          "drop_off_pct": 6.9
         },
         {
           "step": "Add to Cart",
           "event": "add_to_cart",
-          "users": 1060,
-          "pct_of_total": 62.0,
-          "drop_off_pct": 37.7
+          "users": 1325,
+          "pct_of_total": 52.4,
+          "drop_off_pct": 43.7
         },
         {
           "step": "View Cart",
           "event": "view_cart",
-          "users": 1090,
-          "pct_of_total": 63.7,
-          "drop_off_pct": -2.8
+          "users": 1462,
+          "pct_of_total": 57.8,
+          "drop_off_pct": -10.3
         },
         {
           "step": "Begin Checkout",
           "event": "begin_checkout",
-          "users": 731,
-          "pct_of_total": 42.7,
-          "drop_off_pct": 32.9
+          "users": 891,
+          "pct_of_total": 35.2,
+          "drop_off_pct": 39.1
         },
         {
           "step": "Add Payment",
           "event": "add_payment_info",
-          "users": 696,
-          "pct_of_total": 40.7,
-          "drop_off_pct": 4.8
+          "users": 849,
+          "pct_of_total": 33.6,
+          "drop_off_pct": 4.7
         },
         {
           "step": "Purchase",
           "event": "purchase",
-          "users": 456,
-          "pct_of_total": 26.7,
-          "drop_off_pct": 34.5
+          "users": 566,
+          "pct_of_total": 22.4,
+          "drop_off_pct": 33.3
         }
       ],
       "daily_trend": [
@@ -1312,38 +1321,48 @@
         },
         {
           "date": "2026-03-29",
-          "users": 166,
+          "users": 180,
           "purchases": 34,
-          "conv_rate": 20.5
+          "conv_rate": 18.9
         },
         {
           "date": "2026-03-30",
-          "users": 244,
-          "purchases": 49,
-          "conv_rate": 20.1
+          "users": 259,
+          "purchases": 51,
+          "conv_rate": 19.7
         },
         {
           "date": "2026-03-31",
-          "users": 449,
-          "purchases": 101,
-          "conv_rate": 22.5
+          "users": 477,
+          "purchases": 103,
+          "conv_rate": 21.6
+        },
+        {
+          "date": "2026-04-01",
+          "users": 1012,
+          "purchases": 114,
+          "conv_rate": 11.3
         }
       ],
       "purchase_frequency": [
         {
           "purchases": 1,
-          "users": 389
+          "users": 483
         },
         {
           "purchases": 2,
-          "users": 50
+          "users": 59
         },
         {
           "purchases": 3,
-          "users": 8
+          "users": 11
         },
         {
           "purchases": 4,
+          "users": 1
+        },
+        {
+          "purchases": 5,
           "users": 1
         },
         {
@@ -1354,75 +1373,75 @@
       "funnel_by_source": [
         {
           "source": "Others",
-          "total_users": 1710,
-          "View Items": 1702,
-          "Add to Cart": 1060,
-          "View Cart": 1090,
-          "Begin Checkout": 731,
-          "Add Payment": 696,
-          "Purchase": 456
+          "total_users": 2530,
+          "View Items": 2355,
+          "Add to Cart": 1325,
+          "View Cart": 1462,
+          "Begin Checkout": 891,
+          "Add Payment": 849,
+          "Purchase": 566
         }
       ]
     },
     "Search": {
       "kpi": {
-        "total_users": 8591,
-        "conversion_rate": 36.8,
-        "purchases": 3163,
-        "avg_events_per_user": 66.8,
-        "avg_hours_to_first_purchase": 6.0,
-        "avg_hours_to_repeat": 16.6,
-        "repeat_purchase_pct": 13.0
+        "total_users": 14228,
+        "conversion_rate": 28.1,
+        "purchases": 4003,
+        "avg_events_per_user": 70.6,
+        "avg_hours_to_first_purchase": 6.2,
+        "avg_hours_to_repeat": 18.3,
+        "repeat_purchase_pct": 13.3
       },
       "funnel": [
         {
           "step": "Total Users",
           "event": "all",
-          "users": 8472,
+          "users": 14489,
           "pct_of_total": 100.0,
           "drop_off_pct": 0
         },
         {
           "step": "View Items",
           "event": "view_item_list",
-          "users": 8436,
-          "pct_of_total": 99.6,
-          "drop_off_pct": 0.4
+          "users": 13502,
+          "pct_of_total": 93.2,
+          "drop_off_pct": 6.8
         },
         {
           "step": "Add to Cart",
           "event": "add_to_cart",
-          "users": 5882,
-          "pct_of_total": 69.4,
-          "drop_off_pct": 30.3
+          "users": 8037,
+          "pct_of_total": 55.5,
+          "drop_off_pct": 40.5
         },
         {
           "step": "View Cart",
           "event": "view_cart",
-          "users": 6045,
-          "pct_of_total": 71.4,
-          "drop_off_pct": -2.8
+          "users": 9040,
+          "pct_of_total": 62.4,
+          "drop_off_pct": -12.5
         },
         {
           "step": "Begin Checkout",
           "event": "begin_checkout",
-          "users": 4001,
-          "pct_of_total": 47.2,
-          "drop_off_pct": 33.8
+          "users": 4991,
+          "pct_of_total": 34.4,
+          "drop_off_pct": 44.8
         },
         {
           "step": "Add Payment",
           "event": "add_payment_info",
-          "users": 3802,
-          "pct_of_total": 44.9,
-          "drop_off_pct": 5.0
+          "users": 4747,
+          "pct_of_total": 32.8,
+          "drop_off_pct": 4.9
         },
         {
           "step": "Purchase",
           "event": "purchase",
-          "users": 3115,
-          "pct_of_total": 36.8,
-          "drop_off_pct": 18.1
+          "users": 3939,
+          "pct_of_total": 27.2,
+          "drop_off_pct": 17.0
         }
       ],
       "daily_trend": [
@@ -1482,43 +1501,53 @@
         },
         {
           "date": "2026-03-29",
-          "users": 865,
-          "purchases": 336,
-          "conv_rate": 38.8
+          "users": 906,
+          "purchases": 341,
+          "conv_rate": 37.6
         },
         {
           "date": "2026-03-30",
-          "users": 1341,
-          "purchases": 412,
-          "conv_rate": 30.7
+          "users": 1392,
+          "purchases": 417,
+          "conv_rate": 30.0
         },
         {
           "date": "2026-03-31",
-          "users": 2834,
-          "purchases": 829,
-          "conv_rate": 29.3
+          "users": 2942,
+          "purchases": 838,
+          "conv_rate": 28.5
+        },
+        {
+          "date": "2026-04-01",
+          "users": 8053,
+          "purchases": 876,
+          "conv_rate": 10.9
         }
       ],
       "purchase_frequency": [
         {
           "purchases": 1,
-          "users": 2753
+          "users": 3472
         },
         {
           "purchases": 2,
-          "users": 328
+          "users": 436
         },
         {
           "purchases": 3,
-          "users": 58
+          "users": 69
         },
         {
           "purchases": 4,
-          "users": 18
+          "users": 16
         },
         {
           "purchases": 5,
-          "users": 3
+          "users": 5
+        },
+        {
+          "purchases": 6,
+          "users": 2
         },
         {
           "purchases": 7,
@@ -1536,75 +1565,75 @@
       "funnel_by_source": [
         {
           "source": "Search",
-          "total_users": 8472,
-          "View Items": 8436,
-          "Add to Cart": 5882,
-          "View Cart": 6045,
-          "Begin Checkout": 4001,
-          "Add Payment": 3802,
-          "Purchase": 3115
+          "total_users": 14489,
+          "View Items": 13502,
+          "Add to Cart": 8037,
+          "View Cart": 9040,
+          "Begin Checkout": 4991,
+          "Add Payment": 4747,
+          "Purchase": 3939
         }
       ]
     },
     "Social": {
       "kpi": {
-        "total_users": 19425,
-        "conversion_rate": 35.5,
-        "purchases": 6905,
-        "avg_events_per_user": 51.2,
-        "avg_hours_to_first_purchase": 5.8,
-        "avg_hours_to_repeat": 15.0,
-        "repeat_purchase_pct": 14.0
+        "total_users": 30099,
+        "conversion_rate": 30.1,
+        "purchases": 9049,
+        "avg_events_per_user": 58.8,
+        "avg_hours_to_first_purchase": 6.6,
+        "avg_hours_to_repeat": 15.4,
+        "repeat_purchase_pct": 14.6
       },
       "funnel": [
         {
           "step": "Total Users",
           "event": "all",
-          "users": 20403,
+          "users": 33283,
           "pct_of_total": 100.0,
           "drop_off_pct": 0
         },
         {
           "step": "View Items",
           "event": "view_item_list",
-          "users": 20360,
-          "pct_of_total": 99.8,
-          "drop_off_pct": 0.2
+          "users": 30822,
+          "pct_of_total": 92.6,
+          "drop_off_pct": 7.4
         },
         {
           "step": "Add to Cart",
           "event": "add_to_cart",
-          "users": 12178,
-          "pct_of_total": 59.7,
-          "drop_off_pct": 40.2
+          "users": 16386,
+          "pct_of_total": 49.2,
+          "drop_off_pct": 46.8
         },
         {
           "step": "View Cart",
           "event": "view_cart",
-          "users": 12271,
-          "pct_of_total": 60.1,
-          "drop_off_pct": -0.8
+          "users": 17634,
+          "pct_of_total": 53.0,
+          "drop_off_pct": -7.6
         },
         {
           "step": "Begin Checkout",
           "event": "begin_checkout",
-          "users": 9730,
-          "pct_of_total": 47.7,
-          "drop_off_pct": 20.7
+          "users": 12627,
+          "pct_of_total": 37.9,
+          "drop_off_pct": 28.4
         },
         {
           "step": "Add Payment",
           "event": "add_payment_info",
-          "users": 9599,
-          "pct_of_total": 47.0,
-          "drop_off_pct": 1.3
+          "users": 12438,
+          "pct_of_total": 37.4,
+          "drop_off_pct": 1.5
         },
         {
           "step": "Purchase",
           "event": "purchase",
-          "users": 7080,
-          "pct_of_total": 34.7,
-          "drop_off_pct": 26.2
+          "users": 9247,
+          "pct_of_total": 27.8,
+          "drop_off_pct": 25.7
         }
       ],
       "daily_trend": [
@@ -1664,54 +1693,64 @@
         },
         {
           "date": "2026-03-29",
-          "users": 1770,
-          "purchases": 588,
-          "conv_rate": 33.2
+          "users": 1856,
+          "purchases": 596,
+          "conv_rate": 32.1
         },
         {
           "date": "2026-03-30",
-          "users": 2635,
-          "purchases": 778,
-          "conv_rate": 29.5
+          "users": 2765,
+          "purchases": 788,
+          "conv_rate": 28.5
         },
         {
           "date": "2026-03-31",
-          "users": 6149,
-          "purchases": 2003,
-          "conv_rate": 32.6
+          "users": 6456,
+          "purchases": 2026,
+          "conv_rate": 31.4
+        },
+        {
+          "date": "2026-04-01",
+          "users": 15687,
+          "purchases": 2289,
+          "conv_rate": 14.6
         }
       ],
       "purchase_frequency": [
         {
           "purchases": 1,
-          "users": 5940
+          "users": 7726
         },
         {
           "purchases": 2,
-          "users": 769
+          "users": 1049
         },
         {
           "purchases": 3,
-          "users": 141
+          "users": 189
         },
         {
           "purchases": 4,
-          "users": 33
+          "users": 53
         },
         {
           "purchases": 5,
-          "users": 11
+          "users": 17
         },
         {
           "purchases": 6,
-          "users": 5
+          "users": 6
         },
         {
           "purchases": 7,
-          "users": 4
+          "users": 5
         },
         {
           "purchases": 8,
+          "users": 2
+        },
+        {
+          "purchases": 9,
           "users": 1
         },
         {
@@ -1722,13 +1761,13 @@
       "funnel_by_source": [
         {
           "source": "Social",
-          "total_users": 20403,
-          "View Items": 20360,
-          "Add to Cart": 12178,
-          "View Cart": 12271,
-          "Begin Checkout": 9730,
-          "Add Payment": 9599,
-          "Purchase": 7080
+          "total_users": 33283,
+          "View Items": 30822,
+          "Add to Cart": 16386,
+          "View Cart": 17634,
+          "Begin Checkout": 12627,
+          "Add Payment": 12438,
+          "Purchase": 9247
         }
       ]
     }

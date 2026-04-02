@@ -1,13 +1,19 @@
 """
 GA4 Funnel Analysis Pre-processor
-Reads 6GB CSV with DuckDB, outputs summarized JSON for the dashboard.
+Queries Databricks directly, outputs summarized JSON for the dashboard.
 """
-import duckdb
+from databricks import sql as databricks_sql
+import pandas as pd
 import json
 import os
 import time
 
-CSV_PATH = "data/ga_traffic_events/ga_traffic_events_20260320_to_now.csv"
+# Databricks connection
+DATABRICKS_HOST = "886789292378781.1.gcp.databricks.com"
+DATABRICKS_HTTP_PATH = "/sql/1.0/warehouses/fb9b52635d49e79e"
+DATABRICKS_TABLE = "main.ga360_events.ga_traffic_events"
+DATE_FROM = "2026-03-20"
+
 OUTPUT_PATH = "data/ga_funnel_data.json"
 
 # Funnel step definitions (order matters)
@@ -28,7 +34,7 @@ FUNNEL_LABELS = [
     "Purchase",
 ]
 
-# Source grouping rules
+# Source grouping rules (references 'source' alias from subquery)
 SOURCE_CASE = """
     CASE
         WHEN source = '(direct)' OR source IS NULL OR source = '' THEN 'Direct'
@@ -43,28 +49,44 @@ SOURCE_CASE = """
 
 def main():
     start = time.time()
-    con = duckdb.connect()
 
-    # Create a view over the CSV for reuse
-    print("[1/14] Creating CSV view...")
-    con.execute(f"""
-        CREATE VIEW events AS
-        SELECT
-            p_event_date::DATE AS event_date,
-            event_ts_th::TIMESTAMP AS event_ts,
-            user_id_final::VARCHAR AS uid,
-            event_name,
-            source,
-            platform,
+    print("[0/14] Connecting to Databricks...")
+    conn = databricks_sql.connect(
+        server_hostname=DATABRICKS_HOST,
+        http_path=DATABRICKS_HTTP_PATH,
+        auth_type="databricks-cli",
+    )
+    cursor = conn.cursor()
+
+    def query(sql):
+        cursor.execute(sql)
+        cols = [d[0] for d in cursor.description]
+        rows = cursor.fetchall()
+        return pd.DataFrame(rows, columns=cols)
+
+    # Create a temp view for reuse
+    print("[1/14] Creating temp view...")
+    cursor.execute(f"""
+        CREATE OR REPLACE TEMP VIEW events AS
+        SELECT *,
             {SOURCE_CASE} AS source_group
-        FROM read_csv_auto('{CSV_PATH}', header=true, ignore_errors=true, all_varchar=true)
-        WHERE event_name != 'event_name'
-          AND user_id_final LIKE 'U%'
+        FROM (
+            SELECT
+                CAST(p_event_date AS DATE) AS event_date,
+                event_ts_th AS event_ts,
+                user_id_final AS uid,
+                event_name,
+                traffic_source_source AS source,
+                platform
+            FROM {DATABRICKS_TABLE}
+            WHERE user_id_final LIKE 'U%'
+              AND p_event_date >= '{DATE_FROM}'
+        ) raw
     """)
 
     # --- Query 1: Meta ---
     print("[2/14] Meta stats...")
-    meta = con.execute("""
+    meta = query("""
         SELECT
             COUNT(*) AS total_events,
             COUNT(DISTINCT uid) AS total_users,
@@ -72,14 +94,14 @@ def main():
             MAX(event_date) AS date_to,
             COUNT(DISTINCT event_date) AS num_days
         FROM events
-    """).fetchdf().to_dict(orient="records")[0]
+    """).to_dict(orient="records")[0]
     meta["date_from"] = str(meta["date_from"])[:10]
     meta["date_to"] = str(meta["date_to"])[:10]
     print(f"   Total events: {meta['total_events']:,}, Users: {meta['total_users']:,}")
 
     # --- Query 2: KPI ---
     print("[3/14] KPI calculations...")
-    kpi = con.execute("""
+    kpi = query("""
         WITH purchase_events AS (
             SELECT uid, event_ts,
                 ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts) AS purchase_seq
@@ -113,14 +135,14 @@ def main():
             (SELECT COUNT(DISTINCT uid) FROM events WHERE event_name = 'purchase') AS purchasers,
             (SELECT COUNT(DISTINCT uid) FROM events) AS total_users,
             (SELECT ROUND(AVG(event_count), 1) FROM user_events) AS avg_events_per_user,
-            (SELECT ROUND(AVG(EXTRACT(EPOCH FROM (fp.first_purchase_ts - uf.first_touch)) / 3600.0), 1)
+            (SELECT ROUND(AVG((unix_timestamp(fp.first_purchase_ts) - unix_timestamp(uf.first_touch)) / 3600.0), 1)
              FROM first_purchase fp JOIN user_first uf ON fp.uid = uf.uid
              WHERE uf.first_touch < fp.first_purchase_ts) AS avg_hours_to_first_purchase,
-            (SELECT ROUND(AVG(EXTRACT(EPOCH FROM (sp.second_purchase_ts - fp.first_purchase_ts)) / 3600.0), 1)
+            (SELECT ROUND(AVG((unix_timestamp(sp.second_purchase_ts) - unix_timestamp(fp.first_purchase_ts)) / 3600.0), 1)
              FROM first_purchase fp JOIN second_purchase sp ON fp.uid = sp.uid) AS avg_hours_to_repeat,
             (SELECT ROUND(100.0 * COUNT(CASE WHEN purchase_count > 1 THEN 1 END) / NULLIF(COUNT(*), 0), 1)
              FROM purchaser_counts) AS repeat_purchase_pct
-    """).fetchdf().to_dict(orient="records")[0]
+    """).to_dict(orient="records")[0]
 
     kpi_data = {
         "total_users": int(meta["total_users"]),
@@ -138,10 +160,10 @@ def main():
     funnel_parts = []
     for evt in FUNNEL_EVENTS:
         funnel_parts.append(
-            f"COUNT(DISTINCT CASE WHEN event_name = '{evt}' THEN uid END) AS \"{evt}\""
+            f"COUNT(DISTINCT CASE WHEN event_name = '{evt}' THEN uid END) AS `{evt}`"
         )
     funnel_sql = f"SELECT {', '.join(funnel_parts)} FROM events"
-    funnel_raw = con.execute(funnel_sql).fetchdf().to_dict(orient="records")[0]
+    funnel_raw = query(funnel_sql).to_dict(orient="records")[0]
 
     funnel_data = []
     total = int(meta["total_users"])
@@ -197,7 +219,7 @@ def main():
         ORDER BY user_count DESC
         LIMIT 30
     """
-    sankey_raw = con.execute(sankey_sql).fetchdf()
+    sankey_raw = query(sankey_sql)
 
     event_label_map = dict(zip(FUNNEL_EVENTS, FUNNEL_LABELS))
     sankey_nodes = []
@@ -206,13 +228,12 @@ def main():
     for _, row in sankey_raw.iterrows():
         src = event_label_map.get(row["source_event"], row["source_event"])
         tgt = event_label_map.get(row["target_event"], row["target_event"])
-        # Layered approach: add step number prefix to avoid cycles
         src_step = FUNNEL_EVENTS.index(row["source_event"]) + 1 if row["source_event"] in FUNNEL_EVENTS else 0
         tgt_step = FUNNEL_EVENTS.index(row["target_event"]) + 1 if row["target_event"] in FUNNEL_EVENTS else 0
         src_label = f"S{src_step}: {src}"
         tgt_label = f"S{tgt_step}: {tgt}"
         if src_label == tgt_label:
-            continue  # skip self-loops
+            continue
         for n in [src_label, tgt_label]:
             if n not in node_set:
                 node_set.add(n)
@@ -249,16 +270,25 @@ def main():
             SELECT * FROM deduped
             WHERE prev_event IS NULL OR event_name != prev_event
         ),
+        numbered AS (
+            SELECT uid, event_name, event_ts, step_num,
+                ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts, step_num) AS rn
+            FROM no_consec
+        ),
+        filtered AS (
+            SELECT * FROM numbered WHERE rn <= 10
+        ),
         paths AS (
             SELECT uid,
-                STRING_AGG(event_name, ' → ' ORDER BY event_ts, step_num) AS path,
+                array_join(
+                    transform(
+                        sort_array(collect_list(struct(event_ts, step_num, event_name))),
+                        x -> x.event_name
+                    ),
+                    ' → '
+                ) AS path,
                 COUNT(*) AS path_len
-            FROM (
-                SELECT uid, event_name, event_ts, step_num,
-                    ROW_NUMBER() OVER (PARTITION BY uid ORDER BY event_ts, step_num) AS rn
-                FROM no_consec
-            ) t
-            WHERE rn <= 10
+            FROM filtered
             GROUP BY uid
         )
         SELECT path, COUNT(*) AS user_count, path_len
@@ -267,7 +297,7 @@ def main():
         ORDER BY user_count DESC
         LIMIT 20
     """
-    journeys_raw = con.execute(journeys_sql).fetchdf()
+    journeys_raw = query(journeys_sql)
     journeys_data = []
     for _, row in journeys_raw.iterrows():
         steps = row["path"].split(" → ")
@@ -283,7 +313,7 @@ def main():
     source_parts = []
     for evt in FUNNEL_EVENTS:
         source_parts.append(
-            f"COUNT(DISTINCT CASE WHEN event_name = '{evt}' THEN uid END) AS \"{evt}\""
+            f"COUNT(DISTINCT CASE WHEN event_name = '{evt}' THEN uid END) AS `{evt}`"
         )
     source_sql = f"""
         SELECT
@@ -294,7 +324,7 @@ def main():
         GROUP BY source_group
         ORDER BY total_users DESC
     """
-    source_raw = con.execute(source_sql).fetchdf()
+    source_raw = query(source_sql)
     source_data = []
     for _, row in source_raw.iterrows():
         entry = {"source": row["source_group"], "total_users": int(row["total_users"])}
@@ -315,7 +345,7 @@ def main():
         GROUP BY event_date
         ORDER BY event_date
     """
-    daily_raw = con.execute(daily_sql).fetchdf()
+    daily_raw = query(daily_sql)
     daily_data = []
     for _, row in daily_raw.iterrows():
         daily_data.append({
@@ -332,7 +362,7 @@ def main():
         GROUP BY event_name
         ORDER BY event_count DESC
     """
-    event_dist_raw = con.execute(event_dist_sql).fetchdf()
+    event_dist_raw = query(event_dist_sql)
     event_dist = []
     for _, row in event_dist_raw.iterrows():
         event_dist.append({
@@ -352,7 +382,7 @@ def main():
         GROUP BY platform
         ORDER BY users DESC
     """
-    platform_raw = con.execute(platform_sql).fetchdf()
+    platform_raw = query(platform_sql)
     platform_data = []
     for _, row in platform_raw.iterrows():
         platform_data.append({
@@ -375,7 +405,7 @@ def main():
         GROUP BY purchase_count
         ORDER BY purchase_count
     """
-    pf_raw = con.execute(pf_sql).fetchdf()
+    pf_raw = query(pf_sql)
     purchase_freq = []
     for _, row in pf_raw.iterrows():
         purchase_freq.append({
@@ -383,7 +413,7 @@ def main():
             "users": int(row["user_count"]),
         })
 
-    # --- Query 10: KPI per source ---
+    # --- Query 11: KPI per source ---
     print("[11/14] KPI per source...")
     kpi_per_source_sql = """
         WITH uid_source AS (
@@ -417,7 +447,7 @@ def main():
         ),
         time_to_first AS (
             SELECT us.source_group,
-                ROUND(AVG(EXTRACT(EPOCH FROM (ps.event_ts - uf.first_touch)) / 3600.0), 1)
+                ROUND(AVG((unix_timestamp(ps.event_ts) - unix_timestamp(uf.first_touch)) / 3600.0), 1)
                     AS avg_hours_to_first_purchase
             FROM uid_source us
             JOIN purchase_seq ps ON ps.uid = us.uid AND ps.seq = 1
@@ -427,7 +457,7 @@ def main():
         ),
         time_to_repeat AS (
             SELECT us.source_group,
-                ROUND(AVG(EXTRACT(EPOCH FROM (p2.event_ts - p1.event_ts)) / 3600.0), 1)
+                ROUND(AVG((unix_timestamp(p2.event_ts) - unix_timestamp(p1.event_ts)) / 3600.0), 1)
                     AS avg_hours_to_repeat
             FROM uid_source us
             JOIN purchase_seq p1 ON p1.uid = us.uid AND p1.seq = 1
@@ -455,11 +485,11 @@ def main():
         LEFT JOIN time_to_repeat tr ON tr.source_group = b.source_group
         LEFT JOIN repeat_pct rp ON rp.source_group = b.source_group
     """
-    kpi_source_raw = con.execute(kpi_per_source_sql).fetchdf()
+    kpi_source_raw = query(kpi_per_source_sql)
 
-    # --- Query 11: Daily trend per source ---
+    # --- Query 12: Daily trend per source ---
     print("[12/14] Daily trend per source...")
-    daily_source_sql = f"""
+    daily_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group
             FROM (
@@ -480,11 +510,11 @@ def main():
         GROUP BY us.source_group, e.event_date
         ORDER BY us.source_group, e.event_date
     """
-    daily_source_raw = con.execute(daily_source_sql).fetchdf()
+    daily_source_raw = query(daily_source_sql)
 
-    # --- Query 12: Purchase frequency per source ---
+    # --- Query 13: Purchase frequency per source ---
     print("[13/14] Purchase frequency per source...")
-    pf_source_sql = f"""
+    pf_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group
             FROM (
@@ -505,14 +535,13 @@ def main():
         GROUP BY source_group, purchase_count
         ORDER BY source_group, purchase_count
     """
-    pf_source_raw = con.execute(pf_source_sql).fetchdf()
+    pf_source_raw = query(pf_source_sql)
 
     # --- Build by_source structure ---
-    # Get funnel per source (already computed in source_data)
+    print("[14/14] Building output...")
     by_source = {}
     source_groups = set()
 
-    # Collect all source groups
     for _, row in kpi_source_raw.iterrows():
         source_groups.add(row["source_group"])
 
@@ -535,7 +564,7 @@ def main():
         else:
             sg_kpi = {}
 
-        # Funnel per source (from source_data)
+        # Funnel per source
         sg_funnel_entry = [s for s in source_data if s["source"] == sg]
         sg_funnel = []
         if sg_funnel_entry:
@@ -605,7 +634,8 @@ def main():
     elapsed = time.time() - start
     size_kb = os.path.getsize(OUTPUT_PATH) / 1024
     print(f"\nDone in {elapsed:.1f}s → {OUTPUT_PATH} ({size_kb:.0f} KB)")
-    con.close()
+    cursor.close()
+    conn.close()
 
 
 if __name__ == "__main__":
