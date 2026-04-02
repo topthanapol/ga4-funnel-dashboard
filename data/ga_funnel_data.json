@@ -1,6 +1,6 @@
 {
   "meta": {
-    "total_events": 20434723,
+    "total_events": 19908874,
     "total_users": 401533,
     "date_from": "2026-03-20",
     "date_to": "2026-03-31",
@@ -8,11 +8,11 @@
   },
   "kpi": {
     "total_users": 401533,
-    "conversion_rate": 42.2,
-    "purchases": 169524,
-    "avg_events_per_user": 50.9,
-    "avg_hours_to_purchase": 7.2,
-    "repeat_purchase_pct": 14.5
+    "conversion_rate": 41.7,
+    "purchases": 167422,
+    "avg_events_per_user": 49.6,
+    "avg_hours_to_purchase": 6.1,
+    "repeat_purchase_pct": 13.7
   },
   "funnel": [
     {
@@ -25,44 +25,44 @@
     {
       "step": "View Items",
       "event": "view_item_list",
-      "users": 400778,
+      "users": 400777,
       "pct_of_total": 99.8,
       "drop_off_pct": 0
     },
     {
       "step": "Add to Cart",
       "event": "add_to_cart",
-      "users": 264120,
-      "pct_of_total": 65.8,
-      "drop_off_pct": 34.1
+      "users": 262105,
+      "pct_of_total": 65.3,
+      "drop_off_pct": 34.6
     },
     {
       "step": "View Cart",
       "event": "view_cart",
-      "users": 265861,
-      "pct_of_total": 66.2,
+      "users": 263843,
+      "pct_of_total": 65.7,
       "drop_off_pct": -0.7
     },
     {
       "step": "Begin Checkout",
       "event": "begin_checkout",
-      "users": 214468,
-      "pct_of_total": 53.4,
-      "drop_off_pct": 19.3
+      "users": 212327,
+      "pct_of_total": 52.9,
+      "drop_off_pct": 19.5
     },
     {
       "step": "Add Payment",
       "event": "add_payment_info",
-      "users": 209852,
-      "pct_of_total": 52.3,
+      "users": 207728,
+      "pct_of_total": 51.7,
       "drop_off_pct": 2.2
     },
     {
       "step": "Purchase",
       "event": "purchase",
-      "users": 169524,
-      "pct_of_total": 42.2,
-      "drop_off_pct": 19.2
+      "users": 167422,
+      "pct_of_total": 41.7,
+      "drop_off_pct": 19.4
     }
   ],
   "sankey": {
@@ -90,77 +90,77 @@
       {
         "source": "S1: View Items",
         "target": "S2: Add to Cart",
-        "value": 263758
+        "value": 261741
       },
       {
         "source": "S2: Add to Cart",
         "target": "S3: View Cart",
-        "value": 234429
+        "value": 232250
       },
       {
         "source": "S3: View Cart",
         "target": "S4: Begin Checkout",
-        "value": 214277
+        "value": 212135
       },
       {
         "source": "S4: Begin Checkout",
         "target": "S5: Add Payment",
-        "value": 206800
+        "value": 204694
       },
       {
         "source": "S5: Add Payment",
         "target": "S6: Purchase",
-        "value": 165572
+        "value": 163538
       },
       {
         "source": "S1: View Items",
         "target": "S3: View Cart",
-        "value": 113346
+        "value": 111748
       },
       {
         "source": "S1: View Items",
         "target": "S5: Add Payment",
-        "value": 14857
+        "value": 14565
       },
       {
         "source": "S1: View Items",
         "target": "S6: Purchase",
-        "value": 2316
+        "value": 2236
       },
       {
         "source": "S4: Begin Checkout",
         "target": "S6: Purchase",
-        "value": 2049
+        "value": 2017
       },
       {
         "source": "S3: View Cart",
         "target": "S5: Add Payment",
-        "value": 1270
+        "value": 1249
       },
       {
         "source": "S1: View Items",
         "target": "S4: Begin Checkout",
-        "value": 259
+        "value": 252
       },
       {
         "source": "S3: View Cart",
         "target": "S6: Purchase",
-        "value": 245
+        "value": 240
       },
       {
         "source": "S2: Add to Cart",
         "target": "S5: Add Payment",
-        "value": 127
+        "value": 124
       },
       {
         "source": "S2: Add to Cart",
         "target": "S4: Begin Checkout",
-        "value": 49
+        "value": 48
       },
       {
         "source": "S2: Add to Cart",
         "target": "S6: Purchase",
-        "value": 23
+        "value": 22
       }
     ]
   },
@@ -169,7 +169,7 @@
       "path": [
         "View Items"
       ],
-      "users": 127552,
+      "users": 129506,
       "steps": 1
     },
     {
@@ -182,7 +182,7 @@
         "Purchase",
         "View Items"
       ],
-      "users": 30248,
+      "users": 30026,
       "steps": 7
     },
     {
@@ -194,7 +194,7 @@
         "Add Payment",
         "Purchase"
       ],
-      "users": 26811,
+      "users": 27198,
       "steps": 6
     },
     {
@@ -204,7 +204,7 @@
         "View Cart",
         "View Items"
       ],
-      "users": 10096,
+      "users": 10125,
       "steps": 4
     },
     {
@@ -215,7 +215,7 @@
         "Begin Checkout",
         "Add Payment"
       ],
-      "users": 7391,
+      "users": 7555,
       "steps": 5
     },
     {
@@ -231,8 +231,22 @@
         "View Cart",
         "Begin Checkout"
       ],
-      "users": 7385,
+      "users": 6964,
       "steps": 10
+    },
+    {
+      "path": [
+        "View Items",
+        "Add to Cart",
+        "View Items",
+        "Add to Cart",
+        "View Cart",
+        "Begin Checkout",
+        "Add Payment",
+        "Purchase"
+      ],
+      "users": 5878,
+      "steps": 8
     },
     {
       "path": [
@@ -246,22 +260,8 @@
         "Purchase",
         "View Items"
       ],
-      "users": 5827,
+      "users": 5832,
       "steps": 9
-    },
-    {
-      "path": [
-        "View Items",
-        "Add to Cart",
-        "View Items",
-        "Add to Cart",
-        "View Cart",
-        "Begin Checkout",
-        "Add Payment",
-        "Purchase"
-      ],
-      "users": 5811,
-      "steps": 8
     },
     {
       "path": [
@@ -272,7 +272,7 @@
         "Add Payment",
         "View Items"
       ],
-      "users": 5704,
+      "users": 5652,
       "steps": 6
     },
     {
@@ -288,7 +288,7 @@
         "View Items",
         "Add to Cart"
       ],
-      "users": 5350,
+      "users": 5327,
       "steps": 10
     },
     {
@@ -304,7 +304,7 @@
         "Add Payment",
         "Purchase"
       ],
-      "users": 5267,
+      "users": 5222,
       "steps": 10
     },
     {
@@ -313,7 +313,7 @@
         "View Cart",
         "View Items"
       ],
-      "users": 4850,
+      "users": 4889,
       "steps": 3
     },
     {
@@ -322,7 +322,7 @@
         "Add to Cart",
         "View Items"
       ],
-      "users": 4432,
+      "users": 4442,
       "steps": 3
     },
     {
@@ -334,7 +334,7 @@
         "View Cart",
         "View Items"
       ],
-      "users": 4149,
+      "users": 4144,
       "steps": 6
     },
     {
@@ -343,8 +343,22 @@
         "Add to Cart",
         "View Cart"
       ],
-      "users": 4011,
+      "users": 4078,
       "steps": 3
+    },
+    {
+      "path": [
+        "View Items",
+        "Add to Cart",
+        "View Items",
+        "View Cart",
+        "Begin Checkout",
+        "Add Payment",
+        "Purchase",
+        "View Items"
+      ],
+      "users": 3339,
+      "steps": 8
     },
     {
       "path": [
@@ -359,27 +373,13 @@
         "View Cart",
         "Begin Checkout"
       ],
-      "users": 3367,
+      "users": 3337,
       "steps": 10
     },
     {
       "path": [
         "View Items",
         "Add to Cart",
-        "View Items",
-        "View Cart",
-        "Begin Checkout",
-        "Add Payment",
-        "Purchase",
-        "View Items"
-      ],
-      "users": 3358,
-      "steps": 8
-    },
-    {
-      "path": [
-        "View Items",
-        "Add to Cart",
         "View Cart",
         "View Items",
         "Add to Cart",
@@ -389,7 +389,7 @@
         "Purchase",
         "View Items"
       ],
-      "users": 2820,
+      "users": 2735,
       "steps": 10
     },
     {
@@ -402,13 +402,11 @@
         "Add Payment",
         "Purchase"
       ],
-      "users": 2663,
+      "users": 2703,
       "steps": 7
     },
     {
       "path": [
-        "View Items",
-        "Add to Cart",
         "View Items",
         "Add to Cart",
         "View Cart",
@@ -416,10 +414,11 @@
         "Add Payment",
         "Purchase",
         "View Items",
-        "Add to Cart"
+        "View Cart",
+        "View Items"
       ],
-      "users": 2453,
-      "steps": 10
+      "users": 2367,
+      "steps": 9
     }
   ],
   "funnel_by_source": [
@@ -427,51 +426,51 @@
       "source": "LINE Richmenu",
       "total_users": 211755,
       "View Items": 211411,
-      "Add to Cart": 131221,
-      "View Cart": 131794,
-      "Begin Checkout": 107865,
-      "Add Payment": 106131,
-      "Purchase": 87863
+      "Add to Cart": 130036,
+      "View Cart": 130590,
+      "Begin Checkout": 106640,
+      "Add Payment": 104910,
+      "Purchase": 86747
     },
     {
       "source": "Direct",
       "total_users": 178404,
-      "View Items": 177960,
-      "Add to Cart": 118094,
-      "View Cart": 119825,
-      "Begin Checkout": 94611,
-      "Add Payment": 92406,
-      "Purchase": 72258
+      "View Items": 177959,
+      "Add to Cart": 117273,
+      "View Cart": 119013,
+      "Begin Checkout": 93732,
+      "Add Payment": 91538,
+      "Purchase": 71334
     },
     {
       "source": "Social",
       "total_users": 20403,
       "View Items": 20360,
-      "Add to Cart": 12258,
-      "View Cart": 12345,
-      "Begin Checkout": 9807,
-      "Add Payment": 9674,
-      "Purchase": 7163
+      "Add to Cart": 12178,
+      "View Cart": 12271,
+      "Begin Checkout": 9730,
+      "Add Payment": 9599,
+      "Purchase": 7080
     },
     {
       "source": "Search",
       "total_users": 8472,
       "View Items": 8436,
-      "Add to Cart": 5894,
-      "View Cart": 6062,
-      "Begin Checkout": 4026,
-      "Add Payment": 3827,
-      "Purchase": 3139
+      "Add to Cart": 5882,
+      "View Cart": 6045,
+      "Begin Checkout": 4001,
+      "Add Payment": 3802,
+      "Purchase": 3115
     },
     {
       "source": "Others",
       "total_users": 1710,
       "View Items": 1702,
-      "Add to Cart": 1063,
-      "View Cart": 1092,
-      "Begin Checkout": 735,
-      "Add Payment": 700,
-      "Purchase": 462
+      "Add to Cart": 1060,
+      "View Cart": 1090,
+      "Begin Checkout": 731,
+      "Add Payment": 696,
+      "Purchase": 456
     }
   ],
   "daily_trend": [
@@ -531,48 +530,48 @@
     },
     {
       "date": "2026-03-29",
-      "users": 40500,
-      "purchases": 15258,
-      "conv_rate": 37.7
+      "users": 35176,
+      "purchases": 13904,
+      "conv_rate": 39.5
     },
     {
       "date": "2026-03-30",
-      "users": 56845,
-      "purchases": 20057,
-      "conv_rate": 35.3
+      "users": 52368,
+      "purchases": 18943,
+      "conv_rate": 36.2
     },
     {
       "date": "2026-03-31",
-      "users": 130449,
-      "purchases": 45355,
-      "conv_rate": 34.8
+      "users": 124737,
+      "purchases": 43795,
+      "conv_rate": 35.1
     }
   ],
   "event_distribution": [
     {
       "event": "view_item_list",
-      "events": 8767954,
-      "users": 400778
+      "events": 8526221,
+      "users": 400777
     },
     {
       "event": "page_view",
-      "events": 7362988,
+      "events": 7173899,
       "users": 401519
     },
     {
       "event": "add_to_cart",
-      "events": 1309988,
-      "users": 264120
+      "events": 1279173,
+      "users": 262105
     },
     {
       "event": "session_start",
-      "events": 638955,
-      "users": 401362
+      "events": 615322,
+      "users": 401359
     },
     {
       "event": "view_cart",
-      "events": 581674,
-      "users": 265861
+      "events": 568480,
+      "users": 263843
     },
     {
       "event": "login",
@@ -581,38 +580,38 @@
     },
     {
       "event": "add_payment_info",
-      "events": 293478,
-      "users": 209852
+      "events": 286830,
+      "users": 207728
     },
     {
       "event": "begin_checkout",
-      "events": 267066,
-      "users": 214468
+      "events": 260982,
+      "users": 212327
     },
     {
       "event": "user_engagement",
-      "events": 216520,
-      "users": 129954
+      "events": 212909,
+      "users": 129106
     },
     {
       "event": "purchase",
-      "events": 202137,
-      "users": 169524
+      "events": 197390,
+      "users": 167422
     },
     {
       "event": "first_visit",
-      "events": 135480,
-      "users": 124679
+      "events": 135371,
+      "users": 124608
     },
     {
       "event": "remove_from_cart",
-      "events": 118250,
-      "users": 55418
+      "events": 114956,
+      "users": 54474
     },
     {
       "event": "view_search_results",
-      "events": 55586,
-      "users": 23976
+      "events": 52839,
+      "users": 23393
     },
     {
       "event": "signup",
@@ -621,13 +620,13 @@
     },
     {
       "event": "click_top_seller_number",
-      "events": 5898,
-      "users": 5230
+      "events": 5756,
+      "users": 5130
     },
     {
       "event": "click",
-      "events": 52,
-      "users": 35
+      "events": 49,
+      "users": 34
     },
     {
       "event": "video_start",
