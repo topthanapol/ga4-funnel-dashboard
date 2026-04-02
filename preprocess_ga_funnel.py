@@ -46,7 +46,7 @@ def main():
     con = duckdb.connect()
 
     # Create a view over the CSV for reuse
-    print("[1/12] Creating CSV view...")
+    print("[1/14] Creating CSV view...")
     con.execute(f"""
         CREATE VIEW events AS
         SELECT
@@ -63,7 +63,7 @@ def main():
     """)
 
     # --- Query 1: Meta ---
-    print("[2/12] Meta stats...")
+    print("[2/14] Meta stats...")
     meta = con.execute("""
         SELECT
             COUNT(*) AS total_events,
@@ -78,7 +78,7 @@ def main():
     print(f"   Total events: {meta['total_events']:,}, Users: {meta['total_users']:,}")
 
     # --- Query 2: KPI ---
-    print("[3/12] KPI calculations...")
+    print("[3/14] KPI calculations...")
     kpi = con.execute("""
         WITH purchase_events AS (
             SELECT uid, event_ts,
@@ -134,7 +134,7 @@ def main():
     print(f"   Conv rate: {kpi_data['conversion_rate']}%, Purchasers: {kpi_data['purchases']:,}")
 
     # --- Query 3: Funnel ---
-    print("[4/12] Funnel counts...")
+    print("[4/14] Funnel counts...")
     funnel_parts = []
     for evt in FUNNEL_EVENTS:
         funnel_parts.append(
@@ -164,7 +164,7 @@ def main():
     })
 
     # --- Query 4: Sankey (layered transitions) ---
-    print("[5/12] Sankey transitions...")
+    print("[5/14] Sankey transitions...")
     sankey_sql = """
         WITH funnel_events AS (
             SELECT uid, event_name, event_ts,
@@ -224,7 +224,7 @@ def main():
         })
 
     # --- Query 5: Top User Journeys ---
-    print("[6/12] Top user journeys...")
+    print("[6/14] Top user journeys...")
     journeys_sql = """
         WITH funnel_events AS (
             SELECT uid, event_name, event_ts,
@@ -279,7 +279,7 @@ def main():
         })
 
     # --- Query 6: Funnel by Source ---
-    print("[7/12] Funnel by source...")
+    print("[7/14] Funnel by source...")
     source_parts = []
     for evt in FUNNEL_EVENTS:
         source_parts.append(
@@ -303,7 +303,7 @@ def main():
         source_data.append(entry)
 
     # --- Query 7: Daily Trend ---
-    print("[8/12] Daily trend...")
+    print("[8/14] Daily trend...")
     daily_sql = """
         SELECT
             event_date,
@@ -341,8 +341,28 @@ def main():
             "users": int(row["user_count"]),
         })
 
-    # --- Query 9: Purchase Frequency Distribution ---
-    print("[9/12] Purchase frequency distribution...")
+    # --- Query 9: Platform Distribution ---
+    print("[9/14] Platform distribution...")
+    platform_sql = """
+        SELECT
+            COALESCE(NULLIF(platform, ''), 'Unknown') AS platform,
+            COUNT(DISTINCT uid) AS users,
+            COUNT(DISTINCT CASE WHEN event_name = 'purchase' THEN uid END) AS purchasers
+        FROM events
+        GROUP BY platform
+        ORDER BY users DESC
+    """
+    platform_raw = con.execute(platform_sql).fetchdf()
+    platform_data = []
+    for _, row in platform_raw.iterrows():
+        platform_data.append({
+            "platform": row["platform"],
+            "users": int(row["users"]),
+            "purchasers": int(row["purchasers"]),
+        })
+
+    # --- Query 10: Purchase Frequency Distribution ---
+    print("[10/14] Purchase frequency distribution...")
     pf_sql = """
         WITH purchase_counts AS (
             SELECT uid, COUNT(*) AS purchase_count
@@ -364,7 +384,7 @@ def main():
         })
 
     # --- Query 10: KPI per source ---
-    print("[10/12] KPI per source...")
+    print("[11/14] KPI per source...")
     kpi_per_source_sql = """
         WITH uid_source AS (
             SELECT uid, source_group
@@ -438,7 +458,7 @@ def main():
     kpi_source_raw = con.execute(kpi_per_source_sql).fetchdf()
 
     # --- Query 11: Daily trend per source ---
-    print("[11/12] Daily trend per source...")
+    print("[12/14] Daily trend per source...")
     daily_source_sql = f"""
         WITH uid_source AS (
             SELECT uid, source_group
@@ -463,7 +483,7 @@ def main():
     daily_source_raw = con.execute(daily_source_sql).fetchdf()
 
     # --- Query 12: Purchase frequency per source ---
-    print("[12/12] Purchase frequency per source...")
+    print("[13/14] Purchase frequency per source...")
     pf_source_sql = f"""
         WITH uid_source AS (
             SELECT uid, source_group
@@ -574,6 +594,7 @@ def main():
         "daily_trend": daily_data,
         "event_distribution": event_dist,
         "purchase_frequency": purchase_freq,
+        "platform_distribution": platform_data,
         "by_source": by_source,
     }
 

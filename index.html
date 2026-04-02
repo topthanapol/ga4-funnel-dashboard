@@ -247,6 +247,18 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
       <div class="panel-title">Daily Trend</div>
       <div class="chart-container" id="trendChart"></div>
     </div>
+    <div class="panel">
+      <div class="panel-title">User Distribution by Source</div>
+      <div class="chart-container" id="sourceDonutChart"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Funnel Step Conversion Rates</div>
+      <div class="chart-container" id="funnelRatesChart"></div>
+    </div>
+    <div class="panel panel-full">
+      <div class="panel-title">Conversion Rate by Source</div>
+      <div class="chart-container" id="cvrBySourceChart"></div>
+    </div>
   </div>
 
   <!-- Combined Sankey + Journey Section -->
@@ -656,6 +668,177 @@ function renderTrend(data) {
   window.addEventListener('resize', () => chart.resize());
 }
 
+function renderSourceDonut(data) {
+  const chart = initChart('sourceDonutChart');
+  if (!data || data.length === 0) return;
+  const pieData = data.map((d, i) => ({
+    name: d.source,
+    value: d.total_users,
+    itemStyle: { color: SOURCE_COLORS[i % SOURCE_COLORS.length] }
+  }));
+
+  chart.setOption({
+    tooltip: {
+      trigger: 'item',
+      formatter: p => `<b>${p.name}</b><br/>Users: ${fmt(p.value)}<br/>Share: ${p.percent}%`
+    },
+    legend: {
+      orient: 'vertical', right: 10, top: 'center',
+      textStyle: { color: '#94a3b8', fontSize: 11 }
+    },
+    series: [{
+      type: 'pie',
+      radius: ['40%', '70%'],
+      center: ['40%', '50%'],
+      avoidLabelOverlap: true,
+      itemStyle: { borderRadius: 6, borderColor: '#1e293b', borderWidth: 2 },
+      label: {
+        show: true, position: 'outside',
+        formatter: '{b}\n{d}%', color: '#94a3b8', fontSize: 11
+      },
+      emphasis: {
+        label: { show: true, fontSize: 14, fontWeight: 'bold' },
+        itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.5)' }
+      },
+      data: pieData
+    }]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderFunnelRates(funnelData) {
+  const chart = initChart('funnelRatesChart');
+  if (!funnelData || funnelData.length < 5) return;
+
+  // Calculate step-to-step conversion rates
+  const steps = funnelData.filter(d => d.event !== 'all');
+  const rates = [];
+  const rateLabels = [];
+  const rateColors = [];
+  const colorMap = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6'];
+
+  for (let i = 1; i < steps.length; i++) {
+    const prev = steps[i-1].users;
+    const curr = steps[i].users;
+    const rate = prev > 0 ? +(curr / prev * 100).toFixed(1) : 0;
+    rates.push(rate);
+    rateLabels.push(steps[i-1].step + ' → ' + steps[i].step);
+    rateColors.push(colorMap[i] || colorMap[0]);
+  }
+
+  chart.setOption({
+    tooltip: {
+      trigger: 'axis',
+      formatter: params => {
+        const p = params[0];
+        const idx = p.dataIndex;
+        return `<b>${rateLabels[idx]}</b><br/>Conversion: ${p.value}%<br/>${fmt(steps[idx].users)} → ${fmt(steps[idx+1].users)}`;
+      }
+    },
+    grid: { left: 20, right: 30, bottom: 80, top: 20 },
+    xAxis: {
+      type: 'category', data: rateLabels,
+      axisLabel: { color: '#94a3b8', fontSize: 10, rotate: 25, interval: 0 },
+      axisLine: { lineStyle: { color: '#334155' } }
+    },
+    yAxis: {
+      type: 'value', max: 100,
+      axisLabel: { color: '#94a3b8', formatter: v => v + '%' },
+      splitLine: { lineStyle: { color: '#1e293b' } }
+    },
+    series: [{
+      type: 'bar',
+      data: rates.map((v, i) => ({
+        value: v,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: rateColors[i] },
+            { offset: 1, color: rateColors[i] + '88' }
+          ]),
+          borderRadius: [6, 6, 0, 0]
+        }
+      })),
+      barMaxWidth: 60,
+      label: {
+        show: true, position: 'top',
+        formatter: p => p.value + '%',
+        color: '#e2e8f0', fontSize: 13, fontWeight: 'bold'
+      }
+    }]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderCvrBySource(sourceData) {
+  const chart = initChart('cvrBySourceChart');
+  if (!sourceData || sourceData.length === 0) return;
+  const sources = sourceData.map(d => d.source);
+  const users = sourceData.map(d => d.total_users);
+  const purchasers = sourceData.map(d => d['Purchase'] || 0);
+  const cvr = sourceData.map(d => d.total_users > 0 ? +(((d['Purchase'] || 0) / d.total_users * 100).toFixed(1)) : 0);
+
+  chart.setOption({
+    tooltip: {
+      trigger: 'axis',
+      formatter: params => {
+        let s = `<b>${params[0].axisValue}</b>`;
+        params.forEach(p => {
+          const marker = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background:${p.color}"></span>`;
+          s += `<br/>${marker}${p.seriesName}: ${p.seriesName === 'CVR %' ? p.value + '%' : fmt(p.value)}`;
+        });
+        return s;
+      }
+    },
+    legend: {
+      data: ['Total Users', 'Purchasers', 'CVR %'],
+      top: 0, textStyle: { color: '#94a3b8', fontSize: 11 }
+    },
+    grid: { left: 60, right: 60, bottom: 40, top: 40 },
+    xAxis: {
+      type: 'category', data: sources,
+      axisLabel: { color: '#94a3b8', fontSize: 11 },
+      axisLine: { lineStyle: { color: '#334155' } }
+    },
+    yAxis: [
+      {
+        type: 'value', name: 'Users',
+        axisLabel: { color: '#94a3b8', formatter: v => fmt(v) },
+        splitLine: { lineStyle: { color: '#1e293b' } },
+        nameTextStyle: { color: '#94a3b8' }
+      },
+      {
+        type: 'value', name: 'CVR %',
+        axisLabel: { color: '#94a3b8', formatter: v => v + '%' },
+        splitLine: { show: false },
+        nameTextStyle: { color: '#94a3b8' }
+      }
+    ],
+    series: [
+      {
+        name: 'Total Users', type: 'bar',
+        data: users,
+        itemStyle: { color: COLORS.blue, borderRadius: [4,4,0,0] },
+        barMaxWidth: 50
+      },
+      {
+        name: 'Purchasers', type: 'bar',
+        data: purchasers,
+        itemStyle: { color: COLORS.green, borderRadius: [4,4,0,0] },
+        barMaxWidth: 50
+      },
+      {
+        name: 'CVR %', type: 'line', yAxisIndex: 1,
+        data: cvr,
+        itemStyle: { color: COLORS.orange },
+        lineStyle: { width: 3 },
+        symbol: 'circle', symbolSize: 8,
+        label: { show: true, formatter: '{c}%', color: '#f59e0b', fontSize: 11, position: 'top' }
+      }
+    ]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
+
 function renderJourneys(data) {
   currentJourneys = data;
   let html = `<table class="journey-table">
@@ -685,6 +868,9 @@ function renderAll(data) {
   renderSourceChart(data.funnel_by_source);
   renderPurchaseFreq(data.purchase_frequency);
   renderTrend(data.daily_trend);
+  renderSourceDonut(data.funnel_by_source);
+  renderFunnelRates(data.funnel);
+  renderCvrBySource(data.funnel_by_source);
   if (data.journeys) renderJourneys(data.journeys);
 }
 

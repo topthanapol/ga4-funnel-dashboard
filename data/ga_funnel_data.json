@@ -730,6 +730,13 @@
       "users": 1
     }
   ],
+  "platform_distribution": [
+    {
+      "platform": "WEB",
+      "users": 401533,
+      "purchasers": 167422
+    }
+  ],
   "by_source": {
     "Direct": {
       "kpi": {
