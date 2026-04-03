@@ -265,23 +265,37 @@ def main():
     """
     sankey_raw = query(sankey_sql)
 
-    sankey_nodes = []
+    # Event depth for DAG enforcement (Sankey requires no cycles)
+    EVENT_DEPTH = {
+        "First Visit": 0, "Session Start": 1, "Page View": 2,
+        "User Engagement": 3, "Click Top Seller": 4,
+        "Search Results": 5, "View Items": 6,
+        "Add to Cart": 7, "Remove from Cart": 8, "View Cart": 9,
+        "Login": 10, "Signup": 11,
+        "Begin Checkout": 12, "Add Payment": 13, "Purchase": 14,
+    }
+
     sankey_links = []
-    node_set = set()
     for _, row in sankey_raw.iterrows():
         src = ALL_EVENT_LABELS.get(row["source_event"], row["source_event"])
         tgt = ALL_EVENT_LABELS.get(row["target_event"], row["target_event"])
         if src == tgt:
             continue
-        for n in [src, tgt]:
-            if n not in node_set:
-                node_set.add(n)
-                sankey_nodes.append({"name": n})
+        # Only keep forward transitions to ensure DAG
+        if EVENT_DEPTH.get(tgt, 99) <= EVENT_DEPTH.get(src, 0):
+            continue
         sankey_links.append({
             "source": src,
             "target": tgt,
             "value": int(row["user_count"]),
         })
+
+    # Rebuild node set from remaining links
+    node_set = set()
+    for link in sankey_links:
+        node_set.add(link["source"])
+        node_set.add(link["target"])
+    sankey_nodes = [{"name": n} for n in sorted(node_set, key=lambda x: EVENT_DEPTH.get(x, 99))]
 
     # --- Query 5: Top User Journeys (all events) ---
     print("[6/54] Top user journeys...")

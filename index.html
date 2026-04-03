@@ -1344,7 +1344,7 @@ function renderEventDist(data) {
 function renderAll(data) {
   renderKPIs(data.kpi);
   renderFunnel(data.funnel);
-  if (data.sankey) renderSankey(data.sankey);
+  if (data.sankey) { try { renderSankey(data.sankey); } catch(e) { console.warn('Sankey render error:', e); } }
   renderSourceChart(data.funnel_by_source);
   renderPurchaseFreq(data.purchase_frequency);
   renderTrend(data.daily_trend);

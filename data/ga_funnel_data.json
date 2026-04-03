@@ -69,19 +69,37 @@
   "sankey": {
     "nodes": [
       {
-        "name": "View Items"
-      },
-      {
-        "name": "Page View"
-      },
-      {
-        "name": "Login"
+        "name": "First Visit"
       },
       {
         "name": "Session Start"
       },
       {
+        "name": "Page View"
+      },
+      {
+        "name": "User Engagement"
+      },
+      {
+        "name": "Search Results"
+      },
+      {
+        "name": "View Items"
+      },
+      {
+        "name": "Add to Cart"
+      },
+      {
+        "name": "Remove from Cart"
+      },
+      {
         "name": "View Cart"
+      },
+      {
+        "name": "Login"
+      },
+      {
+        "name": "Signup"
       },
       {
         "name": "Begin Checkout"
@@ -90,42 +108,14 @@
         "name": "Add Payment"
       },
       {
-        "name": "Add to Cart"
-      },
-      {
         "name": "Purchase"
-      },
-      {
-        "name": "User Engagement"
-      },
-      {
-        "name": "First Visit"
-      },
-      {
-        "name": "Remove from Cart"
-      },
-      {
-        "name": "Signup"
-      },
-      {
-        "name": "Search Results"
       }
     ],
     "links": [
       {
-        "source": "View Items",
-        "target": "Page View",
-        "value": 580450
-      },
-      {
         "source": "Page View",
         "target": "View Items",
         "value": 573877
-      },
-      {
-        "source": "Login",
-        "target": "View Items",
-        "value": 377022
       },
       {
         "source": "Session Start",
@@ -138,19 +128,9 @@
         "value": 329778
       },
       {
-        "source": "Page View",
-        "target": "Session Start",
-        "value": 324914
-      },
-      {
         "source": "View Items",
         "target": "Login",
         "value": 317384
-      },
-      {
-        "source": "View Items",
-        "target": "Session Start",
-        "value": 282648
       },
       {
         "source": "Page View",
@@ -163,29 +143,9 @@
         "value": 271697
       },
       {
-        "source": "View Cart",
-        "target": "Page View",
-        "value": 264937
-      },
-      {
-        "source": "Begin Checkout",
-        "target": "Page View",
-        "value": 261191
-      },
-      {
         "source": "Page View",
         "target": "Add Payment",
         "value": 258227
-      },
-      {
-        "source": "Login",
-        "target": "Page View",
-        "value": 255190
-      },
-      {
-        "source": "Add Payment",
-        "target": "Page View",
-        "value": 248325
       },
       {
         "source": "Page View",
@@ -204,23 +164,8 @@
       },
       {
         "source": "Add to Cart",
-        "target": "Page View",
-        "value": 191130
-      },
-      {
-        "source": "Add to Cart",
         "target": "View Cart",
         "value": 175750
-      },
-      {
-        "source": "User Engagement",
-        "target": "Page View",
-        "value": 157546
-      },
-      {
-        "source": "Purchase",
-        "target": "Page View",
-        "value": 156902
       },
       {
         "source": "Page View",
@@ -238,16 +183,6 @@
         "value": 131980
       },
       {
-        "source": "Add to Cart",
-        "target": "View Items",
-        "value": 114830
-      },
-      {
-        "source": "View Cart",
-        "target": "View Items",
-        "value": 96945
-      },
-      {
         "source": "First Visit",
         "target": "View Items",
         "value": 82321
@@ -259,33 +194,8 @@
       },
       {
         "source": "View Items",
-        "target": "User Engagement",
-        "value": 78962
-      },
-      {
-        "source": "View Items",
-        "target": "First Visit",
-        "value": 65316
-      },
-      {
-        "source": "Page View",
-        "target": "First Visit",
-        "value": 59413
-      },
-      {
-        "source": "Purchase",
-        "target": "View Items",
-        "value": 56724
-      },
-      {
-        "source": "View Items",
         "target": "View Cart",
         "value": 56307
-      },
-      {
-        "source": "Session Start",
-        "target": "First Visit",
-        "value": 55667
       },
       {
         "source": "First Visit",
@@ -298,11 +208,6 @@
         "value": 53911
       },
       {
-        "source": "Remove from Cart",
-        "target": "View Items",
-        "value": 48249
-      },
-      {
         "source": "Page View",
         "target": "Remove from Cart",
         "value": 38839
@@ -311,11 +216,6 @@
         "source": "Session Start",
         "target": "Login",
         "value": 34733
-      },
-      {
-        "source": "View Cart",
-        "target": "Remove from Cart",
-        "value": 33630
       },
       {
         "source": "Page View",
@@ -328,19 +228,9 @@
         "value": 28812
       },
       {
-        "source": "Remove from Cart",
-        "target": "Page View",
-        "value": 28147
-      },
-      {
         "source": "Session Start",
         "target": "User Engagement",
         "value": 26045
-      },
-      {
-        "source": "Signup",
-        "target": "View Items",
-        "value": 21319
       },
       {
         "source": "Remove from Cart",
@@ -351,16 +241,6 @@
         "source": "Page View",
         "target": "Search Results",
         "value": 17650
-      },
-      {
-        "source": "Search Results",
-        "target": "Page View",
-        "value": 17227
-      },
-      {
-        "source": "Signup",
-        "target": "Login",
-        "value": 17120
       }
     ]
   },
